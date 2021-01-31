@@ -395,4 +395,4 @@ resource "aws_iam_role_policy_attachment" "lb_additional_policy_attach" {
 [module_eks]: https://registry.terraform.io/modules/terraform-aws-modules/eks/aws/latest
 [module_iam]: https://registry.terraform.io/modules/terraform-aws-modules/iam/aws/latest
 [manage_tfstate]: https://blog.outsider.ne.kr/1290
-[개괄][https://www.44bits.io/ko/post/terraform_introduction_infrastrucute_as_code]
+[개괄]: https://www.44bits.io/ko/post/terraform_introduction_infrastrucute_as_code
