@@ -7,9 +7,9 @@ categories: Terraform, EKS, Fargate, Kops
 
 현재 우리 서비스의 인프라 상태를 알아보자.
 
-- 약 2년 전에 설치된 `k8s` 1.11 버전, kops 사용 중. nodes들은 ec2 on AWS 있음
-- 글을 쓰는 시점에 `k8s`는 1.19까지 릴리즈. 버전을 7번이나 올려야하는 귀찮음
-- `k8s` 1.11 -> 1.12 올릴 때 노드 하나가 이상해져서 서버 장애를 일으킨 경험이 본인이 있음
+- 약 2년 전에 설치된 `k8s` `1.11` 버전, `kops` 사용 중. `nodes`들은 `ec2 on AWS` 있음
+- 글을 쓰는 시점에 `k8s`는 `1.19`까지 릴리즈. 버전을 7번이나 올려야하는 귀찮음
+- `k8s` `1.11` → `1.12` 올릴 때 노드 하나가 이상해져서 서버 장애를 일으킨 경험이 본인이 있음
 - 심지어 이 인프라를 셋업한 개발자는 옆에 팀 개발자
 - 현재 인프라 구조를 설명하는 문서가 없고 다 아는 사람은 잘 없음
 
@@ -17,7 +17,7 @@ categories: Terraform, EKS, Fargate, Kops
 
 그럼 서버 다운타임 없이 이전하는게 가장 큰 목표이므로, 이에 대해서 대충 계획을 세웠다.
 
-- `Terraform`을 `꼭` 사용해서 `migration`을 한다 --> 그러지 않으면 나중의 누군가는 우리가 겪은 것과 같이 인프라 구성에 대해서 이해하고 유지/보수하기 힘들다
+- `Terraform`을 `꼭` 사용해서 `migration`을 한다 → 그러지 않으면 나중의 누군가는 우리가 겪은 것과 같이 인프라 구성에 대해서 이해하고 유지/보수하기 힘들다
 - `EKS`와 `Kops` 클러스터에 모든 서비스를 안정적으로 띄운 후에 `blue/green` 배포 방식과 유사하게 `weighted routing policy`를 사용해서 점진적으로 이전한다
 - `dev`, `staging` 환경에서 안정적으로 테스트를 마친 후에 `production`에 적용한다
 
@@ -374,6 +374,9 @@ resource "aws_iam_role_policy_attachment" "lb_additional_policy_attach" {
 }
 ```
 
+## 실제 Migration
+...<이후에 업데이트>
+
 ## 정리하며
 
 `migration`이 새로 만드는 것보다 훨씬 귀찮고 어려운 것 같다. 그래서 더 많이 배운 것 같기도 하고. 그리고 모든 버전은 되도록 최신 버전으로 사용했다. 버전 올리는 일도 굉장히 귀찮고 관리 포인트이기 때문에 `Terraform`도 `0.14`를 썼고 `EKS`도 지원하는 최신 쿠버네티스 버전인 `1.18`을 사용했다. 다른 것들도 비슷하다. 그리고 어느정도 `manual`하게 사용하는 부분도 많이 있는데 이를 나중에는 다 `code`로 옮기면 좋을 것 같다. 더 공유할만한 내용이 있으면 추가로 꼭 적는 것을 스스로에게 약속한다.
@@ -382,7 +385,7 @@ resource "aws_iam_role_policy_attachment" "lb_additional_policy_attach" {
 
 - [테라폼 공식 사이트][official_terraform]
 - [tfstate 관리][manage_tfstate]
-- [개괄적 이해에 도움된 글]
+- [개괄적 이해에 도움된 글][개괄]
 - [iam 모듈][module_iam]
 - [vpc 모듈][module_vpc]
 - [eks 모듈][module_eks]
@@ -392,3 +395,4 @@ resource "aws_iam_role_policy_attachment" "lb_additional_policy_attach" {
 [module_eks]: https://registry.terraform.io/modules/terraform-aws-modules/eks/aws/latest
 [module_iam]: https://registry.terraform.io/modules/terraform-aws-modules/iam/aws/latest
 [manage_tfstate]: https://blog.outsider.ne.kr/1290
+[개괄][https://www.44bits.io/ko/post/terraform_introduction_infrastrucute_as_code]
