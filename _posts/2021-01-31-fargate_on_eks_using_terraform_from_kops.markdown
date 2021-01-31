@@ -100,9 +100,11 @@ resource "aws_s3_bucket" "terraform-state" {
 }
 ```
 
+`resource`에 사용할 수 있는 `meta-argument` 중에 [lifecycle](https://www.terraform.io/docs/language/meta-arguments/lifecycle.html)이라는게 있는데, 말그대로 리소스들의 라이프사이클에 대한 제어를 약간 할 수 있다. 여기서는, `s3`나 `db` 관련된 정보는 날리지 못하도록 했다. 이럴 경우에 `terraform destroy`를 할 경우에 에러메시지를 출력할 것이다. (사고 방지)
+
 ### vpc
 
-`vpc`는 [terraform vpc module][module_eks]을 사용했다. 아주아주 편리 했다. 문서를 쥐잡듯이 꼼꼼히 읽어보면 쓸만한 옵션들도 많고 사실 적당한 예시만 봐도 필요한 vpc 세팅들에 대해서 잘 안내 되어있다. 왜 진작 몰랐을까? 라는 생각이 들 정도였으니. 인프라를 코드 관리한다는게 뭔지 느낀 시점이다. 
+`vpc`는 [terraform vpc module][module_eks]을 사용했다. 아주아주 편리 했다. 문서를 쥐잡듯이 꼼꼼히 읽어보면 쓸만한 옵션들도 많고 사실 적당한 예시만 봐도 필요한 vpc 세팅들에 대해서 잘 안내 되어있다. 왜 진작 몰랐을까? 라는 생각이 들 정도였으니. 인프라를 코드 관리한다는게 뭔지 느낀 시점이다.
 
 ```terraform
 data "aws_availability_zones" "available" {
@@ -193,7 +195,20 @@ module "eks" {
   map_roles = var.map_roles
   map_users = var.map_users
 }
+
+resource "null_resource" "core_dns_only_fargate" {
+  provisioner "local-exec" {
+    command = <<EOF
+      kubectl patch deployment coredns -n kube-system --type json \
+      -p='[{"op": "remove", "path": "/spec/template/metadata/annotations/eks.amazonaws.com~1compute-type"}]'
+    EOF
+  }
+
+  depends_on = [ module.eks.cluster_id ]
+}
 ```
+
+`eks`를 생성하는 것 왜에 `null_resource`를 사용한 리소스가 있는데, 이게 뭐냐면, 리소스를 생성하지 않으면서 `provisioner` 등을 사용할 때 쓴다. 여기서 실행한 커맨드는 `coredns`에서 `fargate`만 사용할 때 저 `annotation`을 지워줘야한다. 추가적으로 `terraform`은 리소스들이 만들어질 때 순서(chain)이 있는데 이것들을 명시적(implicit)으로 설정하고 싶으면 [depends_on](https://www.terraform.io/docs/language/meta-arguments/depends_on.html)을 사용한다. 즉, `eks module`이 정상적으로 생성한 이후에 `null resource`를 실행하길 명시적으로 나타낸 것이다.
 
 ### network
 
@@ -375,7 +390,8 @@ resource "aws_iam_role_policy_attachment" "lb_additional_policy_attach" {
 ```
 
 ## 실제 Migration
-...<이후에 업데이트>
+
+위처럼 설정하면 이제 거의 기존에 있던 각종 `kubernetes yaml` 파일들을 `cluster`에 다 올려주기만 하면 된다. `Weighted routing` 비율은 테스트 단계에서는 5:5 정도로 시작해서 점진적으로 새로운 클러스터에 비율을 늘려준다. 아참, `ec2 auto scaling` 같은 경우에는 따로 할 필요가 없고 `hpa`를 사용하기만 하면 되는데 이는 간단하다.
 
 ## 정리하며
 
