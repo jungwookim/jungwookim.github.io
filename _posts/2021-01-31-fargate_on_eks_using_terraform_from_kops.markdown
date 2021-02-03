@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "테라폼으로 kops에서 eks fargate로 갈아타기"
-categories: Terraform, EKS, Fargate, Kops
+title:  "Terraform으로 kops에서 eks fargate로 갈아타기"
+categories: Terraform EKS Fargate Kops
 ---
 제목이 참 길다. 그만큼 글도 길어질 것 같다. 2021년에 개발하고 있는 서비스에서 몇가지 큰 줄기 및 목표가 있는데 그 중의 하나가 `kops`에서 `fargate on EKS`로 `migration`하는 것이다. 마침 새해 초반에 밀린 피처 개발이 많이 없고 간단한거라서 빨리 해버리고 남는 시간에 하기로 마음 먹었다. 그 전에 시간 날 때마다 조금씩 찾아 본 `eks` 관련 지식들과 `Terraform`을 꼭 사용해서 성공적으로 서버를 옮기고자 한다.
 
