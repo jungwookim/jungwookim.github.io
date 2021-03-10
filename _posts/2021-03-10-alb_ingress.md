@@ -35,7 +35,9 @@ annotations = {
 - [application_load_balancer][application_load_balancer]
 - [aws-load-balancer-controller][aws-load-balancer-controller]
 - [client-ip-preservation][client-ip-preservation]
+- [Outline][overview]
 
 [application_load_balancer]: https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html
 [client-ip-preservation]: https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-target-groups.html#client-ip-preservation
 [aws-load-balancer-controller]: https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.1/guide/ingress/annotations/
+[overview]: https://www.stacksimplify.com/aws-eks/aws-alb-ingress/learn-aws-alb-ingress-on-aws-eks/
