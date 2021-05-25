@@ -79,6 +79,7 @@ res23: Int = 1
 
 함수
 - 람다함수
+
 ```scala
 // exec는 3개의 파라미터(함수 f, x, y)를 받음
 def exec(f: (Int, Int) => Int, x: Int, y: Int) = f(x, y)
@@ -99,6 +100,7 @@ res14: Int = 4
 scala> exec(_ + _, 3, 1)
 res15: Int = 4
 ```
+
 - 커링
 - 클로저
 - 타입(Generic)
