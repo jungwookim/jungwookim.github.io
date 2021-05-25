@@ -150,6 +150,8 @@ Hello
 
 트레잇(Trait)
 - 자바나 nodejs의 interface와 유사함.
+
+
 ```scala
 // Machine 트레잇 
 trait Machine {
@@ -196,6 +198,7 @@ scala> car.print()
 scala> println(car.conturyCode)
 kr
 ```
+
 클래스 - 그냥 클래스스럽다.
 
 ## Spark
