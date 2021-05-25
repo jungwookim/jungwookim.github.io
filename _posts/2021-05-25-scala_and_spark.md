@@ -106,6 +106,8 @@ res15: Int = 4
 - 커링
 - 클로저
 - 타입(Generic)
+
+
 ```scala
 // for class
 import scala.collection.mutable
@@ -151,6 +153,7 @@ def sample2 = sample[String] _
 scala> sample2("Hello")
 Hello
 ```
+
 
 트레잇(Trait)
 - 자바나 nodejs의 interface와 유사함.
