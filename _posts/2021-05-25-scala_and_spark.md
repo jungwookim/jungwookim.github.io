@@ -407,7 +407,7 @@ $ hadoop fs -text /user/ds_1/part-r-00000-88b715ad-1b5b-480c-8e17-7b0c0ea93e9f.j
 ```
 
 #### 압축 포맷 지정
-`option을 이용하여 압축 포맷을 지정할 수 있음. gzip, snappy 등의 형식을 이용할 수 있음. 
+`option`을 이용하여 압축 포맷을 지정할 수 있음. gzip, snappy 등의 형식을 이용할 수 있음. 
 ```scala
 // snappy 형식 압축 
 peopleDS.select("name").write.format("json").option("compression", "snappy").save("/user/ds_1")
