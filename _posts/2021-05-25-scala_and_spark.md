@@ -455,5 +455,5 @@ scala> peopleDF.show()
 - [read_dfreader_api][read_dfreader_api]
 - [book][book]
 
-[fastapi]: https://spark.apache.org/docs/2.3.0/api/java/org/apache/spark/sql/DataFrameReader.html
+[read_dfreader_api]: https://spark.apache.org/docs/2.3.0/api/java/org/apache/spark/sql/DataFrameReader.html
 [book]: https://wikidocs.net/book/2350
