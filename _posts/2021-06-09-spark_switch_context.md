@@ -36,6 +36,8 @@ spark = SparkSession.builder.getOrCreate()
 spark = SparkSession.builder.master('local').getOrCreate()
 ```
 
+# SPARK_HOME 충돌 문제
+원격에서 로컬로 잘 연결을 바꿨었다. 문제는 다시 원격에 붙어서 작업하고 싶어서 python interpreter를 바꾸고 작업하는데 여전히 로컬에 붙고 있었다. 이상해서 계속 삽질하다가 `databricks-connect test`의 결과를 보고 단서를 찾았다. 내용은 `SPARK_HOME` 환경 변수가 local이랑 가상환경에서 사용하는 거랑 충돌이 나고 있었던 것. 그래서 환경 변수를 잘 수정해서 해결했다. 근데 이거 환경 바꿀 때마다 일일이 신경써주기 귀찮은데 좀 더 편하게 하는 방향을 잡긴 해야겠다.
 ## Reference
 
 - [databricks-connect][databricks-connect]
