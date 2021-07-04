@@ -28,7 +28,7 @@ instagram_client_id: jungwoochuck
 github_username:  jungwookim
 
 # Build settings
-theme: minimal-mistakes-jekyll
+theme: Hacker
 plugins:
   - jekyll-feed
 
