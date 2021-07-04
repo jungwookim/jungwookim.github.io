@@ -28,9 +28,10 @@ instagram_client_id: jungwoochuck
 github_username:  jungwookim
 
 # Build settings
-theme: jekyll-theme-hacker
+remote_theme: "mmistakes/minimal-mistakes@4.23.0" 
 plugins:
   - jekyll-feed
+  - jekyll-include-cache
 
 # Exclude from processing.
 # The following items will not be processed, by default.
