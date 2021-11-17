@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "clojure와 친해지기"
-categories: db lock go transaction
+categories: clojure adventofcode
 ---
 
 
