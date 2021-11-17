@@ -76,6 +76,74 @@ text file을 읽어서 문제를 풀다보니 파일 입출력을 해야했다. 
       solve-part2-advanced)
 ```
 
+# Day 2
+
+어제 삽질한 파일 읽는 것 때문에 시간은 잘 벌었다. 근데 `laySeq`의 결과를 `contains?`와 함께 사용할 수 없고 map 데이터구조를 핸들링하는 것에 익숙치 않아서 시간이 오래 걸린 것 같다. 그리고 원래 string 관련 문제는 좀 귀찮은 면은 있는 것 같긴 하다. AOC 2018년 Day 2를 보자.
+
+## part 1
+결과부터 말하자면 `frequencies + char-array`를 사용하면 아주 쉽게 풀리는 문제였는데 저 2가지를 직접 구현하면서 겪은 각종 삽질들 때문에 시간을 많이 잡아 먹었다. 그리고 아래와 같은 코드를 빨리 구현하지 못해서 엄청 헤맸다. 어떻게 삽질 했는지 같이 살펴보자.
+
+```typescript
+// 조건을 만족할 때만 do sth을 하고 그 조건이 여러개일 때
+if (isValid()) {
+    // do sth...
+}
+
+if (isValid2()) {
+    // do sth...
+}
+
+```
+
+이라는 간단한 걸 구현하고 싶었는데 클로저에서는 이렇게 안된다.
+```clojure
+(when (isValid) (...)
+when (isValid2) (...)) ; 난감했다
+```
+
+사실 expression자체도 지금 생각하면 안좋다는게 보이지만 아직은 적응이 덜 됐는지 위에 처럼 구현하고 싶은 마음이 처음엔 컸다. 여튼, 그래서 처음에 답은 구했는데 아주 아주 돌아갔다.
+
+```clojure
+; 처음 제출한 답의 메인 로직
+(defn calc-freq
+  "input: [[1 2 3 4] [2 2 0 0] ...]"
+  [li]
+  (apply * (reduce (fn [[res1 res2] val]
+                     (cond
+                       (and (some #(== % 3) val) (some #(== % 2) val)) [(inc res1) (inc res2)]
+                       (some #(== % 3) val) [res1 (inc res2)]
+                       (some #(== % 2) val) [(inc res1) res2]
+                       :else [res1 res2])) [0 0] li)))
+```
+
+## 리뷰
+- reduce는 almighty해서 가급적 안쓰는게 좋다. 쓰더라도 뚱뚱하게 쓰면 안된다.
+- 고차함수인 map, filter 같은 것만 사용해서 다 구현할 수 있다 (대부분): 이 사실을 명심하자
+- contains?는 set에서만 쓰고 map, vector, list에서는 다른 방식으로 contains? 유무를 확인하자
+- `frequencies`, `char-array`를 알자
+
+## 리뷰 반영 후 다시 구현해본 코드
+이게 베스트인지는 모르겠지만 일단 조금 더 가독성이 높아졌다.
+```clojure
+(defn logic-part1 [n str-li]
+  (->> str-li
+       (map frequencies)
+       (map vals)
+       (filter #(some (fn [x] (== x n)) %))
+       count))
+
+(defn solve-part1 [path]
+  (let [res1 (->> path
+                  read-input
+                  (logic-part1 2))
+        res2 (->> path
+                  read-input
+                  (logic-part1 3))]
+    (* res1 res2)))
+```
+
+## part 2
+
 
 ## Reference
 - [my github repo][github]
