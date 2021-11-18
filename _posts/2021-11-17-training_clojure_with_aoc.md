@@ -5,10 +5,10 @@ categories: clojure adventofcode
 ---
 
 
-`clojure`와 친해져보도록 하자. `clojure`가 `JVM` 위에서 동작한다는 성질이나 함수형 언어로서의 특성을 글로 배우기 보다는 기본기를 `advent of code`에서 닦아보도록 하자. 전체 코드는 [Github][github]에 다 올려놓았다.
+`clojure`와 친해져보도록 하자. `clojure`가 `JVM` 위에서 동작한다는 성질이나 함수형 언어로서의 특성을 글로 배우기 보다는 기본기를 [`advent of code`][advent_of_code]에서 닦아보도록 하자. 전체 코드는 [Github][github]에 다 올려놓았다.
 
 # Day 1
-AOC 2018년 Day1으로 시작.
+AOC 2018년 Day1으로 시작. 아주 간단한 로직을 다루고 숫자 관련한 조작을 연습해보는 섹션이 아닌가 싶다.
 
 ## 파일 읽고 파싱하기
 text file을 읽어서 문제를 풀다보니 파일 입출력을 해야했다. line by line으로 읽고 싶었지만 문제의 의도와 거리가 있어서 `clojure.core/slurp`를 사용했다.
@@ -78,7 +78,7 @@ text file을 읽어서 문제를 풀다보니 파일 입출력을 해야했다. 
 
 # Day 2
 
-어제 삽질한 파일 읽는 것 때문에 시간은 잘 벌었다. 근데 `laySeq`의 결과를 `contains?`와 함께 사용할 수 없고 map 데이터구조를 핸들링하는 것에 익숙치 않아서 시간이 오래 걸린 것 같다. 그리고 원래 string 관련 문제는 좀 귀찮은 면은 있는 것 같긴 하다. AOC 2018년 Day 2를 보자.
+어제 삽질한 파일 읽는 것 때문에 시간은 잘 벌었다. `string`을 잘 다루어보는 섹션인 것 같다. 근데 `laySeq`의 결과를 `contains?`와 함께 사용할 수 없고 map 데이터구조를 핸들링하는 것에 익숙치 않아서 시간이 오래 걸린 것 같다. 그리고 원래 string 관련 문제는 좀 귀찮은 면은 있는 것 같긴 하다. AOC 2018년 Day 2를 보자.
 
 ## part 1
 결과부터 말하자면 `frequencies + char-array`를 사용하면 아주 쉽게 풀리는 문제였는데 저 2가지를 직접 구현하면서 겪은 각종 삽질들 때문에 시간을 많이 잡아 먹었다. 그리고 아래와 같은 코드를 빨리 구현하지 못해서 엄청 헤맸다. 어떻게 삽질 했는지 같이 살펴보자.
@@ -144,11 +144,140 @@ when (isValid2) (...)) ; 난감했다
 
 ## part 2
 
+# Day 3
 
-## Reference
+`matrix`를 다루는 내용이 목적인 것 같다. 2d 리스트나 벡터를 사용하는 것을 다루어보자는 느낌.
+
+## Intro
+part 1과 part 2가 거의 한번에 풀릴 수 있을 것처럼 보였다. 전체 색칠한 `matrix`를 만들어내고 이 결과를 가지고 두번 색칠해졌는지 아니면 해당 id가 한번도 덮어씌어진 적 없는지 확인하면 됐었다.
+
+## parsing
+input이 좀 괴상하게 들어와서 이것도 연습하는 건가? 싶었다. `#1 1,3: 4x4` 이런 식으로 인풋이 들어오는데 이걸 잘 파싱해보도록 하자. 위에서 사용한 `clojure.string/split`과 `subs`를 요리조리 사용했다.
+
+```clojure
+(defn read-input [path]
+  (-> path
+      slurp
+      (clojure.string/split #"\n")))
+
+(defn parse-id
+  "input: \"#44\", output: 44"
+  [string]
+  (Integer/parseInt (subs string 1 (count string))))
+
+(defn parse-pos
+  "input: \"1,3:\", output: (1 3)"
+  [string]
+  (->> (clojure.string/split (subs string 0 (dec (count string))) #",")
+       (mapv (fn [x] (Integer/parseInt x)))))
+
+(defn parse-size
+  "input: \"4x4\", output: (4 4)"
+  [string]
+  (->> (clojure.string/split string #"x")
+       (mapv (fn [x] (Integer/parseInt x)))))
+
+(defn prepare-data [path]
+  (->> path
+       read-input
+       (mapv (fn [x] (clojure.string/split x #" ")))
+       (mapv (fn [[id _ pos size]]
+               (list (parse-id id) (parse-pos pos) (parse-size size))))))
+```
+id, position, size를 위와 같은 방식으로 파씽했었다.
+
+## part 1
+주요 아이디어는 `#99 1,3: 2x2`라는 인풋이 있을 때 `(1 3 99)`, `(1 4 99)`, `(2 3 99)`, `(2 4 99)` 의 collections을 가지고 있으면 x, y index에 원하는 id를 갱신하면 된다고 생각했다. 초기값을 다 -1 로 matrix를 만들어 놓았으므로 id가 양수임을 가정했을 때 갱신하려고 할 때 -1이 아니라면 (갱신된 적 있다면) 0으로 갱신해서 (문제에서 X랑 같음) 중복 칠한게 있는지 확인했다. 그리고 마지막으로 0의 갯수를 세어주면서 마무리하였다.
+
+코드는 아래와 같다.
+```clojure
+(defn vec2d
+  "2d vectors"
+  [sx sy f]
+  (mapv (fn [x] (mapv (fn [y] (f x y)) (range sx))) (range sy)))
+
+(defn matrix
+  "init matrix"
+  []
+  (vec2d 2000 2000 (constantly -1)))
+
+(defn update-cell
+  "update cell to id at position (x, y) on matrix"
+  [matrix id x y]
+  (if (neg? (get-in matrix [x y]))
+    (update-in matrix [x y] (constantly id))
+    (update-in matrix [x y] (constantly 0))))
+
+(defn gen-modified-vals
+  "output: sequence of (target-x target-y id)"
+  [id ix iy sx sy]
+  (map (fn [x] (map (fn [y] (list (+ iy x) (+ ix y) id)) (range sx))) (range sy)))
+
+(defn flatten-vals
+  "flatten and partition 3"
+  [values]
+  (->> values
+       flatten
+       (partition 3)))
+
+(defn logic-part1
+  "update each one"
+  [data]
+  (reduce (fn [acc [x y id]]
+            (update-cell acc id x y))
+          (matrix)                                          ; 초기값
+          (flatten-vals (map (fn [[id [ix iy] [sx sy]]]
+                               (gen-modified-vals id ix iy sx sy))
+                             data))))
+
+(defn solve-part1 [path]
+  (->> path
+       prepare-data
+       logic-part1
+       flatten
+       (filter #(zero? %))
+       count))
+```
+
+get-in, update-in 같은 nested structure에 사용하는 core 함수를 알게 되었다. 이렇게 푸는게 맞나? 그리고 flatten 왠만해서 안쓰려고 했는데 쓰면 편해서 써버렸다.
+
+## part 2
+part 1을 풀어서 쉽게 풀었다. 필터만 잘 하면 된다.
+
+```clojure
+(defn get-total-count-by-id [path]
+  (->> path
+       prepare-data
+       (map (fn [[id _ [sx sy]]] (list id (* sx sy))))))
+
+(defn logic-part2
+  [path data]
+  (let [current-id-count (->> data
+                              logic-part1
+                              flatten
+                              (filter #(pos? %))
+                              frequencies)
+
+        total-count-by-id (get-total-count-by-id path)]
+    (-> (filter (fn [[x y]] (== y (get current-id-count x -1))) total-count-by-id)
+        first
+        first)))
+
+(defn solve-part2 [path]
+  (->> path
+       prepare-data
+       (logic-part2 path)))
+```
+
+## 회고
+언제나 그렇듯 2차 배열을 다루는 문제들은 약간 까다로운 면은 있다. 자주 풀어야 좀 익숙해지는 느낌. 그리고 immutable하게 짠다는게 문제 풀이에서 꽤 까다롭다고 느껴졌다.
+
+# Reference
 - [my github repo][github]
 - [clojure library documents][clojure_doc]
+- [advent of code][advent_of_code]
 
 
 [github]:https://github.com/jungwookim/aoc-exercise/tree/master/src
 [clojure_doc]:https://clojuredocs.org/clojure.core
+[advent_of_code]:https://adventofcode.com/2018/day/3
