@@ -272,6 +272,83 @@ part 1을 풀어서 쉽게 풀었다. 필터만 잘 하면 된다.
 ## 회고
 언제나 그렇듯 2차 배열을 다루는 문제들은 약간 까다로운 면은 있다. 자주 풀어야 좀 익숙해지는 느낌. 그리고 immutable하게 짠다는게 문제 풀이에서 꽤 까다롭다고 느껴졌다.
 
+## 리뷰
+- 전반적으로 naming을 더 신경쓰면 좋을 것 같다는 의견
+- naming을 할 때 함수 이름만 보고 뭐하는 건지 알 수 있도록, 함수 이름이 짓기 어렵다고 느꼈다면? 함수로 꼭 만들지 않아도 되는게 아닐까? 라는 생각도 해보자
+- matrix 만들 때 2중 map도 좋지만 2중 for를 쓰면 좀 더 나을 수도
+- 복잡한 parsing을 할 때는 정규식을 쓰는 것도 방법 (항상 좋은 것은 아니지만 경우에 따라)
+- vector는 random access가 필요할 때 쓰긴 하지만 list보다는 vector를 주로 사용해도 좋음
+- 그리고 vector나 list를 사용하더라도 순서에 따른 context가 있는 경우에는 hash-map을 쓰는게 훨씬 좋음
+- matrix 초기활 때 사용한 -1, 0 같은 값들은 keyword로 관리하는 것이 좋음
+- `==`와 `=` 차이: `==`는 타입은 신경 쓰지 않고 값만 비교, `=`는 타입과 값 모두 비교
+- ex. `(= 0.2 1/5) ; false (== 0.2 1/5) ; true`
+- 관용적으로... `->`의 경우 hash-map이나 string에 쓰고 `->>` seq를 다룰 때 많이 씀 (생각해보기)
+- first + first 는 ffirst로
+
+## 리뷰 반영 후 전체적인 코드
+길이가 길어서 링크로 대체한다. 2중 for 문이 2d 다루는데 꽤나 편리한 것 같아서 유용했고 javascript의 object처럼 hash-map을 주요하게 사용하니 편했다. 이게 ps에서는 혼자 빨리 푸는게 중요해서 신경 안썼는데 부트캠프이니만큼 가독성도 신경 써야겠다.
+
+---
+# 쉬어가기
+3일정도 리뷰해보니 코드를 대충 어떻게 작성해야하는지 약간 감은 왔다. 물론 뒤에도 더 많은 리뷰가 있겠지만 뒷 부분에는 코드는 [github 링크][github]로 대체하고 내용 위주로 살펴보자.
+
+---
+# Day 4
+AOC 2018 Day 4. datetime을 parsing해서 사용하고 싶지만 그렇게 풀지 않아도 되는 문제. 문제의 요구사항을 잘 읽어보면 `00:00~00:59` 사이의 데이터만 있는 것을 알 수 있음. input이 까다로워서 데이터 전처리하는데 드는 시간이 더 많았던 것 같다. 앞선 리뷰들을 잘 반영해서 `hash-map` 적절히 잘 사용했음.
+
+- [내가 푼 코드](https://github.com/jungwookim/aoc-exercise/blob/master/src/p2018_day4.clj)
+- [리뷰 받은 코드](https://github.com/jungwookim/aoc-exercise/blob/master/src/p2018_day4_reviewed.clj)
+
+## 주요 내용
+- `map + flatten` 같은 건 `mapcat`을 사용해도 좋다.
+- `assoc-in + get-in` 대신 `update-in`이라는 걸 쓰자
+- `map`을 부분적으로 바꿀 때는 `update` 혹은 `update-in`을 쓰자
+- `hash-map desctructing`은 같은 이름을 사용할거라면 `{:keys […]}`를 사용해도 좋다.
+- `max-key`라는 좋은게 있더라
+
+# Day 5
+AOC 2018 Day 5. 대소문자 잘 구분하는 문제. 어렵진 않았음.
+
+- [내가 푼 코드](https://github.com/jungwookim/aoc-exercise/blob/master/src/p2018_day5.clj)
+- [리뷰 받은 코드](https://github.com/jungwookim/aoc-exercise/blob/master/src/p2018_day5_reviewed.clj)
+
+특별한 내용은 없었던 것 같다.
+
+# Day 6
+AOC 2018 Day 6. 문제 접근법 자체가 약간 어려웠던 문제. 실제 코드로 구현하는데도 시간이 많이 걸렸음.
+
+- [내가 푼 코드](https://github.com/jungwookim/aoc-exercise/blob/master/src/p2018_day6.clj)
+- [리뷰 받은 코드](https://github.com/jungwookim/aoc-exercise/blob/master/src/p2018_day6_reviewed.clj)
+
+## 주요 내용
+- return type의 일관성을 가지면 좋다.
+- `group-by`라는 것이 있다.
+- aggregation할 때 `frequencies`를 잘 사용해도 좋다.
+
+# Day 7
+AOC 2018 Day 7. workers들의 일을 잘 할당하는 문제.
+
+- [내가 푼 코드](https://github.com/jungwookim/aoc-exercise/blob/master/src/p2018_day7.clj)
+- [리뷰 받은 코드](https://github.com/jungwookim/aoc-exercise/blob/master/src/p2018_day7_reviewed.clj)
+
+## 주요 내용
+- `iterate` + `drop-while`을 잘 쓰면 좋다
+- 상태라는 걸 잘 관리한다는 측면에서 생각하자
+- 이 문제는 클로저랑 상관 없이 ps적으로 봐도 좋은 문제인 것 같다
+- `threading-macro`는 함수의 조합으로 절차지향적으로 생각할 수 있게 하는 좋은 도구인 것 같다
+
+# Day 8
+AOC 2020 Day 1, 4. 간단한 두 문제였다. 생각해보면 첫 날에 풀었다면 조금 헤맸을 수도 있지만 부트캠프 8일차에 풀기엔 쉬웠던 문제.
+
+## 코드
+- [2020-day1](https://github.com/jungwookim/aoc-exercise/blob/master/src/p2020_day1.clj)
+- [2020-day4](https://github.com/jungwookim/aoc-exercise/blob/master/src/p2020_day4.clj)
+
+## 회고
+- `for`를 사용하면 combination처럼 2중 루프를 돌게 되는데 이 때 break-point로 `:when` 같은 걸 사용할 수 있더라.
+- 두번째 문제는 파싱만 잘하면 되는 문제였다. 다만 정규식에 익숙하지 않아 항상 불편한 점은 있다.
+- `clojure.spec` 이라는 걸 활용해보자
+
 # Reference
 - [my github repo][github]
 - [clojure library documents][clojure_doc]
