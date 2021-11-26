@@ -277,13 +277,13 @@ part 1을 풀어서 쉽게 풀었다. 필터만 잘 하면 된다.
 - naming을 할 때 함수 이름만 보고 뭐하는 건지 알 수 있도록, 함수 이름이 짓기 어렵다고 느꼈다면? 함수로 꼭 만들지 않아도 되는게 아닐까? 라는 생각도 해보자
 - matrix 만들 때 2중 map도 좋지만 2중 for를 쓰면 좀 더 나을 수도
 - 복잡한 parsing을 할 때는 정규식을 쓰는 것도 방법 (항상 좋은 것은 아니지만 경우에 따라)
-- vector는 random access가 필요할 때 쓰긴 하지만 list보다는 vector를 주로 사용해도 좋음
-- 그리고 vector나 list를 사용하더라도 순서에 따른 context가 있는 경우에는 hash-map을 쓰는게 훨씬 좋음
+- `vector`는 random access가 필요할 때 쓰긴 하지만 `list`보다는 `vector`를 주로 사용해도 좋음
+- 그리고 `vector`나 `list`를 사용하더라도 순서에 따른 context가 있는 경우에는 `hash-map`을 쓰는게 훨씬 좋음
 - matrix 초기활 때 사용한 -1, 0 같은 값들은 keyword로 관리하는 것이 좋음
 - `==`와 `=` 차이: `==`는 타입은 신경 쓰지 않고 값만 비교, `=`는 타입과 값 모두 비교
 - ex. `(= 0.2 1/5) ; false (== 0.2 1/5) ; true`
 - 관용적으로... `->`의 경우 hash-map이나 string에 쓰고 `->>` seq를 다룰 때 많이 씀 (생각해보기)
-- first + first 는 ffirst로
+- `first + first` 는 `ffirst`로
 
 ## 리뷰 반영 후 전체적인 코드
 길이가 길어서 링크로 대체한다. 2중 for 문이 2d 다루는데 꽤나 편리한 것 같아서 유용했고 javascript의 object처럼 hash-map을 주요하게 사용하니 편했다. 이게 ps에서는 혼자 빨리 푸는게 중요해서 신경 안썼는데 부트캠프이니만큼 가독성도 신경 써야겠다.
@@ -333,7 +333,7 @@ AOC 2018 Day 7. workers들의 일을 잘 할당하는 문제.
 
 ## 주요 내용
 - `iterate` + `drop-while`을 잘 쓰면 좋다
-- ^ 이거 쓸 때 주의해야하는 점들이 몇가지 있는데 일단 LazySeq를 반환하기 때문에 이게 가능한 것을 꼭 인지하고 써야한다. 그렇기 때문에 take, first 등 을 하지 않으면 drop-while의 결과가 무한하기 때문에 first, take 등을 같이 꼭 사용하도록 하자.
+- ^ 이거 쓸 때 주의해야하는 점들이 몇가지 있는데 일단 `LazySeq`를 반환하기 때문에 이게 가능한 것을 꼭 인지하고 써야한다. 그렇기 때문에 `take`, `first` 등 을 하지 않으면 drop-while의 결과가 무한하기 때문에 `first`, `take` 등을 같이 꼭 사용하도록 하자.
 - 사용법이라기 보다는 이 개념을 인지하고 있자.
 - 상태라는 걸 잘 관리한다는 측면에서 생각하자
 - 이 문제는 클로저랑 상관 없이 ps적으로 봐도 좋은 문제인 것 같다
@@ -342,6 +342,13 @@ AOC 2018 Day 7. workers들의 일을 잘 할당하는 문제.
 
 # Day 8
 AOC 2020 Day 1, 4. 간단한 두 문제였다. 생각해보면 첫 날에 풀었다면 조금 헤맸을 수도 있지만 부트캠프 8일차에 풀기엔 쉬웠던 문제.
+
+- [내가 푼 코드](https://github.com/jungwookim/aoc-exercise/blob/master/src/p2018_day8.clj)
+
+## 주요 내용
+- Day 7에서 얻은 지식들 덕분에 쉽게 푼 것 같다.
+- `map-indexed`는 처음 써봤다.
+- `drop-while` 멈추는 조건이 할 때마다 약간 헷갈린다.
 
 ## 코드
 - [2020-day1](https://github.com/jungwookim/aoc-exercise/blob/master/src/p2020_day1.clj)
