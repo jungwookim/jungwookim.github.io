@@ -101,7 +101,24 @@ categories: clojure macro clojure-macro
 ; => (clojure.core/+ 1 2 3)
 ```
 
-매크로는 함정들이 많으니 주의하도록 하자.
+gensym은 아래처럼 만든다.
+```clojure
+(gensym foo)
+; => foo7366
+```
+
+auto-gensym'd는 아래처럼 만든다. unquote 상태에서 #을 붙인다..
+```clojure
+`foo#
+; => foo__7368__auto__
+```
+
+이것처럼 활용할 수 있다.
+```clojure
+`(let [#my-symbol 3]
+    (...))
+```
+
 
 # Reference
 - [그린랩스 기술블로그 매크로][greenlabs_macro]
