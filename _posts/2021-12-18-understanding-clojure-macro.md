@@ -115,7 +115,7 @@ auto-gensym'd는 아래처럼 만든다. unquote 상태에서 #을 붙인다..
 
 이것처럼 활용할 수 있다.
 ```clojure
-`(let [#my-symbol 3]
+`(let [my-symbol# 3]
     (...))
 ```
 
