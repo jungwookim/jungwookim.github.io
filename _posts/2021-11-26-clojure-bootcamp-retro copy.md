@@ -36,6 +36,6 @@ clojure의 다형성에 대해서 알아보자
 ```
 
 # Reference
-- [brave clojure multimethods]:(https://www.braveclojure.com/multimethods-records-protocols/)
-- [defmulti]:(https://clojuredocs.org/clojure.core/defmulti)
-- [defmethod]:(https://clojuredocs.org/clojure.core/defmethod)
+- [brave clojure multimethods](https://www.braveclojure.com/multimethods-records-protocols/)
+- [defmulti](https://clojuredocs.org/clojure.core/defmulti)
+- [defmethod](https://clojuredocs.org/clojure.core/defmethod)
