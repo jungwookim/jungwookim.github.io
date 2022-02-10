@@ -94,5 +94,4 @@ Good examples!
 
 
 [graphql]:https://graphql.org/
-[graphql_in_action]:https://wangwei1237.github.io/shares/GraphQL_in_Action.pdf
-
+[graphql_in_action]:https://www.manning.com/books/graphql-in-action
