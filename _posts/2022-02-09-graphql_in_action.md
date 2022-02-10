@@ -84,8 +84,8 @@ Good examples!
 하나의 언어 배우는 것만큼 많은 학습량이 든다.
 
 
-퀴즈1) GraphQL은 데이터베이스에만 요청할 수 있는 질의어이다. (O/X)
-퀴즈2) GraphQL은 캐싱이 불가능하다 (O/X)
+- 퀴즈1) GraphQL은 데이터베이스에만 요청할 수 있는 질의어이다. (O/X)
+- 퀴즈2) GraphQL은 캐싱이 불가능하다 (O/X)
 
 ## Chapter 2. Exploring GraphQL APIs
 ```
@@ -169,8 +169,9 @@ query to do that.
 }
 ```
 
-퀴즈1) Scalar type은 Int, Boolean, Float, String 4개 뿐이다 (O/X)
-퀴즈2) Mutation 후에 따로 Query를 불러주어서 write and read를 해야한다 (O/X)
+- 퀴즈1) Scalar type은 Int, Boolean, Float, String 4개 뿐이다 (O/X)
+- 퀴즈2) Mutation 후에 따로 Query를 불러주어서 write and read를 해야한다 (O/X)
+
 # Reference
 - [GraphQL][graphql]
 - [GraphQL in Action][graphql_in_action]
