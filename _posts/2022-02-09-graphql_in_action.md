@@ -78,7 +78,7 @@ Good examples!
 서버가 공격 당하기 쉬움. 이상한 쿼리 막 날리면... 근데 방어장치는 만들 수 있음. 데이터 limit을 걸 수 있음. allow-list로도 관리할 수 있음 (좀 더 광범위한 어뷰징에 방어)
 
 #### 1.3.2 Caching and optimizing
-정확히는 client caching쪽임. 하지만 graph cache를 이용해 global unique id를 기록해 캐시할 수 있다. 그리고 N+1 SQL quaries 문제도 쉽게 언급된다. Dataloader로 해결할 수 있는데 batching과 catching으로 해결한다. join-based로 N+1을 해결할 수도 있는데 이게 ID-based 배칭 전략보다 더 효율적이지만 구현이 까다롭다.
+정확히는 client caching쪽임. 하지만 graph cache를 이용해 global unique id를 기록해 캐시할 수 있다. 그리고 N+1 SQL quaries 문제도 쉽게 언급된다. Dataloader로 해결할 수 있는데 batching과 caching으로 해결한다. join-based로 N+1을 해결할 수도 있는데 이게 ID-based 배칭 전략보다 더 효율적이지만 구현이 까다롭다.
 
 #### 1.3.3 Learning curve
 하나의 언어 배우는 것만큼 많은 학습량이 든다.
