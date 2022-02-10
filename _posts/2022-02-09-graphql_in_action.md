@@ -174,6 +174,7 @@ query to do that.
 
 # Reference
 - [GraphQL][graphql]
+- [GraphQL Spec][graphql_spec]
 - [GraphQL in Action][graphql_in_action]
 - [swapi-graphql][graphiql]
 - [Github-GraphQL][github_graphql]
@@ -181,6 +182,7 @@ query to do that.
 
 
 [graphql]:https://graphql.org/
+[graphql_spec]:https://spec.graphql.org/June2018/
 [graphql_in_action]:https://www.manning.com/books/graphql-in-action
 [graphiql]:https://graphql.org/swapi-graphql/
 [github_graphql]:https://docs.github.com/en/graphql/overview/explorer
