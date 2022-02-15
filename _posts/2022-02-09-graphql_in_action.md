@@ -4,7 +4,7 @@ title:  "GraphQL in Action 정리"
 categories: graphql book
 ---
 
-# Part 1 Exploring GraphQL
+# Part 1. Exploring GraphQL
 
 ## Chapter 1. Introduction to GraphQL
 
@@ -171,6 +171,196 @@ query to do that.
 
 - 퀴즈1) Scalar type은 Int, Boolean, Float, String 4개 뿐이다 (O/X)
 - 퀴즈2) Mutation 후에 따로 Query를 불러주어서 write and read를 해야한다 (O/X)
+
+## Chapter 3. Customizing and organizing GraphQL operations
+
+```
+This chapter covers
+ Using arguments to customize what a request field returns
+ Customizing response property names with aliases
+ Describing runtime executions with directives
+ Reducing duplicated text with fragments
+ Composing queries and separating data requirement responsibilities
+```
+
+### 3.1 Customizing fields with arguments
+
+#### 3.1.1 Identifying a single record to return
+Identifier를 argument로서 잘 보내야한다. Examples of single-record fields are popular. Some GraphQL APIs even have a singlerecord field for every object in the system. This is commonly known in the GraphQL
+world as a **Node _interface_**: a concept popularized by the Relay framework (which also originated at Facebook). With a Node interface, you can look up any node in the data graph
+by its unique global system-wide ID. Then, based on what that node is, you can use an
+inline fragment to specify the properties on that node that you are interested in seeing
+in the response.
+
+#### 3.1.2 Limiting the number of records returned by a list field
+first, last 등을 사용해서 제한해야한다. By default, the GitHub API orders the repositories in ascending order by date of creation. You can customize that ordering logic with another field argument.
+
+#### 3.1.3 Ordering records returned by a list field
+Example
+```
+query OrgPopularRepos {
+  organization(login: "jscomplete") {
+    repositories(first: 10, orderBy: {field: STARGAZERS, direction: DESC}) {
+      nodes {
+        name
+      }
+    }
+  }
+}
+```
+
+#### 3.1.4 Paginating through a list of records
+When you need to retrieve a page of records, in addition to specifying a limit, you need
+to specify an offset. In the GitHub API, you can use the field arguments after and
+before to offset the results returned by the arguments first and last, respectively.
+ To use these arguments, you need to work with node identifiers, which are different
+than database record identifiers. The pagination interface that the GitHub API uses is
+called the Connection interface (which originated from the Relay framework as well). In that interface, every record is identified by a node field (similar to the Node interface)
+using a cursor field. The cursor is basically the ID field for each node, and it is the field
+we use with the before and after arguments.
+ To work with every node’s cursor next to that node’s data, the Connection interface adds a new parent to the node concept called an edge. The edges field represents
+a list of paginated records.
+ Here is a query that includes cursor values through the edges field.
+
+example) metadata 추가 요청
+```
+query OrgReposMetaInfoExample {
+  organization(login: "jscomplete") {
+    repositories(
+      first: 10
+      after: "Y3Vyc29yOnYyOpK5MjAxNy0wMS0yMVQwODo1NTo0My0wODowMM4Ev4A3"
+      orderBy: {field: STARGAZERS, direction: DESC}
+    ) {
+      totalCount
+      pageInfo {
+        hasNextPage
+      }
+      edges {
+        cursor
+        node {
+          name
+        }
+      }
+    }
+  }
+}
+```
+
+#### 3.1.5 Searching and filtering
+#### 3.1.6 Providing input for mutations
+The input value in that mutation is also a field argument. It is a required argument.
+You cannot perform a GitHub mutation operation without an input object. All
+GitHub API mutations use this single required input field argument that represents
+an object. To perform a mutation, you pass the various input values as key/value pairs
+on that input object.
+### 3.2 Renaming fields with aliases
+alias example)
+```
+query ProfileInfoWithAlias {
+  user(login: "samerbuna") {
+    name
+    companyName: company
+    bio
+  }
+}
+```
+### 3.3 Customizing responses with directives
+ A _directive_ in a GraphQL request is a way to provide a GraphQL server with additional information about the execution and type validation behavior of a GraphQL
+document. It is essentially a more powerful version of field arguments: you can use
+directives to conditionally include or exclude an entire field. In addition to fields,
+directives can be used with fragments and top-level operations.
+ A directive is any string in a GraphQL document that begins with the @ character.
+Every GraphQL schema has three built-in directives: @include, @skip, and @deprecated. Some schemas have more directives. You can use this introspective query to see
+the list of directives supported by a schema.
+
+#### 3.3.1 Variables and input values
+A _variable_ is simply any name in the GraphQL document that begins with a $ sign: for
+example, $login or $showRepositories. The name after the $ sign can be anything.
+We use variables to make GraphQL operations generically reusable and avoid having
+to hardcode values and concatenate strings.
+
+#### 3.3.2 The @include directive
+`fieldName @include(if: $someTest)` @skip 반대.
+
+#### 3.3.3 The @skip directive
+`fieldName @skip(if: $someTest)` @include 반대.
+#### 3.3.4 The @deprecated directive
+```
+type User {
+  emailAddress: String
+  email: String @deprecated(reason: "Use 'emailAddress'.")
+}
+```
+
+### 3.4 GraphQL fragments
+
+#### 3.4.1 Why fragments?
+ In GraphQL, fragments are the composition units of the language. They provide a
+way to split big GraphQL operations into smaller parts. A fragment in GraphQL is simply a reusable piece of any GraphQL operation.
+ I like to compare GraphQL fragments to UI components. Fragments, if you will,
+are the components of a GraphQL operation.
+ Splitting a big GraphQL document into smaller parts is the main advantage of
+GraphQL fragments. However, fragments can also be used to avoid duplicating a
+group of fields in a GraphQL operation. We will explore both benefits, but let’s first
+understand the syntax for defining and using fragments. 
+#### 3.4.2 Defining and using fragments
+example)
+```
+fragment orgFields on Organization {
+  name
+  description
+  websiteUrl
+}
+```
+ The on Organization part of the definition is called
+the type condition of the fragment. Since a fragment is essentially a selection set, you can only define fragments on object types. You cannot define a fragment on a scalar value.
+spread example)
+```
+query OrgInfoWithFragment {
+  organization(login: "jscomplete") {
+    ...orgFields
+  }
+}
+```
+#### 3.4.3 Fragments and DRY
+DRY가 Framents를 사용하면 좋아진다. 더 좋은 건 바로 다음 장에 나온다.
+#### 3.4.4 Fragments and UI components
+
+#### 3.4.5 Inline fragments for Interfaces and unions
+Inline fragments can be used as a type condition when querying against an interface
+or a union. The bolded part in the query in listing 3.34 is an inline fragment on the
+Commit type within the target object interface; so, to understand the value of inline
+fragments, you first need to understand the concepts of unions and interfaces in
+GraphQL.
+ Interfaces and unions are abstract types in GraphQL. An interface defines a list of
+“shared” fields, and a union defines a list of possible object types. Object types in a
+GraphQL schema can implement an interface that guarantees that the implementing
+object type will have the list of fields defined by the implemented interface. Object
+types defined as unions guarantee that what they return will be one of the possible
+types of that union.
+
+질문) Object types은 intercface를 구현한다
+질문) inline fragment가 type condition을 표현한다는게 무슨 말인지 잘 모르겠다 -> 아 이제 알겠다. 해당 인터페이스가 있을 때 해당 값을 가져오는 거구나. 그게 동시에 union type이 될 수 있고.
+
+example query)
+```
+query RepoUnionExampleFull {
+  repository(owner: "facebook", name: "graphql") {
+    issueOrPullRequest(number: 3) {
+      ... on PullRequest {
+        merged
+        mergedAt
+      }
+      ... on Issue {
+        closed
+        closedAt
+      }
+    }
+  }
+}
+```
+- 퀴즈1) inline fragment는 언제 사용하는 것이 좋은지 1가지 이상 알려주시오. 
+- 퀴즈2) directives 중 하나인 @include는 언제 사용하는 것인지 설명하시오.
 
 # Reference
 - [GraphQL][graphql]
