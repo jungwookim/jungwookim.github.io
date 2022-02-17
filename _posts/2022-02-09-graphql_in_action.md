@@ -362,6 +362,199 @@ query RepoUnionExampleFull {
 - 퀴즈1) inline fragment는 언제 사용하는 것이 좋은지 1가지 이상 알려주시오. 
 - 퀴즈2) directives 중 하나인 @include는 언제 사용하는 것인지 설명하시오.
 
+# Part 2. Building GraphQL APIs
+
+## Chapter 4. Designing a GraphQL schema
+```
+This chapter covers
+ Planning UI features and mapping them to API operations
+ Coming up with schema language text based on planned operations
+ Mapping API features to sources of data
+```
+
+### 4.1 Why AZdev?
+### 4.2 The API requirements for AZdev
+요구사항의 첫번째는 UI를 생각하는 것이다. We’ll use a relational database service to store transactional
+data and a document database service to store dynamic data.
+
+하나의 Task는 여러 Approach를 가진다. -> PostgreSQL에 저장
+Approach의 다른 요소들인 explanations, warnings, or general notes -> MongoDB에 저장
+
+생각) schema 설계는 내가 아니라 frontend가 하는 것일까? 혹은 함께 하는 것일까?
+
+#### 4.2.1 The core types
+The main entities in the API I’m envisioning for AZdev are User, Task, and Approach.
+Models are usually defined with
+upper camel-case (Pascal case), while fields are defined with lower camel-case (Dromedary case).
+
+```
+type User {
+  id: ID! # serialized as a String
+  createdAt: String!
+  username: String!
+  name: String!
+}
+
+type Task {
+  id: ID!
+  createdAt: String!
+  content: String!
+}
+
+type Approach {
+  id: ID!
+  createdAt: String!
+  content: String!
+}
+```
+!는 non-nullable을 의미한다.
+The id and createdAt fields are examples of how GraphQL schema types don’t have
+to exactly match the column types in your database. GraphQL gives you flexibility for
+casting one type from the database into a more useful type for the client. Try to spot
+other examples of this as we progress through the API.
+
+### 4.3 Queries
+
+#### 4.3.1 Listing the lastest Task records
+```
+query {
+  taskMainList {
+    id
+    content
+  }
+}
+```
+Note that I named the root field taskMainList instead of a more natural name like
+mainTaskList. This is just a style preference, but it has an advantage: by putting the subject of the action (task, in this case) first, all actions on that subject will naturally be grouped alphabetically in file trees and API explorers.
+
+```
+type Query {
+  taskMainList: [Task!]
+  # More query root fields
+}
+```
+
+```
+Root field nullability
+However, root fields are special because making them nullable has an important consequence. In GraphQL.js implementations, when an error
+is thrown in any field’s resolver, the built in executor resolves that field with null.
+When an error is thrown in a resolver for a field that is defined as non-null, the executor propagates the nullability to the field’s parent instead. If that parent field is also
+non-null, the executor continues up the tree until it finds a nullable field.
+This means if the root taskMainList field were to be made non-null, then when an
+error is thrown in its resolver, the nullability will propagate to the Query type (its parent). So the entire data response for a query asking for this field would be null, even
+if the query had other root fields.
+This is not ideal. One bad root field should not block the data response of other root
+fields. When we start implementing this GraphQL API in the next chapter, we will see
+an example.
+This is why I made the taskMainList nullable, and it’s why I will make all root fields
+nullable. The semantic meaning of this nullability is, in this case, “Something went
+wrong in the resolver of this root field, and we’re allowing it so that a response can
+still have partial data for other root fields.”
+```
+
+#### 4.3.2 Search and the union/interface types
+```
+union TaskOrApproach = Task | Approach
+
+type Query {
+  # ...
+  search(term: String!): [TaskOrApproach!]
+}
+```
+
+#### 4.3.3 Using an interface type (내가 잘 모르던 것)
+
+```
+interface SearchResultItem {
+  id: ID!
+  content: String!
+}
+
+type Task implements SearchResultItem {
+  # ...
+  approachCount: Int!
+}
+
+type Approach implements SearchResultItem {
+  # ...
+  task: Task!
+}
+
+type Query {
+  # ...
+  search(term: String!): [SearchResultItem!]
+}
+```
+
+#### 4.3.4 The page for one Task record
+#### 4.3.5 Entity relationships
+
+#### 4.3.6 The Enum Type
+#### 4.3.7 List of scalar values
+#### 4.3.8 The page of a user's Task records
+me를 사용해서 중복된 이름으로 인한 혼란을 피할 수 있다.
+
+#### 4.3.9 Authentication and authorization
+query arguments에 담지 말고 request header에 담던지 해서 처리하자.
+
+### 4.4 Mutations
+```
+mutation {
+  userCreate {
+    # input for a new user record
+  } {
+    # Fail/Success response
+  }
+}
+
+mutation {
+  userLogin {
+    # input to a new user record
+  } {
+    # Fail/Success response
+  }
+}
+```
+
+```
+type UserError {
+  message: String!
+}
+type UserPayload {
+  errors: [UserError!]!
+  user: User
+  authToken: String
+}
+
+type Mutation {
+  userCreate(
+    # Mutation Input
+  ): UserPayload!
+  userLogin(
+    # Mutation Input
+  ): UserPayload!
+  # More mutations
+}
+```
+
+#### 4.4.1 Mutation input
+Input object types are basically a simplified version of output object types. Their
+fields cannot reference output object types (or interface/union types). They can only
+use scalar input types or other input object types.
+
+#### 4.4.2 Deleting a user record
+#### 4.4.3 Creating a Task object
+#### 4.4.4 Creating and voting on Approach entries
+
+### 4.5 Subscriptions
+
+- 퀴즈1) query 이름 중 mainTaskList가 아니라 taskMainList라고 작성한 이유는?
+- 퀴즈2)
+- 질문: userLogin은 왜 mutation인가?
+- 질문: input UserInput { ... } 이런 건 pseudo code인지 아니면 input object type이 있는지?
+- UserdEletePayload 예시에 왜 error가 non-nullable인지?
+- 액션: error interface를 구현해서 이를 implements하는 방식으로 관리하면 좋을 듯
+
 # Reference
 - [GraphQL][graphql]
 - [GraphQL Spec][graphql_spec]
