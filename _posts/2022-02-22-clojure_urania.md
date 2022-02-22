@@ -72,7 +72,8 @@ run할 때 `urania`는 아래와 같은 일을 한다.
 `Urania`의 `DataSource` protocol을 구현한 타입인 data sources를 정의해보자.
 - **`-identity`**, which returns an identifier for the resource (used for caching and deduplication).
 - **`-fetch`**, which fetches the result from the remote data source returning a promise.
-대략 예시)
+
+대략 예시
 ```clojure
 (require '[urania.core :as u])
 
