@@ -549,12 +549,46 @@ use scalar input types or other input object types.
 ### 4.5 Subscriptions
 
 - 퀴즈1) query 이름 중 mainTaskList가 아니라 taskMainList라고 작성한 이유는?
-- 퀴즈2)
 - 질문: userLogin은 왜 mutation인가?
 - 질문: input UserInput { ... } 이런 건 pseudo code인지 아니면 input object type이 있는지?
 - UserdEletePayload 예시에 왜 error가 non-nullable인지?
 - 액션: error interface를 구현해서 이를 implements하는 방식으로 관리하면 좋을 듯
 
+## Chapter 5. Implementing schema resolvers
+```
+This chapter covers
+ Using Node.js drivers for PostgreSQL and
+MongoDB
+ Using an interface to communicate with a
+GraphQL service
+ Making a GraphQL schema executable
+ Creating custom object types and handling errors
+```
+### 5.1 Running the development environment
+#### 5.2.2 Creating resolver functions
+### 5.3 Communicating over HTTP
+### 5.4 Building a schema using constructor objects
+
+## Chapter 6. Working with database models and relations
+```
+This chapter covers
+ Creating object types for database models
+ Defining a global context shared among all
+resolvers
+ Resolving fields from database models and
+transforming their names and values
+ Resolving one-to-one and one-to-many relations
+ Working with database views and join statements
+```
+
+## Chapter 7. Optimizing data fetching
+```
+This chapter covers
+ Caching and batching data-fetch operations
+ Using the DataLoader library with primary keys and custom IDs
+ Using GraphQL’s union type and field arguments
+ Reading data from MongoDB
+```
 # Reference
 - [GraphQL][graphql]
 - [GraphQL Spec][graphql_spec]
