@@ -203,4 +203,4 @@ Cache, Executor, Environment 관련된 건데 공식 문서보고 확인하자.
 
 [urania_doc]:http://funcool.github.io/urania/latest/
 [urania_github]:https://github.com/funcool/urania
-[promesa]
+[promesa]:https://github.com/funcool/promesa
