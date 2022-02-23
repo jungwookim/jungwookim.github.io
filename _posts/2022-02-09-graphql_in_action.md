@@ -589,6 +589,41 @@ This chapter covers
  Using GraphQL’s union type and field arguments
  Reading data from MongoDB
 ```
+### 7.1 Caching and Batching
+ Caching — The least we can do is cache the response of any SQL statements
+issued and then use the cache the next time we need the exact same SQL statement. If we ask the database about user x, do not ask it again about user x; just use the previous response. Doing this in a single API request (from one consumer) is a no-brainer, but you can also use longer-term, multisession caching if
+you need to optimize things further. However, caching by itself is not enough.
+We also need to group queries asking for data from the same tables.
+
+ Batching — We can delay asking the database about a certain resource until we
+figure out the IDs of all the records that need to be resolved. Once these IDs
+are identified, we can use a single query that takes in a list of IDs and returns
+the list of records for them. This enables us to issue a SQL statement per table,
+and doing so will reduce the number of SQL statements required for the simple
+query in listing 7.2 to just two: one for the azdev.tasks table and one for the
+azdev.users table.
+
+## Chapter 8. Implementing mutations
+```
+This chapter covers
+ Implementing GraphQL’s mutation fields
+ Authenticating users for mutation and query
+operations
+ Creating custom, user-friendly error messages
+ Using powerful database features to optimize
+mutations
+```
+### 8.1 The mutators context object
+A mutation can contain multiple fields, resulting in the server executing
+multiple database WRITE/READ operations. However, unlike query fields,
+which are executed in parallel, mutation fields run in a series, one after the
+other. If an API consumer sends two mutation fields, the first is guaranteed to
+finish before the second begins. This is to ensure that a race condition does
+not happen, but it also complicates the task of something like DataLoader.
+
+- 퀴즈1) datatime return값은 datestring보다 timestamp를 권장한다. (책에서)
+- 퀴즈2) Dataloader의 핵심은 cxxxx와 bxxxx를 사용하는 것이다.
+- 퀴즈3) user-friendly error messages는 mutation response에 포함될 수 없다.
 # Reference
 - [GraphQL][graphql]
 - [GraphQL Spec][graphql_spec]
