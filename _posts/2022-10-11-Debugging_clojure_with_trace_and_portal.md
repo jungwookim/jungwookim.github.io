@@ -136,10 +136,11 @@ As I mentioned, portal is the UI tool with `add-tap` so example code is basicall
   (calls-trace>>))
 ```
 I was on VS code so the new window is shown up!
-![portal-img](../resources/portal.png)
+![portal-img](../assets/portal.png)
 
 
-So, what should I use? It really depends on cases. I use all of those. This is [an whole example code](github).
+## What should I use?
+It really depends on cases. I use all of those. This is [an whole example code](github).
 
 
 [github]:https://github.com/jungwookim/debugging-clojure-example/tree/main/src
