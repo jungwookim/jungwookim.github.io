@@ -136,7 +136,6 @@ As I mentioned, portal is the UI tool with `add-tap` so example code is basicall
   (calls-trace>>))
 ```
 I was on VS code so the new window is shown up!
-![portal-img](../assets/portal.png)
 
 
 ## What should I use?
