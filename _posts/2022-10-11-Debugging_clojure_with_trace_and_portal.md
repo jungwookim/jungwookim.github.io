@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Debugging Clojure with trace and portal"
-categories: diary
+categories: clojure
 ---
 
 Since I started with Debugging clojure, I have used to use `prn` to see results. I also used `#dbg` in calva, which looks like a traditional debug mode and good as well.
