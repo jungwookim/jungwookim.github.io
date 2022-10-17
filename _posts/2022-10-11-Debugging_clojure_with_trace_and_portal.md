@@ -140,10 +140,8 @@ I was on VS code so the new window is shown up!
 
 
 ## What should I use?
-It really depends on cases. I use all of those. This is [an whole example code](github).
+It really depends on cases. I use all of those. This is [an whole example code](https://github.com/jungwookim/debugging-clojure-example).
 
-
-[github]:https://github.com/jungwookim/debugging-clojure-example/tree/main/src
 [portal]:https://github.com/djblue/portal
 [trace]:https://github.com/hlship/trace
 [tap]:https://clojuredocs.org/clojure.core/tap%3E
