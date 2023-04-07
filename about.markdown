@@ -12,6 +12,7 @@ Hi, I'm Jungwoo. I am currently working as a developer. I majored in Industrial 
 - [Stack Overflow][stackoverflow]
 
 ## I worked for...
+- Skelter Labs (Apr 2023 ~ Present)
 - Greenlabs (Nov 2021 ~ Feb 2023)
 - Pluto (May 2021 ~ Oct 2021)
 - BagelCode (Jul 2020 ~ Apr 2021)
