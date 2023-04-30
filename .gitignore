@@ -5,3 +5,8 @@ _site
 vendor
 .clj-kondo
 .lsp
+
+# quickblog & clojure
+.calva
+.portal
+.work
