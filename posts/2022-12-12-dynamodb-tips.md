@@ -1,6 +1,6 @@
 Title: DynamoDB Tips
 Date: 2022-12-12
-Tags: DynamoDB Database
+Tags: DynamoDB, Database
 
 ## 배경
 회사에서 소셜미디어 개발에 DynamoDB를 사용하기로 했다. 속도와 스케일을 위한 선택이었다. 키 설계에 대한 생각보다는 비즈니스적 + 성능적 판단으로 DynamoDB를 선택했고, 실제로 PK / SK 설계 단계에는 처음부터 같이 하지는 못했었지만, 다른 작업 후에 한 2~3주 늦게 작업을 같이 하게 되면서 설계도 같이 보게 되었다.
