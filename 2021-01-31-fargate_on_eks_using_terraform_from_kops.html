@@ -36,12 +36,12 @@
         <div class="site-nav">
           <a class="page-link" href="archive.html">Archive</a>
           <a class="page-link" href="tags/index.html">Tags</a>
-          <a class="page-link" href="">Discuss</a>
+          <a class="page-link" href="https://github.com/jungwookim/jungwookim.github.io/discussions">Discuss</a>
 	  <a class="page-link" href="atom.xml">
             Feed
           </a>
 	  
-	  
+	  <a class="page-link" href="about.html">About</a>
         </div>
         <div>
           <h1 class="site-title">
@@ -362,7 +362,7 @@ resource &quot;aws&#95;iam&#95;role&#95;policy&#95;attachment&quot; &quot;lb&#95
   }
 }
 </code></pre><h2>실제 Migration</h2><p>위처럼 설정하면 이제 거의 기존에 있던 각종 <code>kubernetes yaml</code> 파일들을 <code>cluster</code>에 다 올려주기만 하면 된다. <code>Weighted routing</code> 비율은 테스트 단계에서는 5:5 정도로 시작해서 점진적으로 새로운 클러스터에 비율을 늘려준다. 아참, <code>ec2 auto scaling</code> 같은 경우에는 따로 할 필요가 없고 <code>hpa</code>를 사용하기만 하면 되는데 이는 간단하다.</p><h2>정리하며</h2><p><code>migration</code>이 새로 만드는 것보다 훨씬 귀찮고 어려운 것 같다. 그래서 더 많이 배운 것 같기도 하고. 그리고 모든 버전은 되도록 최신 버전으로 사용했다. 버전 올리는 일도 굉장히 귀찮고 관리 포인트이기 때문에 <code>Terraform</code>도 <code>0.14</code>를 썼고 <code>EKS</code>도 지원하는 최신 쿠버네티스 버전인 <code>1.18</code>을 사용했다. 다른 것들도 비슷하다. 그리고 어느정도 <code>manual</code>하게 사용하는 부분도 많이 있는데 이를 나중에는 다 <code>code</code>로 옮기면 좋을 것 같다. 더 공유할만한 내용이 있으면 추가로 꼭 적는 것을 스스로에게 약속한다.</p><h2>Reference</h2><ul><li><a href='https://www.terraform.io/'>테라폼 공식 사이트</a></li><li><a href='https://blog.outsider.ne.kr/1290'>tfstate 관리</a></li><li>[개괄적 이해에 도움된 글][개괄]</li><li><a href='https://registry.terraform.io/modules/terraform-aws-modules/iam/aws/latest'>iam 모듈</a></li><li><a href='https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest'>vpc 모듈</a></li><li><a href='https://registry.terraform.io/modules/terraform-aws-modules/eks/aws/latest'>eks 모듈</a>  </li></ul>[개괄]: https://www.44bits.io/ko/post/terraform<i>introduction</i>infrastrucute<i>as</i>code
-<p>Discuss this post <a href="">here</a>.</p>
+<p>Discuss this post <a href="https://github.com/jungwookim/jungwookim.github.io/discussions">here</a>.</p>
 <p><i>Published: 2021-01-31</i></p>
 
 <p>
