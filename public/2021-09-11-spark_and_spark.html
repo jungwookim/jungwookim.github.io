@@ -47,7 +47,7 @@
           <h1 class="site-title">
             <a class="page-link" href="index.html">Jungwoo Kim</a>
           </h1>
-	  <p>A blog about blogging quickly</p>
+	  <p>Define a problem first</p>
         </div>
       </div>
     </div>
