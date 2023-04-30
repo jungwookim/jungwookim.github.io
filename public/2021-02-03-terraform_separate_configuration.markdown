@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Terraform 환경별로 사용하기</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="application/atom+xml" rel="alternate" href="atom.xml" title="Terraform 환경별로 사용하기">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-clojure.min.js"></script>
+    <script type="text/javascript" src="https://livejs.com/live.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css">
+
+
+
+    <!-- Social sharing (Facebook, Twitter, LinkedIn, etc.) -->
+    <meta name="title" content="Terraform 환경별로 사용하기">
+    <meta name="twitter:title" content="Terraform 환경별로 사용하기">
+    <meta property="og:title" content="Terraform 환경별로 사용하기">
+    <meta property="og:type" content="website">
+
+
+    <meta name="twitter:url" content="https://github.com/borkdude/quickblog/2021-02-03-terraform_separate_configuration.markdown">
+    <meta property="og:url" content="https://github.com/borkdude/quickblog/2021-02-03-terraform_separate_configuration.markdown">
+
+
+    <meta name="twitter:card" content="summary">
+
+
+
+  </head>
+  <body>
+
+    <div class="site-header">
+      <div class="wrapper">
+        <div class="site-nav">
+          <a class="page-link" href="archive.html">Archive</a>
+          <a class="page-link" href="tags/index.html">Tags</a>
+          <a class="page-link" href="">Discuss</a>
+	  <a class="page-link" href="atom.xml">
+            Feed
+          </a>
+	  
+	  
+        </div>
+        <div>
+          <h1 class="site-title">
+            <a class="page-link" href="index.html">Jungwoo Kim</a>
+          </h1>
+	  <p>A blog about blogging quickly</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrapper">
+
+      <h1>
+  
+  Terraform 환경별로 사용하기
+  
+</h1>
+<p>어느정도 <code>main.tf</code> 작성을 끝내고, <code>dev</code>에서 테스트가 잘 되었다보니 이제 환경별로 이를 적용하고 관리해야했다. 우리는 <code>migration</code>을 해야했으므로 기존 인프라에 대한 정보도 <code>variable</code>로 좀 관리 되어야 할 필요가 있었다. 기타 네이밍들도 마찬가지고 뭐. 그래서 테라폼 공식 홈페이지에 <a href='https://www.terraform.io/docs/language/values/variables.html'>Input Variables</a>를 꼼꼼히 살피고, <code>tf.vars</code>를 이용해서 <code>apply</code>할 때 <code>option</code>으로 먹이는게 제일 나은 관리처럼 보였다. 해당 전략이 <code>practice</code>가 있는지 찾아보았고, 역시 <a href='https://learn.hashicorp.com/tutorials/terraform/organize-configuration#separate-configuration'>공식 문서</a>에 나와있었다.</p><p>나의 경우에는 <code>root module</code>안에서 다 관리하도록 했다. (참고로 <code>directory</code> 전략은 케바케로 엄청 많다. 상황에 따라서 적당히 골라서 쓰면 된다)</p><pre><code class="lang-tree">$ terraform
+.
+├── main.tf
+├── variables.tf
+├── dev.tfvars
+├── st.tfvars
+└── prod.tfvars
+</code></pre><p>문서와 차이점이 있는데 <code>tfstate</code>의 경우 우리는 원격에서 관리하기로 해서 <code>tfstate</code>를 로컬에 저장해두지 않는다. 그렇기 때문에 <code>terraform workspace</code>를 사용한다거나 환경별로 디렉토리를 관리할 필요가 없게 되었다.</p><p><code>variables</code>에서 관리되는 <code>variable</code>의 <code>default</code>값은 안전하게 <code>dev</code>껄로 해두었고 그거랑 상관 없이 환경별로 <code>tfvars</code>를 정의하고 <code>terraform apply -var-file=&quot;dev.tfvars&quot;</code>처럼 <code>option</code>을 추가해서 환경별로 인프라를 관리하도록 했다. 이렇게 환경별로 특별히 다른 <code>infra</code>를 관리하는게 아닌 이상 잘 관리될 것이다.</p><p><code>variables.tf</code> 예시</p><pre><code class="lang-terraform">variable &quot;env&quot; {
+  type    = string
+  default = &quot;dev&quot;
+}
+
+variable &quot;region&quot; {
+  type    = string
+  default = &quot;us-east-1&quot;
+}
+
+variable &quot;internal&#95;route53&#95;id&quot; {
+  type    = string
+  default = &quot;ZAADSFADSFADSF&quot;
+}
+
+variable &quot;internal&#95;vpc&#95;id&quot; {
+  type    = string
+  default = &quot;vpc-adslfkjasdkfl122a&quot;
+}
+
+variable &quot;internal&#95;security&#95;group&#95;id&quot; {
+  type    = string
+  default = &quot;sg-aldksfjalksdfaskl&quot;
+}
+</code></pre><p><code>dev.tfvars</code> 예시</p><pre><code class="lang-tfvars">env                        = &quot;dev&quot;
+region                     = &quot;us-east-1&quot;
+internal&#95;route53&#95;id        = &quot;ZAADSFADSFADSF&quot;
+internal&#95;vpc&#95;id            = &quot;vpc-adslfkjasdkfl122a&quot;
+internal&#95;security&#95;group&#95;id = &quot;sg-aldksfjalksdfaskl&quot;
+</code></pre><h2>Reference</h2><ul><li><a href='https://learn.hashicorp.com/tutorials/terraform/organize-configuration#separate-configuration'>separate_configuration</a></li><li><a href='https://www.terraform.io/docs/language/values/variables.html'>input_variables</a></li></ul>
+<p>Discuss this post <a href="">here</a>.</p>
+<p><i>Published: 2021-02-03</i></p>
+
+<p>
+  <i>
+  Tagged:
+  
+  <span class="tag">
+    <a href="tags/Fargate.html">Fargate</a>
+  </span>
+  
+  <span class="tag">
+    <a href="tags/k8s.html">k8s</a>
+  </span>
+  
+  <span class="tag">
+    <a href="tags/Terraform.html">Terraform</a>
+  </span>
+  
+  <span class="tag">
+    <a href="tags/EKS.html">EKS</a>
+  </span>
+  
+  </i>
+</p>
+
+
+
+      
+      <div style="margin-bottom: 20px; float: right;">
+        <a class="page-link" href="archive.html">Archive</a>
+      </div>
+      
+    </div>
+  </body>
+</html>

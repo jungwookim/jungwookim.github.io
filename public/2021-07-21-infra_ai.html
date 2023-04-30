@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>인공지능이 코드를 짠다고?</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="application/atom+xml" rel="alternate" href="atom.xml" title="인공지능이 코드를 짠다고?">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-clojure.min.js"></script>
+    <script type="text/javascript" src="https://livejs.com/live.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css">
+
+
+
+    <!-- Social sharing (Facebook, Twitter, LinkedIn, etc.) -->
+    <meta name="title" content="인공지능이 코드를 짠다고?">
+    <meta name="twitter:title" content="인공지능이 코드를 짠다고?">
+    <meta property="og:title" content="인공지능이 코드를 짠다고?">
+    <meta property="og:type" content="website">
+
+
+    <meta name="twitter:url" content="https://github.com/borkdude/quickblog/2021-07-21-infra_ai.html">
+    <meta property="og:url" content="https://github.com/borkdude/quickblog/2021-07-21-infra_ai.html">
+
+
+    <meta name="twitter:card" content="summary">
+
+
+
+  </head>
+  <body>
+
+    <div class="site-header">
+      <div class="wrapper">
+        <div class="site-nav">
+          <a class="page-link" href="archive.html">Archive</a>
+          <a class="page-link" href="tags/index.html">Tags</a>
+          <a class="page-link" href="">Discuss</a>
+	  <a class="page-link" href="atom.xml">
+            Feed
+          </a>
+	  
+	  
+        </div>
+        <div>
+          <h1 class="site-title">
+            <a class="page-link" href="index.html">Jungwoo Kim</a>
+          </h1>
+	  <p>A blog about blogging quickly</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrapper">
+
+      <h1>
+  
+  인공지능이 코드를 짠다고?
+  
+</h1>
+<p><code>Github</code>에서 발표한 <code>copilot</code>라는 녀석이 최근에 꽤나 화제였다. <code>AI</code>가 작성하고 싶은 코드를 <strong>잘</strong> 적으면 코드로 잘 바꿔준다는 내용이다. 좋다. 좋아~ 사실 막 그렇게 감흥은 없다. 어차피 엔트리 레벨의 버전이고 실제 업무에서 사용할 일은 당장은 없을 것 같다. 그리고 워낙 코드라는게 좀 그런게 있어서... 근데 문득 생각해보니 인프라 작업에서는 이 일이 <strong>가능했으면</strong> 좋겠다. 무슨 말이냐고 하면, 흔히 인프라 설계할 때 다이어그램 같은 거 그려 놓고 보안, 고가용성 등을 신경 쓰는 디자인을 하게 된다. AZ 구성은 어떻고, 서브넷은 여기 이렇게 두고, private, public, 중간에 게이트웨이를 두니 마니 등등. 스케일링도 마찬가지고. 데이터 파이프라인 구성도 마찬가지다. 데이터 수집 서버는 어떻게 구성하고 ETL 처리부터 모델 서빙하는 것까지. 다들 그림 그리라면 잘 그리는데 실제 구축하려고 하면 시간이 꽤 걸리기 마련이다.</p><p>이걸 편하게 해준다고 아마존, 구글, 마이크로소프트에서는 <code>console ui</code>로 편하게 구성할 수 있게 해주는데 이게 또 동전의 양면처럼 불편한 점도 많다. 이게 가볍게 할 땐 좋은데 결국 팀 입장에서는 관리가 안된다. 그래서 <code>Infrastructure as Code</code>라는게 나오게 된건데, 역설적인 것 같다. 편하게 쓰려고 <code>ui</code>를 만들었는데 <code>ui</code>가 불편해서 <code>IaC</code>가 나왔다.</p><p>그럼 뻘소리를 마무리 해보자. 인프라를 인공지능이 구성 해주면 어떨까? 흠... 꽤 재밌을 것 같다.</p><h2>Reference</h2><ul><li><a href='https://copilot.github.com/'>copilot</a></li></ul>
+<p>Discuss this post <a href="">here</a>.</p>
+<p><i>Published: 2021-07-21</i></p>
+
+<p>
+  <i>
+  Tagged:
+  
+  <span class="tag">
+    <a href="tags/Diary.html">Diary</a>
+  </span>
+  
+  <span class="tag">
+    <a href="tags/Copilot.html">Copilot</a>
+  </span>
+  
+  <span class="tag">
+    <a href="tags/AI.html">AI</a>
+  </span>
+  
+  </i>
+</p>
+
+
+
+      
+      <div style="margin-bottom: 20px; float: right;">
+        <a class="page-link" href="archive.html">Archive</a>
+      </div>
+      
+    </div>
+  </body>
+</html>

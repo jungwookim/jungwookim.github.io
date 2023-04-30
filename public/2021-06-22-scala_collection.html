@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Scala Collections</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="application/atom+xml" rel="alternate" href="atom.xml" title="Scala Collections">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-clojure.min.js"></script>
+    <script type="text/javascript" src="https://livejs.com/live.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css">
+
+
+
+    <!-- Social sharing (Facebook, Twitter, LinkedIn, etc.) -->
+    <meta name="title" content="Scala Collections">
+    <meta name="twitter:title" content="Scala Collections">
+    <meta property="og:title" content="Scala Collections">
+    <meta property="og:type" content="website">
+
+
+    <meta name="twitter:url" content="https://github.com/borkdude/quickblog/2021-06-22-scala_collection.html">
+    <meta property="og:url" content="https://github.com/borkdude/quickblog/2021-06-22-scala_collection.html">
+
+
+    <meta name="twitter:card" content="summary">
+
+
+
+  </head>
+  <body>
+
+    <div class="site-header">
+      <div class="wrapper">
+        <div class="site-nav">
+          <a class="page-link" href="archive.html">Archive</a>
+          <a class="page-link" href="tags/index.html">Tags</a>
+          <a class="page-link" href="">Discuss</a>
+	  <a class="page-link" href="atom.xml">
+            Feed
+          </a>
+	  
+	  
+        </div>
+        <div>
+          <h1 class="site-title">
+            <a class="page-link" href="index.html">Jungwoo Kim</a>
+          </h1>
+	  <p>A blog about blogging quickly</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrapper">
+
+      <h1>
+  
+  Scala Collections
+  
+</h1>
+<h1>Intro</h1><p>Scala를 사용하면서 Collection에 대해서 많이 헷갈려서 정리를 좀 하고자 한다. 정적 언어로 개발을 안했다보니 익숙치 않는게 문제.</p><h1>Mutable and Immutable collections</h1><p>Scala collections은 mutable/immutable한 컬렉션으로 나뉜다. mutable하다는 건 값을 바로 변경하거나 확장할 수 있다. 이 말은 값을 수정할 수 있다는 말이고, 이는 side effect가 발생할 수 있다는 말과 같다. 반대로, immutable한 것은 여전히 변경 가능하지만, return값으로 새로운 컬렉션을 준다. 즉, 이전 collection은 변하지 않는다.</p><p>모든 collection은 <code>scala.collection</code> 패키지 혹은 이것의 서브 패키지 중 하나인 <code>scala.collection.mutable</code> or <code>scala.collection.immutable</code> 패키지에서 찾을 수 있다. <code>mutable</code> 패키지는 다 mutable하고 <code>immutable</code> 패키지는 다 immutable하다.</p><p><code>scala.collection</code>에 있는 컬렉션은 둘 중 하나가 될 수 있는데, 예를 들어 <code>collection.IndexedSeq&#91;T&#93;</code>는 <code>collection.immutable.IndexedSeq&#91;T&#93;</code>와 <code>collection.mutable.IndexedSeq&#91;T&#93;</code>의 슈퍼 클래스이다.</p><p>기본적으로 scala는 immutable 컬렉션을 선택한다.</p><p>아래는 <code>scala.collection</code> 패키지에 있는 컬렉션들이다. 이것들은 전부 high-level abstract classes or traits이며 mutable할수도, immutable 할 수도 있다.</p><p><img src="https://docs.scala-lang.org/resources/images/tour/collections-diagram-213.svg" alt="scala.collection" /> <code>scala.collection.immutable 패키지</code> <img src="https://docs.scala-lang.org/resources/images/tour/collections-immutable-diagram-213.svg" alt="scala.collection.immutable" /> <code>scala.collection.mutable 패키지</code> <img src="https://docs.scala-lang.org/resources/images/tour/collections-mutable-diagram-213.svg" alt="scala.collection.mutable" /> 그래프 읽는 법 ![legend]https://docs.scala-lang.org/resources/images/tour/collections-legend-diagram.svg</p><p>collection api들은 대부분 위 그림에서 보이는 이름으로 바로 선언해서 쓸 수 있다.<pre><code class="lang-scala">Iterable&#40;&quot;x&quot;, &quot;y&quot;, &quot;z&quot;&#41;
+Map&#40;&quot;x&quot; -&gt; 24, &quot;y&quot; -&gt; 25, &quot;z&quot; -&gt; 26&#41;
+Set&#40;Color.red, Color.green, Color.blue&#41;
+SortedSet&#40;&quot;hello&quot;, &quot;world&quot;&#41;
+Buffer&#40;x, y, z&#41;
+IndexedSeq&#40;1.0, 2.0&#41;
+LinearSeq&#40;a, b, c&#41;
+</code></pre></p><p>그리고 api들의 결과 타입은 콜렉션 그 타입을 그대로 가진다. 이를 <code>uniform return type principle</code>이라고 한다. 대부분의 컬렉션 클래스는 root, mutable, immutable 중 하나인데, 단 하나 <code>Buffer</code>의 경우에만 mutable collection을 가진다.</p><h2>Reference</h2><ul><li><a href='https://docs.scala-lang.org/overviews/collections-2.13/overview.html'>Scala Collection</a></li></ul>
+<p>Discuss this post <a href="">here</a>.</p>
+<p><i>Published: 2021-06-22</i></p>
+
+<p>
+  <i>
+  Tagged:
+  
+  <span class="tag">
+    <a href="tags/Scala.html">Scala</a>
+  </span>
+  
+  </i>
+</p>
+
+
+
+      
+      <div style="margin-bottom: 20px; float: right;">
+        <a class="page-link" href="archive.html">Archive</a>
+      </div>
+      
+    </div>
+  </body>
+</html>

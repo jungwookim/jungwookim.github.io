@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>DynamoDB Tips</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="application/atom+xml" rel="alternate" href="atom.xml" title="DynamoDB Tips">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-clojure.min.js"></script>
+    <script type="text/javascript" src="https://livejs.com/live.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css">
+
+
+
+    <!-- Social sharing (Facebook, Twitter, LinkedIn, etc.) -->
+    <meta name="title" content="DynamoDB Tips">
+    <meta name="twitter:title" content="DynamoDB Tips">
+    <meta property="og:title" content="DynamoDB Tips">
+    <meta property="og:type" content="website">
+
+
+    <meta name="twitter:url" content="https://github.com/borkdude/quickblog/2022-12-12-dynamodb-tips.html">
+    <meta property="og:url" content="https://github.com/borkdude/quickblog/2022-12-12-dynamodb-tips.html">
+
+
+    <meta name="twitter:card" content="summary">
+
+
+
+  </head>
+  <body>
+
+    <div class="site-header">
+      <div class="wrapper">
+        <div class="site-nav">
+          <a class="page-link" href="archive.html">Archive</a>
+          <a class="page-link" href="tags/index.html">Tags</a>
+          <a class="page-link" href="">Discuss</a>
+	  <a class="page-link" href="atom.xml">
+            Feed
+          </a>
+	  
+	  
+        </div>
+        <div>
+          <h1 class="site-title">
+            <a class="page-link" href="index.html">Jungwoo Kim</a>
+          </h1>
+	  <p>A blog about blogging quickly</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrapper">
+
+      <h1>
+  
+  DynamoDB Tips
+  
+</h1>
+<h2>배경</h2><p>회사에서 소셜미디어 개발에 DynamoDB를 사용하기로 했다. 속도와 스케일을 위한 선택이었다. 키 설계에 대한 생각보다는 비즈니스적 + 성능적 판단으로 DynamoDB를 선택했고, 실제로 PK / SK 설계 단계에는 처음부터 같이 하지는 못했었지만, 다른 작업 후에 한 2~3주 늦게 작업을 같이 하게 되면서 설계도 같이 보게 되었다.</p><h2>AWS SA 세션</h2><p>AWS SA 2 + @명이 오셔서 만들고 있는 서비스에 대해서 요구사항을 같이 보고 키 설계를 같이 했다. 재밌었다. 그럼 그 세션을 통해 얻은 기록해두면 좋은 것들을 나열해보자.</p><h2>기억해둘 것</h2><p>편한 언어로 썼음을 유의하자.</p><h3>General</h3><ul><li><code>PK</code>는 무조건 <code>String</code>만 써라.</li><li>날짜는 <code>PK</code>로 가능은 하지만 <code>cardinality</code>가 너무 낮아서 안티 패턴이다.</li><li><code>PK</code>만 있어도 조회 패턴이 가능하더라도 <code>SK</code>에 <code>&quot;&quot;</code>(empty string)이라도 있는게 좋다.</li><li><code>LSI</code>는 쓰지 마라. <code>LSI</code>는 최초 테이블 생성시에만 만들 수 있고 중간에 없애는 것도 불가능하다.</li><li>반면에, <code>GSI</code>는 테이블을 새로 만드는 것과 같아서 중간에 없앨 수도 있다.</li><li><code>GSI</code>는 새로운 Access Pattern을 만들 때 사용한다.</li><li><code>GSI</code>는 <code>Eventually consistency</code>만 제공하고 <code>Async</code>하다. 딱 하나, <code>getItem</code>을 못쓰는데 일반적으로 <code>query</code>만 사용한다.</li><li><code>GSI</code> 구성은 <code>PK/SK</code>는 어차피 항상 들어가고, 다른 <code>attributes</code>는 선택할 수 있다.</li><li><code>PK</code>는 <code>hash</code>값을 이용한 조회이고, <code>O&#40;1&#41;</code>으로 조회한다.</li><li><code>SK</code>는 <code>Range Query</code>에 많이 사용되고, <code>redis</code>에서 <code>Sorted Set</code>과 유사하다.</li><li><code>PK/SK</code>를 잘 설계하는 것은 <code>DynamoDB</code>의 전부나 다름 없다.</li><li>Key-Value Database 설계시 거쳐야하는 4단계는 아래와 같고, 이 과정을 거치지 않으면 안된다.<ol><li>User case from business</li><li>Draw entity relation diagram</li><li>Write down access patterns</li><li>Start thinking key design</li></ol></li><li>Scalable을 고려한 키 설계를 해야한다. 셀럽이 나오는 경우를 대비하자.</li><li>Strongly consistency는 비싸고 굳이? <code>Eventually consistency</code>가 낫다.</li></ul><h3>Data tiering</h3><ul><li>자주 바뀌는 데이터와 자주 바뀌지 않는 데이터를 잘 구분하자. ex. user profile과 user count는 따로 관리하자.</li><li>Access Pattern에 호출 빈도도 하나의 요소이다.</li><li>조회수, 팔로워수 이런 것들은 in-memory workload로 빼서 구성할 수도 있다.</li><li>Data Tier를 잘 나누는 것이 중요하다. (이것은 소프트웨어 개발에 중요한 요소)</li><li>구분자는 #을 써도 되고 다른 것을 써도 된다.</li><li>게시글ID 같은 것은 점점 커져야한다.(sequencial)</li><li>2tiers data 구성 - redis에 좋아요수 같은 것을 구성해놓고 람다를 이용해서 ddb에 업데이트 한다.</li><li>queue를 두는 것도 좋다.</li><li>User case에 따라서 다양한 데이터베이스를 사용해보자.<ul><li>following/follower 등 추천: Neptune</li><li>Ranking: ES</li><li>집계(통계/분석): Redis</li></ul></li><li>(소프트웨어 개발에서) Data를 Tiering하는 개념은 중요하다.<ul><li>흡수</li><li>변형</li><li>표현</li></ul></li><li>redis -> (consumer/puller) -> database. 구조. 즉, consumer 구성을 어케 하느냐만 다른 설계.</li><li>msk -> by topic -> ddb 설계도 있음.</li><li>DAX는 내부적으로 redis랑 똑같은데, instance기반으로 관리해야해서 사실 비추한다.</li></ul><h3>ETC</h3><ul><li>읽기, 쓰기를 tradeoff 해야하는데, 읽기를 잘하는 것에 설계에 집중하자.</li><li>쓰기가 읽기보다 산술적으로 40배 비싸다.</li><li>차라리 여러번 읽자.</li><li><code>ttl</code> attribute는 데이터를 알아서 없애줌.</li><li><code>CAS</code> 신경 안쓴다. 마지막에 쓴 사람이 임자다.</li><li><code>hot key</code>가 발생할 것이고, 그래서 키 디자인이 중요하다.</li><li>vip(예, 트위터의 트럼프)가 있으면 테이블을 분리해야할 수도 있다.</li><li>Stream을 이용해서 vip 트리거 포인트를 만들어둬야할 수도 있다.</li><li>DB Client는 <code>Nosql Workbench</code>정도 쓴다.</li><li>데이터엔지니어링에서 CDC할 때에는, ddb stream써서 cdc하면 된다. kinesis + firehorse로 구성 가능. 구현에 따라 다른데 consumer가 firehose에 던져주는게 좋음.</li></ul><h3>Monitoring</h3><ul><li>모니터링에서 cloudwatch에 <code>contribute insight</code>를 사용하면 좋다. popular item을 찾을 수 있다.</li><li>1주일치 모니터링을 해서 1주일 최고 피크보다 2배 이상 피크칠 것 같으면 대비해야한다.</li></ul><h3>Single Table</h3><ul><li>하나의 큰 테이블이 가진 장점이 많다.</li><li>파티션 키가 많은 것과 비용은 상관 없다.</li></ul>
+<p>Discuss this post <a href="">here</a>.</p>
+<p><i>Published: 2022-12-12</i></p>
+
+<p>
+  <i>
+  Tagged:
+  
+  <span class="tag">
+    <a href="tags/DynamoDB-Database.html">DynamoDB Database</a>
+  </span>
+  
+  </i>
+</p>
+
+
+
+      
+      <div style="margin-bottom: 20px; float: right;">
+        <a class="page-link" href="archive.html">Archive</a>
+      </div>
+      
+    </div>
+  </body>
+</html>

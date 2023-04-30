@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>진짜 오랜만에 블로그에 글 쓴다</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="application/atom+xml" rel="alternate" href="atom.xml" title="진짜 오랜만에 블로그에 글 쓴다">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-clojure.min.js"></script>
+    <script type="text/javascript" src="https://livejs.com/live.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css">
+
+
+
+    <!-- Social sharing (Facebook, Twitter, LinkedIn, etc.) -->
+    <meta name="title" content="진짜 오랜만에 블로그에 글 쓴다">
+    <meta name="twitter:title" content="진짜 오랜만에 블로그에 글 쓴다">
+    <meta property="og:title" content="진짜 오랜만에 블로그에 글 쓴다">
+    <meta property="og:type" content="website">
+
+
+    <meta name="twitter:url" content="https://github.com/borkdude/quickblog/2021-01-25-long_time_no_see.markdown">
+    <meta property="og:url" content="https://github.com/borkdude/quickblog/2021-01-25-long_time_no_see.markdown">
+
+
+    <meta name="twitter:card" content="summary">
+
+
+
+  </head>
+  <body>
+
+    <div class="site-header">
+      <div class="wrapper">
+        <div class="site-nav">
+          <a class="page-link" href="archive.html">Archive</a>
+          <a class="page-link" href="tags/index.html">Tags</a>
+          <a class="page-link" href="">Discuss</a>
+	  <a class="page-link" href="atom.xml">
+            Feed
+          </a>
+	  
+	  
+        </div>
+        <div>
+          <h1 class="site-title">
+            <a class="page-link" href="index.html">Jungwoo Kim</a>
+          </h1>
+	  <p>A blog about blogging quickly</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrapper">
+
+      <h1>
+  
+  진짜 오랜만에 블로그에 글 쓴다
+  
+</h1>
+<p>요즘 코로나가 한국에 보급된(?)지 1년 정도 지났는데 그 사이에 많은 일이 생겼다. 몸도 안좋아서 병원도 다녔고, 다니고 있고, 좀 쉬기도 했고 회사도 옮겼다. 회사 옮기면서 몇가지 생긴 변화가 있는데 대충 기억해두기 위해 적어둔다.</p><ul><li>재택 근무의 장점과 단점</li><li>스스로 발전해 나간다는 것</li><li>가능한 작은 조직에서 일하자</li><li>팀을 만들어 나간다는 것</li></ul><p>테크니컬한 이야기는 테크파트에서 하기로 하고 잡담하는 곳에서는 위에 주제들로 글을 써내려가보자. 언제나 그렇듯이 꾸준히. 필요하면 영어로도 쓸까 한다.</p>
+<p>Discuss this post <a href="">here</a>.</p>
+<p><i>Published: 2021-01-25</i></p>
+
+<p>
+  <i>
+  Tagged:
+  
+  <span class="tag">
+    <a href="tags/Diary.html">Diary</a>
+  </span>
+  
+  </i>
+</p>
+
+
+
+      
+      <div style="margin-bottom: 20px; float: right;">
+        <a class="page-link" href="archive.html">Archive</a>
+      </div>
+      
+    </div>
+  </body>
+</html>

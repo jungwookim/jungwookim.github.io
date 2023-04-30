@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Clojure Malli</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="application/atom+xml" rel="alternate" href="atom.xml" title="Clojure Malli">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-clojure.min.js"></script>
+    <script type="text/javascript" src="https://livejs.com/live.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css">
+
+
+
+    <!-- Social sharing (Facebook, Twitter, LinkedIn, etc.) -->
+    <meta name="title" content="Clojure Malli">
+    <meta name="twitter:title" content="Clojure Malli">
+    <meta property="og:title" content="Clojure Malli">
+    <meta property="og:type" content="website">
+
+
+    <meta name="twitter:url" content="https://github.com/borkdude/quickblog/2022-01-12-clojure_malli_introduction.html">
+    <meta property="og:url" content="https://github.com/borkdude/quickblog/2022-01-12-clojure_malli_introduction.html">
+
+
+    <meta name="twitter:card" content="summary">
+
+
+
+  </head>
+  <body>
+
+    <div class="site-header">
+      <div class="wrapper">
+        <div class="site-nav">
+          <a class="page-link" href="archive.html">Archive</a>
+          <a class="page-link" href="tags/index.html">Tags</a>
+          <a class="page-link" href="">Discuss</a>
+	  <a class="page-link" href="atom.xml">
+            Feed
+          </a>
+	  
+	  
+        </div>
+        <div>
+          <h1 class="site-title">
+            <a class="page-link" href="index.html">Jungwoo Kim</a>
+          </h1>
+	  <p>A blog about blogging quickly</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrapper">
+
+      <h1>
+  
+  Clojure Malli
+  
+</h1>
+<h1>동기</h1><p>처음에는 type system을 일부 빌려오고 싶었다. 클로저가 동적 타입의 언어이다 보니 개발하는 사람은 데이터 스키마를 어느정도 머릿 속에 가지고 있고 디버깅도 하다보니 오히려 속도를 낼 수 있는 장점이 있지만 해당 코드를 개발하지 않은 사람이 봤을 때에는 추가 개발이 힘든 점이 있다고 느꼈다.</p><p>그래서 리서치를 하다가 Data-driven development를 알게 되었고 찾다보니 Malli를 썼을 때 장점이 있어 보였다.</p><h1>소개</h1><p>Malli는 Data-driven 개발을 위해 만들어진 clojure library이다. 새로운 validation과 specification을 제시한다. schema definition, validation, error, value and schema transformation, generation and registries 같은 것들을 포함하고 있다.</p><p>간단하게 어떻게 동작하는지 한번 살펴보자.</p><h1>Syntax와 simple validation</h1><p>Vector 방식으로 정의<pre><code class="lang-clojure">&#40;require '&#91;malli.core :as m&#93;&#41;
+
+&#40;def non-empty-string
+  &#40;m/schema &#91;:string {:min 1}&#93;&#41;&#41;
+
+&#40;m/schema? non-empty-string&#41;
+; =&gt; true
+
+&#40;m/validate non-empty-string &quot;&quot;&#41;
+; =&gt; false
+
+&#40;m/validate non-empty-string &quot;kikka&quot;&#41;
+; =&gt; true
+
+&#40;m/form non-empty-string&#41;
+; =&gt; &#91;:string {:min 1}&#93;
+</code></pre></p><p>Map 방식으로 정의<pre><code class="lang-clojure">&#40;def non-empty-string
+  &#40;m/from-ast {:type :string
+               :properties {:min 1}}&#41;&#41;
+
+&#40;m/schema? non-empty-string&#41;
+; =&gt; true
+
+&#40;m/validate non-empty-string &quot;&quot;&#41;
+; =&gt; false
+
+&#40;m/validate non-empty-string &quot;kikka&quot;&#41;
+; =&gt; true
+
+&#40;m/ast non-empty-string&#41;
+; =&gt; {:type :string,
+;     :properties {:min 1}}
+</code></pre></p><p>Schema AST를 쓰는 방식이 훨씬 빠르다고 한다.</p><h1>간단한 schema definition</h1><pre><code class="lang-clojure">&#40;m/validate &#91;:sequential any?&#93; &#40;list &quot;this&quot; 'is :number 42&#41;&#41;
+;; =&gt; true
+
+&#40;m/validate &#91;:vector int?&#93; &#91;1 2 3&#93;&#41;
+;; =&gt; true
+
+&#40;m/validate &#91;:vector int?&#93; &#40;list 1 2 3&#41;&#41;
+;; =&gt; false
+
+; fixed length vector
+&#40;m/validate &#91;:tuple keyword? string? number?&#93; &#91;:bing &quot;bang&quot; 42&#93;&#41;
+;; =&gt; true
+
+
+&#40;m/validate &#91;:repeat {:min 2, :max 4} int?&#93; &#91;1&#93;&#41; ; =&gt; false
+&#40;m/validate &#91;:repeat {:min 2, :max 4} int?&#93; &#91;1 2&#93;&#41; ; =&gt; true
+&#40;m/validate &#91;:repeat {:min 2, :max 4} int?&#93; &#91;1 2 3 4&#93;&#41; ; =&gt; true ; :max is inclusive
+&#40;m/validate &#91;:repeat {:min 2, :max 4} int?&#93; &#91;1 2 3 4 5&#93;&#41; ; =&gt; false
+
+
+; string schemas
+&#40;m/validate string? &quot;kikka&quot;&#41; ; using a predicate
+
+&#40;m/validate :string &quot;kikka&quot;&#41; ; using :string schema
+;; =&gt; true
+
+&#40;m/validate &#91;:string {:min 1, :max 4}&#93; &quot;&quot;&#41;
+;; =&gt; false
+
+; maybe schemas
+&#40;m/validate &#91;:maybe string?&#93; &quot;bingo&quot;&#41;
+;; =&gt; true
+
+&#40;m/validate &#91;:maybe string?&#93; nil&#41;
+;; =&gt; true
+
+&#40;m/validate &#91;:maybe string?&#93; :bingo&#41;
+;; =&gt; false
+
+; fn schemas
+&#40;def my-schema
+  &#91;:and
+   &#91;:map
+    &#91;:x int?&#93;
+    &#91;:y int?&#93;&#93;
+   &#91;:fn &#40;fn &#91;{:keys &#91;x y&#93;}&#93; &#40;&gt; x y&#41;&#41;&#93;&#93;&#41;
+   
+&#40;m/validate my-schema {:x 1, :y 0}&#41;
+; =&gt; true
+
+&#40;m/validate my-schema {:x 1, :y 2}&#41;
+; =&gt; false
+
+&#40;def pants-schema
+  &#91;:and
+   &#91;:map
+    &#91;:id int?&#93;
+    &#91;:size {:optional true} &#91;:maybe :int&#93;&#93;
+    &#91;:size-alphabet {:optional true} &#91;:maybe &#91;:enum &quot;S&quot; &quot;M&quot; &quot;L&quot;&#93;&#93;&#93;&#93;
+   &#91;:fn {:error/message &quot;size and size alphabet should be nil-matched&quot;}
+    '&#40;fn &#91;{:keys &#91;size size-alphabet&#93;}&#93;
+       &#40;or &#40;and &#40;nil? size&#41; &#40;nil? size-alphabet&#41;&#41;
+           &#40;and &#40;some? size&#41; &#40;some? size-alphabet&#41;&#41;&#41;&#41;&#93;&#93;&#41;
+
+&#40;m/validate pants-schema {:id   1
+                          :size nil
+                          :size-alphabet &quot;S&quot;}&#41;
+; =&gt; false
+</code></pre><h1>함수에서 어떻게 사용하고 있는지</h1><pre><code class="lang-clojure">&#40;defn foo-meta
+  &quot;schema via var metadataz&quot;
+  {:malli/schema &#91;:=&gt; &#91;:cat :int&#93; :int&#93;}
+  &#91;x&#93;
+  &#40;inc x&#41;&#41;
+
+&#40;m/=&gt; foo-declare &#91;:=&gt; &#91;:cat :int&#93; :int&#93;&#41;
+&#40;defn foo-declare
+  &quot;schema via separate declaration&quot;
+  &#91;x&#93;
+  &#40;inc x&#41;&#41;
+
+&#40;foo-meta 1&#41; ; ok
+&#40;foo-meta &quot;1&quot;&#41; ; clj-kondo가 빨간 줄 그어줌
+
+&#40;foo-declare 1&#41; ; ok
+&#40;foo-declare 1&#41; ; 역시 clj-kondo가 빨간 줄 그어줌
+</code></pre><h1>Errors</h1><pre><code class="lang-clojure">; 바로 알아보기 힘들다
+&#40;m/validate pants-schema {:id   1
+                          :size nil
+                          :size-alphabet &quot;S&quot;}&#41;
+
+&#40;-&gt; pants-schema
+    &#40;m/explain {:id 1}&#41;
+    &#40;me/humanize&#41;&#41;
+</code></pre><h1>Value transformation</h1><p>Default Transformers: <code>string-transformer</code>, <code>json-transformer</code>, <code>strip-extra-keys-transformer</code>, <code>default-value-transformer</code> and <code>key-transformer</code>.</p><pre><code class="lang-clojure">&#40;m/decode int? &quot;42&quot; mt/string-transformer&#41;
+; 42
+
+&#40;m/encode int? 42 mt/string-transformer&#41;
+; &quot;42&quot;
+
+&#40;m/decode
+  Address
+  {:id &quot;Lillan&quot;,
+   :tags &#91;&quot;coffee&quot; &quot;artesan&quot; &quot;garden&quot;&#93;,
+   :address {:street &quot;Ahlmanintie 29&quot;
+             :city &quot;Tampere&quot;
+             :zip 33100
+             :lonlat &#91;61.4858322 23.7854658&#93;}}
+  mt/json-transformer&#41;
+;{:id &quot;Lillan&quot;,
+; :tags #{:coffee :artesan :garden},
+; :address {:street &quot;Ahlmanintie 29&quot;
+;           :city &quot;Tampere&quot;
+;           :zip 33100
+;           :lonlat &#91;61.4858322 23.7854658&#93;}}
+
+&#40;m/encode
+  Address
+  {:id &quot;Lillan&quot;,
+   :tags &#91;&quot;coffee&quot; &quot;artesan&quot; &quot;garden&quot;&#93;,
+   :address {:street &quot;Ahlmanintie 29&quot;
+             :city &quot;Tampere&quot;
+             :zip 33100
+             :lonlat &#91;61.4858322 23.7854658&#93;}}
+  &#40;mt/key-transformer {:encode name}&#41;&#41;
+;{&quot;id&quot; &quot;Lillan&quot;,
+; &quot;tags&quot; &#91;&quot;coffee&quot; &quot;artesan&quot; &quot;garden&quot;&#93;,
+; &quot;address&quot; {&quot;street&quot; &quot;Ahlmanintie 29&quot;
+;            &quot;city&quot; &quot;Tampere&quot;
+;            &quot;zip&quot; 33100
+;            &quot;lonlat&quot; &#91;61.4858322 23.7854658&#93;}}
+
+&#40;def strict-json-transformer
+  &#40;mt/transformer
+    mt/strip-extra-keys-transformer
+    mt/json-transformer&#41;&#41;
+
+&#40;m/decode
+  Address
+  {:id &quot;Lillan&quot;,
+   :EVIL &quot;LYN&quot;
+   :tags &#91;&quot;coffee&quot; &quot;artesan&quot; &quot;garden&quot;&#93;,
+   :address {:street &quot;Ahlmanintie 29&quot;
+             :DARK &quot;ORKO&quot;
+             :city &quot;Tampere&quot;
+             :zip 33100
+             :lonlat &#91;61.4858322 23.7854658&#93;}}
+  strict-json-transformer&#41;
+;{:id &quot;Lillan&quot;,
+; :tags #{:coffee :artesan :garden},
+; :address {:street &quot;Ahlmanintie 29&quot;
+;           :city &quot;Tampere&quot;
+;           :zip 33100
+;           :lonlat &#91;61.4858322 23.7854658&#93;}}
+
+; 종합 예제
+&#40;m/encode
+  &#91;:map {:default {}}
+   &#91;:a &#91;int? {:default 1}&#93;&#93;
+   &#91;:b &#91;:vector {:default &#91;1 2 3&#93;} int?&#93;&#93;
+   &#91;:c &#91;:map {:default {}}
+        &#91;:x &#91;int? {:default 42}&#93;&#93;
+        &#91;:y int?&#93;&#93;&#93;
+   &#91;:d &#91;:map
+        &#91;:x &#91;int? {:default 42}&#93;&#93;
+        &#91;:y int?&#93;&#93;&#93;
+   &#91;:e int?&#93;&#93;
+  nil
+  &#40;mt/transformer
+    mt/default-value-transformer
+    mt/string-transformer&#41;&#41;
+;{:a &quot;1&quot;
+; :b &#91;&quot;1&quot; &quot;2&quot; &quot;3&quot;&#93;
+; :c {:x &quot;42&quot;}}
+</code></pre><h1>Schema generation</h1><p>Schema 추론<pre><code class="lang-clojure">&#40;require '&#91;malli.provider :as mp&#93;&#41;
+
+&#40;def samples
+  &#91;{:id &quot;Lillan&quot;
+    :tags #{:artesan :coffee :hotel}
+    :address {:street &quot;Ahlmanintie 29&quot;
+              :city &quot;Tampere&quot;
+              :zip 33100
+              :lonlat &#91;61.4858322, 23.7854658&#93;}}
+   {:id &quot;Huber&quot;,
+    :description &quot;Beefy place&quot;
+    :tags #{:beef :wine :beer}
+    :address {:street &quot;Aleksis Kiven katu 13&quot;
+              :city &quot;Tampere&quot;
+              :zip 33200
+              :lonlat &#91;61.4963599 23.7604916&#93;}}&#93;&#41;
+
+&#40;mp/provide samples&#41;
+;&#91;:map
+; &#91;:id string?&#93;
+; &#91;:tags &#91;:set keyword?&#93;&#93;
+; &#91;:address
+;  &#91;:map
+;   &#91;:street string?&#93;
+;   &#91;:city string?&#93;
+;   &#91;:zip number?&#93;
+;   &#91;:lonlat &#91;:vector double?&#93;&#93;&#93;&#93;
+; &#91;:description {:optional true} string?&#93;&#93;
+</code></pre></p><h1>Value generation</h1><pre><code class="lang-clojure">&#40;mg/generate pants-schema {:seed 2}&#41;
+; =&gt; {:id -28, :size 8083038, :size-alphabet &quot;M&quot;}
+</code></pre><h1>Performance</h1><p>ideomatic clojure보다 훨씬 빠르다고 한다. 직접 테스트는 안하고 결과만 공유한다.<pre><code class="lang-clojure">&#40;require '&#91;criterium.core :as cc&#93;&#41;
+
+&#40;def valid {:x true, :y 1, :z &quot;zorro&quot;}&#41;
+
+;; idomatic clojure 54ns
+&#40;let &#91;valid? &#40;fn &#91;{:keys &#91;x y z&#93;}&#93;
+               &#40;and &#40;boolean? x&#41;
+                    &#40;if y &#40;int? y&#41; true&#41;
+                    &#40;string? z&#41;&#41;&#41;&#93;
+  &#40;assert &#40;valid? valid&#41;&#41;
+  &#40;cc/quick-bench &#40;valid? valid&#41;&#41;&#41;
+
+&#40;require '&#91;malli.core :as m&#93;&#41;
+
+;; malli 39ns
+&#40;let &#91;valid? &#40;m/validator
+               &#91;:map
+                &#91;:x :boolean&#93;
+                &#91;:y {:optional true} :int&#93;
+                &#91;:z :string&#93;&#93;&#41;&#93;
+  &#40;assert &#40;valid? valid&#41;&#41;
+  &#40;cc/quick-bench &#40;valid? valid&#41;&#41;&#41;
+</code></pre></p><h1>우리 프로젝트에서의 활용 - 데이터베이스 입력/업데이트시 값 validation을 해보자</h1><pre><code class="lang-clojure">&#40;def subsidy-schema
+  &#91;:and
+   &#91;:map
+    &#91;:id int?&#93;
+    &#91;:area int?&#93;
+    &#91;:area-ineqaulity &#91;:enum &quot;&gt;=&quot; &quot;&gt;&quot; &quot;&lt;&quot; &quot;&lt;=&quot;&#93;&#93;&#93;
+   &#91;:fn {:error/message &quot;area and area-inequality는 nil match가 되어야함&quot;}
+    &#40;fn &#91;{:keys &#91;area area-ineqaulity&#93;}&#93;
+      &#40;or &#40;and &#40;nil? area&#41; &#40;nil? area-ineqaulity&#41;&#41;
+          &#40;and &#40;some? area&#41; &#40;some? area-ineqaulity&#41;&#41;&#41;&#41;&#93;&#93;&#41;
+
+&#40;defn insert-subsidy-info
+  {:malli/schema &#91;:=&gt; &#91;:cat subsidy-schema&#93; :nil&#93;}
+  &#91;subsidy&#93;
+  &#40;prn subsidy&#41;&#41;
+</code></pre><h1>Spec, Schema and Malli</h1><p><code>Schema</code>라는게 있는데 다 좋은데, serializing이랑 de-serializing할 때 non-trivial하다. <code>Spec</code>도 개쩌는데, <code>runtime transformation</code>을 지원하지 않는게 가장 큰 흠이다. <code>malli</code>라는 건 다이나믹 시스템 개발에서 모든 것을 다 지원하기 위해 등장했다. Spec은 runtime transformation이 없다. 그리고 Spec은 global registry 하나를 통해서 다 spec을 관리하는데 Malli는 그럴 필요는 없다. schema와 registry를 값처럼 프로그래밍을 할 수 있다. null이나 optional한 것들도 더 쉽게 처리할 수 있다. 또한 Spec은 schema를 표현하기 위해 macro를 사용한다. 하지만 malli는 vector와 map을 사용한 pure data 그 자체이다. Data가 곧 system이라고 했을 때 더 쉽게 받아들일 수 있다. Spec, Schema 그리고 Malli는 하나만 써야하는 것은 아니고 같이 사용될 수 있다는 것이 중요하다.</p><h1>Reference</h1><ul><li><a href='https://github.com/metosin/malli'>malli github</a></li><li><a href='https://www.metosin.fi/blog/malli/'>malli blog 1</a></li><li><a href='https://www.karimarttila.fi/clojure/2020/12/07/malli-clojure-library.html'>malli blog 2</a></li></ul>
+<p>Discuss this post <a href="">here</a>.</p>
+<p><i>Published: 2022-01-12</i></p>
+
+<p>
+  <i>
+  Tagged:
+  
+  <span class="tag">
+    <a href="tags/Clojure.html">Clojure</a>
+  </span>
+  
+  </i>
+</p>
+
+
+
+      
+      <div style="margin-bottom: 20px; float: right;">
+        <a class="page-link" href="archive.html">Archive</a>
+      </div>
+      
+    </div>
+  </body>
+</html>

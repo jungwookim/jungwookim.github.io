@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Clojure와 친해지기</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="application/atom+xml" rel="alternate" href="atom.xml" title="Clojure와 친해지기">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-clojure.min.js"></script>
+    <script type="text/javascript" src="https://livejs.com/live.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css">
+
+
+
+    <!-- Social sharing (Facebook, Twitter, LinkedIn, etc.) -->
+    <meta name="title" content="Clojure와 친해지기">
+    <meta name="twitter:title" content="Clojure와 친해지기">
+    <meta property="og:title" content="Clojure와 친해지기">
+    <meta property="og:type" content="website">
+
+
+    <meta name="twitter:url" content="https://github.com/borkdude/quickblog/2021-11-17-training_clojure_with_aoc.html">
+    <meta property="og:url" content="https://github.com/borkdude/quickblog/2021-11-17-training_clojure_with_aoc.html">
+
+
+    <meta name="twitter:card" content="summary">
+
+
+
+  </head>
+  <body>
+
+    <div class="site-header">
+      <div class="wrapper">
+        <div class="site-nav">
+          <a class="page-link" href="archive.html">Archive</a>
+          <a class="page-link" href="tags/index.html">Tags</a>
+          <a class="page-link" href="">Discuss</a>
+	  <a class="page-link" href="atom.xml">
+            Feed
+          </a>
+	  
+	  
+        </div>
+        <div>
+          <h1 class="site-title">
+            <a class="page-link" href="index.html">Jungwoo Kim</a>
+          </h1>
+	  <p>A blog about blogging quickly</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrapper">
+
+      <h1>
+  
+  Clojure와 친해지기
+  
+</h1>
+<p><code>clojure</code>와 친해져보도록 하자. <code>clojure</code>가 <code>JVM</code> 위에서 동작한다는 성질이나 함수형 언어로서의 특성을 글로 배우기 보다는 기본기를 <a href='ttps://adventofcode.com/2018/day/3'><code>advent of code</code></a>에서 닦아보도록 하자. 전체 코드는 <a href='ttps://github.com/jungwookim/aoc-exercise/tree/master/src'>Github</a>에 다 올려놓았다.</p><h1>Day 1</h1><p>AOC 2018년 Day1으로 시작. 아주 간단한 로직을 다루고 숫자 관련한 조작을 연습해보는 섹션이 아닌가 싶다.</p><h2>파일 읽고 파싱하기</h2><p>text file을 읽어서 문제를 풀다보니 파일 입출력을 해야했다. line by line으로 읽고 싶었지만 문제의 의도와 거리가 있어서 <code>clojure.core/slurp</code>를 사용했다.</p><pre><code class="lang-clojure">&#40;slurp &quot;resources/input.txt&quot;&#41; ; 간단하다
+</code></pre><p>아주 간단하다. 읽은 결과는 string이므로 splitting을 잘 해준다.</p><pre><code class="lang-clojure">&#40;clojure.string/split #&quot;\n&quot;&#41; ; delimiter는 줄바꿈으로 했다
+</code></pre><p>아래와 같은 방식으로 string을 Integer로 파싱할 수 있다. java 라이브러리를 사용하는 것을 확인하면 된다.<pre><code class="lang-clojure">&#40;Integer/parseInt &quot;+3&quot;&#41;
+</code></pre></p><h2>part 1</h2><p>문제는 간단하다. Interger collecitons를 받아서 합을 구하면 된다. <code>apply</code>나 <code>reduce</code>를 이용하면 쉽게 구현할 수 있다.</p><h2>part 2</h2><p>주어진 Integer collections가 무한히 반복된다고 할 때, 같은 누적합이 발견될 때의 누적합을 반환하면 된다.</p><h3>풀이</h3><p>먼저 <code>repeat</code>을 알고 있었고 collections를 <code>repeat</code>하면 collections of collections이기 때문에 <code>flatten</code>을 사용했었다.</p><pre><code class="lang-clojure">&#40;defn solve-part2 &#91;li&#93;
+  &#40;let &#91;inf-seq &#40;flatten &#40;repeat li&#41;&#41;&#93;
+    &#40;loop &#91;temp-set #{}
+           cur-seq inf-seq
+           acc 0&#93;
+      &#40;if &#40;temp-set &#40;+ acc &#40;first cur-seq&#41;&#41;&#41;
+        &#40;+ acc &#40;first cur-seq&#41;&#41;
+        &#40;recur &#40;conj temp-set &#40;+ acc &#40;first cur-seq&#41;&#41;&#41;
+               &#40;rest cur-seq&#41;
+               &#40;+ acc &#40;first cur-seq&#41;&#41;&#41;&#41;&#41;&#41;&#41;
+</code></pre><h3>리뷰</h3><ul><li>flatten + repeat -> cycle로 바꾸면 좋다. (lazy한 특성 때문에 둘 다 사용 가능한 점을 인지하자)</li><li>let을 사용하는게 오히려 안좋지 않을까? 라고 생각했었는데 쓰는게 더 나음</li><li>loop-recur가 clojure에서 좀 쓸만한 녀석인 줄 알고 남발했었는데 anti-pattern이라고 한다. 앞으로는 사용을 자제해보자</li><li>문제의 특성상 같은 누적합이 2번 나오면 그게 정답이다. 누적합은 <code>clojure.core/reductions</code>를 사용하면 쉽게 구할 수 있다.</li><li>docString으로 input, output의 형태나 함수 설명을 해주도록 노력하자.</li></ul><h3>reductions를 이용한 더 나은 코드</h3><pre><code class="lang-clojure">&#40;defn solve-part2-advanced &#91;li&#93;
+  &#40;let &#91;inf-partial-sum li&#93;
+    &#40;loop &#91;temp-set #{}
+           cur-seq inf-partial-sum&#93;
+      &#40;let &#91;sum &#40;first cur-seq&#41;&#93;
+        &#40;if &#40;temp-set sum&#41;
+          sum
+          &#40;recur &#40;conj temp-set sum&#41;
+                 &#40;rest cur-seq&#41;&#41;&#41;&#41;&#41;&#41;&#41;
+
+&#40;-&gt;&gt; &quot;resources/input.txt&quot;
+      parse-input
+      cycle
+      &#40;reductions +&#41; ; reductions의 결과인 partial-sum을 파라미터로 넘겼다.
+      solve-part2-advanced&#41;
+</code></pre><h1>Day 2</h1><p>어제 삽질한 파일 읽는 것 때문에 시간은 잘 벌었다. <code>string</code>을 잘 다루어보는 섹션인 것 같다. 근데 <code>laySeq</code>의 결과를 <code>contains?</code>와 함께 사용할 수 없고 map 데이터구조를 핸들링하는 것에 익숙치 않아서 시간이 오래 걸린 것 같다. 그리고 원래 string 관련 문제는 좀 귀찮은 면은 있는 것 같긴 하다. AOC 2018년 Day 2를 보자.</p><h2>part 1</h2><p>결과부터 말하자면 <code>frequencies + char-array</code>를 사용하면 아주 쉽게 풀리는 문제였는데 저 2가지를 직접 구현하면서 겪은 각종 삽질들 때문에 시간을 많이 잡아 먹었다. 그리고 아래와 같은 코드를 빨리 구현하지 못해서 엄청 헤맸다. 어떻게 삽질 했는지 같이 살펴보자.</p><pre><code class="lang-typescript">// 조건을 만족할 때만 do sth을 하고 그 조건이 여러개일 때
+if &#40;isValid&#40;&#41;&#41; {
+    // do sth...
+}
+
+if &#40;isValid2&#40;&#41;&#41; {
+    // do sth...
+}
+
+</code></pre><p>이라는 간단한 걸 구현하고 싶었는데 클로저에서는 이렇게 안된다.<pre><code class="lang-clojure">&#40;when &#40;isValid&#41; &#40;...&#41;
+when &#40;isValid2&#41; &#40;...&#41;&#41; ; 난감했다
+</code></pre></p><p>사실 expression자체도 지금 생각하면 안좋다는게 보이지만 아직은 적응이 덜 됐는지 위에 처럼 구현하고 싶은 마음이 처음엔 컸다. 여튼, 그래서 처음에 답은 구했는데 아주 아주 돌아갔다.</p><pre><code class="lang-clojure">; 처음 제출한 답의 메인 로직
+&#40;defn calc-freq
+  &quot;input: &#91;&#91;1 2 3 4&#93; &#91;2 2 0 0&#93; ...&#93;&quot;
+  &#91;li&#93;
+  &#40;apply &#42; &#40;reduce &#40;fn &#91;&#91;res1 res2&#93; val&#93;
+                     &#40;cond
+                       &#40;and &#40;some #&#40;== % 3&#41; val&#41; &#40;some #&#40;== % 2&#41; val&#41;&#41; &#91;&#40;inc res1&#41; &#40;inc res2&#41;&#93;
+                       &#40;some #&#40;== % 3&#41; val&#41; &#91;res1 &#40;inc res2&#41;&#93;
+                       &#40;some #&#40;== % 2&#41; val&#41; &#91;&#40;inc res1&#41; res2&#93;
+                       :else &#91;res1 res2&#93;&#41;&#41; &#91;0 0&#93; li&#41;&#41;&#41;
+</code></pre><h2>리뷰</h2><ul><li>reduce는 almighty해서 가급적 안쓰는게 좋다. 쓰더라도 뚱뚱하게 쓰면 안된다.</li><li>고차함수인 map, filter 같은 것만 사용해서 다 구현할 수 있다 (대부분): 이 사실을 명심하자</li><li>contains?는 set에서만 쓰고 map, vector, list에서는 다른 방식으로 contains? 유무를 확인하자</li><li><code>frequencies</code>, <code>char-array</code>를 알자</li></ul><h2>리뷰 반영 후 다시 구현해본 코드</h2><p>이게 베스트인지는 모르겠지만 일단 조금 더 가독성이 높아졌다.<pre><code class="lang-clojure">&#40;defn logic-part1 &#91;n str-li&#93;
+  &#40;-&gt;&gt; str-li
+       &#40;map frequencies&#41;
+       &#40;map vals&#41;
+       &#40;filter #&#40;some &#40;fn &#91;x&#93; &#40;== x n&#41;&#41; %&#41;&#41;
+       count&#41;&#41;
+
+&#40;defn solve-part1 &#91;path&#93;
+  &#40;let &#91;res1 &#40;-&gt;&gt; path
+                  read-input
+                  &#40;logic-part1 2&#41;&#41;
+        res2 &#40;-&gt;&gt; path
+                  read-input
+                  &#40;logic-part1 3&#41;&#41;&#93;
+    &#40;&#42; res1 res2&#41;&#41;&#41;
+</code></pre></p><h2>part 2</h2><h1>Day 3</h1><p><code>matrix</code>를 다루는 내용이 목적인 것 같다. 2d 리스트나 벡터를 사용하는 것을 다루어보자는 느낌.</p><h2>Intro</h2><p>part 1과 part 2가 거의 한번에 풀릴 수 있을 것처럼 보였다. 전체 색칠한 <code>matrix</code>를 만들어내고 이 결과를 가지고 두번 색칠해졌는지 아니면 해당 id가 한번도 덮어씌어진 적 없는지 확인하면 됐었다.</p><h2>parsing</h2><p>input이 좀 괴상하게 들어와서 이것도 연습하는 건가? 싶었다. <code>#1 1,3: 4x4</code> 이런 식으로 인풋이 들어오는데 이걸 잘 파싱해보도록 하자. 위에서 사용한 <code>clojure.string/split</code>과 <code>subs</code>를 요리조리 사용했다.</p><pre><code class="lang-clojure">&#40;defn read-input &#91;path&#93;
+  &#40;-&gt; path
+      slurp
+      &#40;clojure.string/split #&quot;\n&quot;&#41;&#41;&#41;
+
+&#40;defn parse-id
+  &quot;input: \&quot;#44\&quot;, output: 44&quot;
+  &#91;string&#93;
+  &#40;Integer/parseInt &#40;subs string 1 &#40;count string&#41;&#41;&#41;&#41;
+
+&#40;defn parse-pos
+  &quot;input: \&quot;1,3:\&quot;, output: &#40;1 3&#41;&quot;
+  &#91;string&#93;
+  &#40;-&gt;&gt; &#40;clojure.string/split &#40;subs string 0 &#40;dec &#40;count string&#41;&#41;&#41; #&quot;,&quot;&#41;
+       &#40;mapv &#40;fn &#91;x&#93; &#40;Integer/parseInt x&#41;&#41;&#41;&#41;&#41;
+
+&#40;defn parse-size
+  &quot;input: \&quot;4x4\&quot;, output: &#40;4 4&#41;&quot;
+  &#91;string&#93;
+  &#40;-&gt;&gt; &#40;clojure.string/split string #&quot;x&quot;&#41;
+       &#40;mapv &#40;fn &#91;x&#93; &#40;Integer/parseInt x&#41;&#41;&#41;&#41;&#41;
+
+&#40;defn prepare-data &#91;path&#93;
+  &#40;-&gt;&gt; path
+       read-input
+       &#40;mapv &#40;fn &#91;x&#93; &#40;clojure.string/split x #&quot; &quot;&#41;&#41;&#41;
+       &#40;mapv &#40;fn &#91;&#91;id &#95; pos size&#93;&#93;
+               &#40;list &#40;parse-id id&#41; &#40;parse-pos pos&#41; &#40;parse-size size&#41;&#41;&#41;&#41;&#41;&#41;
+</code></pre><p>id, position, size를 위와 같은 방식으로 파씽했었다.</p><h2>part 1</h2><p>주요 아이디어는 <code>#99 1,3: 2x2</code>라는 인풋이 있을 때 <code>&#40;1 3 99&#41;</code>, <code>&#40;1 4 99&#41;</code>, <code>&#40;2 3 99&#41;</code>, <code>&#40;2 4 99&#41;</code> 의 collections을 가지고 있으면 x, y index에 원하는 id를 갱신하면 된다고 생각했다. 초기값을 다 -1 로 matrix를 만들어 놓았으므로 id가 양수임을 가정했을 때 갱신하려고 할 때 -1이 아니라면 (갱신된 적 있다면) 0으로 갱신해서 (문제에서 X랑 같음) 중복 칠한게 있는지 확인했다. 그리고 마지막으로 0의 갯수를 세어주면서 마무리하였다.</p><p>코드는 아래와 같다.<pre><code class="lang-clojure">&#40;defn vec2d
+  &quot;2d vectors&quot;
+  &#91;sx sy f&#93;
+  &#40;mapv &#40;fn &#91;x&#93; &#40;mapv &#40;fn &#91;y&#93; &#40;f x y&#41;&#41; &#40;range sx&#41;&#41;&#41; &#40;range sy&#41;&#41;&#41;
+
+&#40;defn matrix
+  &quot;init matrix&quot;
+  &#91;&#93;
+  &#40;vec2d 2000 2000 &#40;constantly -1&#41;&#41;&#41;
+
+&#40;defn update-cell
+  &quot;update cell to id at position &#40;x, y&#41; on matrix&quot;
+  &#91;matrix id x y&#93;
+  &#40;if &#40;neg? &#40;get-in matrix &#91;x y&#93;&#41;&#41;
+    &#40;update-in matrix &#91;x y&#93; &#40;constantly id&#41;&#41;
+    &#40;update-in matrix &#91;x y&#93; &#40;constantly 0&#41;&#41;&#41;&#41;
+
+&#40;defn gen-modified-vals
+  &quot;output: sequence of &#40;target-x target-y id&#41;&quot;
+  &#91;id ix iy sx sy&#93;
+  &#40;map &#40;fn &#91;x&#93; &#40;map &#40;fn &#91;y&#93; &#40;list &#40;+ iy x&#41; &#40;+ ix y&#41; id&#41;&#41; &#40;range sx&#41;&#41;&#41; &#40;range sy&#41;&#41;&#41;
+
+&#40;defn flatten-vals
+  &quot;flatten and partition 3&quot;
+  &#91;values&#93;
+  &#40;-&gt;&gt; values
+       flatten
+       &#40;partition 3&#41;&#41;&#41;
+
+&#40;defn logic-part1
+  &quot;update each one&quot;
+  &#91;data&#93;
+  &#40;reduce &#40;fn &#91;acc &#91;x y id&#93;&#93;
+            &#40;update-cell acc id x y&#41;&#41;
+          &#40;matrix&#41;                                          ; 초기값
+          &#40;flatten-vals &#40;map &#40;fn &#91;&#91;id &#91;ix iy&#93; &#91;sx sy&#93;&#93;&#93;
+                               &#40;gen-modified-vals id ix iy sx sy&#41;&#41;
+                             data&#41;&#41;&#41;&#41;
+
+&#40;defn solve-part1 &#91;path&#93;
+  &#40;-&gt;&gt; path
+       prepare-data
+       logic-part1
+       flatten
+       &#40;filter #&#40;zero? %&#41;&#41;
+       count&#41;&#41;
+</code></pre></p><p>get-in, update-in 같은 nested structure에 사용하는 core 함수를 알게 되었다. 이렇게 푸는게 맞나? 그리고 flatten 왠만해서 안쓰려고 했는데 쓰면 편해서 써버렸다.</p><h2>part 2</h2><p>part 1을 풀어서 쉽게 풀었다. 필터만 잘 하면 된다.</p><pre><code class="lang-clojure">&#40;defn get-total-count-by-id &#91;path&#93;
+  &#40;-&gt;&gt; path
+       prepare-data
+       &#40;map &#40;fn &#91;&#91;id &#95; &#91;sx sy&#93;&#93;&#93; &#40;list id &#40;&#42; sx sy&#41;&#41;&#41;&#41;&#41;&#41;
+
+&#40;defn logic-part2
+  &#91;path data&#93;
+  &#40;let &#91;current-id-count &#40;-&gt;&gt; data
+                              logic-part1
+                              flatten
+                              &#40;filter #&#40;pos? %&#41;&#41;
+                              frequencies&#41;
+
+        total-count-by-id &#40;get-total-count-by-id path&#41;&#93;
+    &#40;-&gt; &#40;filter &#40;fn &#91;&#91;x y&#93;&#93; &#40;== y &#40;get current-id-count x -1&#41;&#41;&#41; total-count-by-id&#41;
+        first
+        first&#41;&#41;&#41;
+
+&#40;defn solve-part2 &#91;path&#93;
+  &#40;-&gt;&gt; path
+       prepare-data
+       &#40;logic-part2 path&#41;&#41;&#41;
+</code></pre><h2>회고</h2><p>언제나 그렇듯 2차 배열을 다루는 문제들은 약간 까다로운 면은 있다. 자주 풀어야 좀 익숙해지는 느낌. 그리고 immutable하게 짠다는게 문제 풀이에서 꽤 까다롭다고 느껴졌다.</p><h2>리뷰</h2><ul><li>전반적으로 naming을 더 신경쓰면 좋을 것 같다는 의견</li><li>naming을 할 때 함수 이름만 보고 뭐하는 건지 알 수 있도록, 함수 이름이 짓기 어렵다고 느꼈다면? 함수로 꼭 만들지 않아도 되는게 아닐까? 라는 생각도 해보자</li><li>matrix 만들 때 2중 map도 좋지만 2중 for를 쓰면 좀 더 나을 수도</li><li>복잡한 parsing을 할 때는 정규식을 쓰는 것도 방법 (항상 좋은 것은 아니지만 경우에 따라)</li><li><code>vector</code>는 random access가 필요할 때 쓰긴 하지만 <code>list</code>보다는 <code>vector</code>를 주로 사용해도 좋음</li><li>그리고 <code>vector</code>나 <code>list</code>를 사용하더라도 순서에 따른 context가 있는 경우에는 <code>hash-map</code>을 쓰는게 훨씬 좋음</li><li>matrix 초기활 때 사용한 -1, 0 같은 값들은 keyword로 관리하는 것이 좋음</li><li><code>==</code>와 <code>=</code> 차이: <code>==</code>는 타입은 신경 쓰지 않고 값만 비교, <code>=</code>는 타입과 값 모두 비교</li><li>ex. <code>&#40;= 0.2 1/5&#41; ; false &#40;== 0.2 1/5&#41; ; true</code></li><li>관용적으로... <code>-&gt;</code>의 경우 hash-map이나 string에 쓰고 <code>-&gt;&gt;</code> seq를 다룰 때 많이 씀 (생각해보기)</li><li><code>first + first</code> 는 <code>ffirst</code>로</li></ul><h2>리뷰 반영 후 전체적인 코드</h2><p>길이가 길어서 링크로 대체한다. 2중 for 문이 2d 다루는데 꽤나 편리한 것 같아서 유용했고 javascript의 object처럼 hash-map을 주요하게 사용하니 편했다. 이게 ps에서는 혼자 빨리 푸는게 중요해서 신경 안썼는데 부트캠프이니만큼 가독성도 신경 써야겠다.<h2></h2><h1>쉬어가기</h1>3일정도 리뷰해보니 코드를 대충 어떻게 작성해야하는지 약간 감은 왔다. 물론 뒤에도 더 많은 리뷰가 있겠지만 뒷 부분에는 코드는 <a href='ttps://github.com/jungwookim/aoc-exercise/tree/master/src'>github 링크</a>로 대체하고 내용 위주로 살펴보자.<h2></h2><h1>Day 4</h1>AOC 2018 Day 4. datetime을 parsing해서 사용하고 싶지만 그렇게 풀지 않아도 되는 문제. 문제의 요구사항을 잘 읽어보면 <code>00:00&#126;00:59</code> 사이의 데이터만 있는 것을 알 수 있음. input이 까다로워서 데이터 전처리하는데 드는 시간이 더 많았던 것 같다. 앞선 리뷰들을 잘 반영해서 <code>hash-map</code> 적절히 잘 사용했음.</p><ul><li><a href='https://github.com/jungwookim/aoc-exercise/blob/master/src/p2018_day4.clj'>내가 푼 코드</a></li><li><a href='https://github.com/jungwookim/aoc-exercise/blob/master/src/p2018_day4_reviewed.clj'>리뷰 받은 코드</a></li></ul><h2>주요 내용</h2><ul><li><code>map + flatten</code> 같은 건 <code>mapcat</code>을 사용해도 좋다.</li><li><code>assoc-in + get-in</code> 대신 <code>update-in</code>이라는 걸 쓰자</li><li><code>map</code>을 부분적으로 바꿀 때는 <code>update</code> 혹은 <code>update-in</code>을 쓰자</li><li><code>hash-map desctructing</code>은 같은 이름을 사용할거라면 <code>{:keys &#91;…&#93;}</code>를 사용해도 좋다.</li><li><code>max-key</code>라는 좋은게 있더라</li></ul><h1>Day 5</h1><p>AOC 2018 Day 5. 대소문자 잘 구분하는 문제. 어렵진 않았음.</p><ul><li><a href='https://github.com/jungwookim/aoc-exercise/blob/master/src/p2018_day5.clj'>내가 푼 코드</a></li><li><a href='https://github.com/jungwookim/aoc-exercise/blob/master/src/p2018_day5_reviewed.clj'>리뷰 받은 코드</a></li></ul><p>특별한 내용은 없었던 것 같다.</p><h1>Day 6</h1><p>AOC 2018 Day 6. 문제 접근법 자체가 약간 어려웠던 문제. 실제 코드로 구현하는데도 시간이 많이 걸렸음.</p><ul><li><a href='https://github.com/jungwookim/aoc-exercise/blob/master/src/p2018_day6.clj'>내가 푼 코드</a></li><li><a href='https://github.com/jungwookim/aoc-exercise/blob/master/src/p2018_day6_reviewed.clj'>리뷰 받은 코드</a></li></ul><h2>주요 내용</h2><ul><li>return type의 일관성을 가지면 좋다.</li><li><code>group-by</code>라는 것이 있다.</li><li>aggregation할 때 <code>frequencies</code>를 잘 사용해도 좋다.</li></ul><h1>Day 7</h1><p>AOC 2018 Day 7. workers들의 일을 잘 할당하는 문제.</p><ul><li><a href='https://github.com/jungwookim/aoc-exercise/blob/master/src/p2018_day7.clj'>내가 푼 코드</a></li><li><a href='https://github.com/jungwookim/aoc-exercise/blob/master/src/p2018_day7_reviewed.clj'>리뷰 받은 코드</a></li></ul><h2>주요 내용</h2><ul><li><code>iterate</code> + <code>drop-while</code>을 잘 쓰면 좋다</li><li>^ 이거 쓸 때 주의해야하는 점들이 몇가지 있는데 일단 <code>LazySeq</code>를 반환하기 때문에 이게 가능한 것을 꼭 인지하고 써야한다. 그렇기 때문에 <code>take</code>, <code>first</code> 등 을 하지 않으면 drop-while의 결과가 무한하기 때문에 <code>first</code>, <code>take</code> 등을 같이 꼭 사용하도록 하자.</li><li>사용법이라기 보다는 이 개념을 인지하고 있자.</li><li>상태라는 걸 잘 관리한다는 측면에서 생각하자</li><li>이 문제는 클로저랑 상관 없이 ps적으로 봐도 좋은 문제인 것 같다</li><li><code>threading-macro</code>는 함수의 조합으로 절차지향적으로 생각할 수 있게 하는 좋은 도구인 것 같다</li><li>그럼에도 불구하고 디버깅에 많은 시간을 썼는데 반성하도록 하자</li></ul><h1>Day 8</h1><p>AOC 2020 Day 1, 4. 간단한 두 문제였다. 생각해보면 첫 날에 풀었다면 조금 헤맸을 수도 있지만 부트캠프 8일차에 풀기엔 쉬웠던 문제.</p><ul><li><a href='https://github.com/jungwookim/aoc-exercise/blob/master/src/p2018_day8.clj'>내가 푼 코드</a></li></ul><h2>주요 내용</h2><ul><li>Day 7에서 얻은 지식들 덕분에 쉽게 푼 것 같다.</li><li><code>map-indexed</code>는 처음 써봤다.</li><li><code>drop-while</code> 멈추는 조건이 할 때마다 약간 헷갈린다.</li></ul><h2>코드</h2><ul><li><a href='https://github.com/jungwookim/aoc-exercise/blob/master/src/p2020_day1.clj'>2020-day1</a></li><li><a href='https://github.com/jungwookim/aoc-exercise/blob/master/src/p2020_day4.clj'>2020-day4</a></li></ul><h2>회고</h2><ul><li><code>for</code>를 사용하면 combination처럼 2중 루프를 돌게 되는데 이 때 break-point로 <code>:when</code> 같은 걸 사용할 수 있더라.</li><li>두번째 문제는 파싱만 잘하면 되는 문제였다. 다만 정규식에 익숙하지 않아 항상 불편한 점은 있다.</li><li><code>clojure.spec</code> 이라는 걸 활용해보자</li></ul><h1>Reference</h1><ul><li><a href='ttps://github.com/jungwookim/aoc-exercise/tree/master/src'>my github repo</a></li><li><a href='ttps://clojuredocs.org/clojure.core'>clojure library documents</a></li><li><a href='ttps://adventofcode.com/2018/day/3'>advent of code</a></li></ul>
+<p>Discuss this post <a href="">here</a>.</p>
+<p><i>Published: 2021-11-17</i></p>
+
+<p>
+  <i>
+  Tagged:
+  
+  <span class="tag">
+    <a href="tags/Clojure.html">Clojure</a>
+  </span>
+  
+  <span class="tag">
+    <a href="tags/Adventofcode.html">Adventofcode</a>
+  </span>
+  
+  </i>
+</p>
+
+
+
+      
+      <div style="margin-bottom: 20px; float: right;">
+        <a class="page-link" href="archive.html">Archive</a>
+      </div>
+      
+    </div>
+  </body>
+</html>

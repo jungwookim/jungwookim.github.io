@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Debugging Clojure with trace and portal</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="application/atom+xml" rel="alternate" href="atom.xml" title="Debugging Clojure with trace and portal">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-clojure.min.js"></script>
+    <script type="text/javascript" src="https://livejs.com/live.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css">
+
+
+
+    <!-- Social sharing (Facebook, Twitter, LinkedIn, etc.) -->
+    <meta name="title" content="Debugging Clojure with trace and portal">
+    <meta name="twitter:title" content="Debugging Clojure with trace and portal">
+    <meta property="og:title" content="Debugging Clojure with trace and portal">
+    <meta property="og:type" content="website">
+
+
+    <meta name="twitter:url" content="https://github.com/borkdude/quickblog/2022-10-11-Debugging_clojure_with_trace_and_portal.html">
+    <meta property="og:url" content="https://github.com/borkdude/quickblog/2022-10-11-Debugging_clojure_with_trace_and_portal.html">
+
+
+    <meta name="twitter:card" content="summary">
+
+
+
+  </head>
+  <body>
+
+    <div class="site-header">
+      <div class="wrapper">
+        <div class="site-nav">
+          <a class="page-link" href="archive.html">Archive</a>
+          <a class="page-link" href="tags/index.html">Tags</a>
+          <a class="page-link" href="">Discuss</a>
+	  <a class="page-link" href="atom.xml">
+            Feed
+          </a>
+	  
+	  
+        </div>
+        <div>
+          <h1 class="site-title">
+            <a class="page-link" href="index.html">Jungwoo Kim</a>
+          </h1>
+	  <p>A blog about blogging quickly</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrapper">
+
+      <h1>
+  
+  Debugging Clojure with trace and portal
+  
+</h1>
+<p>Since I started with Debugging clojure, I have used to use <code>prn</code> to see results. I also used <code>#dbg</code> in calva, which looks like a traditional debug mode and good as well. However, I'd like to improve my debugging with REPL driven development and be more productive. I have searched for things and end up with finding nice combinations, <a href='trace'>trace</a> + <a href='portal'>portal</a>.</p><h2>Prerequisite</h2><p>Understanding <a href='tap'>tap></a></p><h2>Trace</h2><p><a href='trace'>trace</a> is written by <a href='https://github.com/hlship'>hlship</a> and a README contains motivations. I find it strong to leave trace codes in production because the debug is traced when the set-up is on. The other point is it let us know where it is traced. If you experienced with <code>tap&gt;</code>, it's hard to trace a bunch of values in a tap.</p><h2>Portal</h2><p>[portal] is written by <a href='https://github.com/djblue'>djblue</a>. It connects to REPL and can navitate data. Obviously, it's related with UI stuff and navigation tool.</p><h3>1. Using prn</h3><p>Easy approach to debug.<pre><code class="lang-clojure">&#40;defn inspector
+  &#91;x&#93;
+  &#40;prn x&#41;
+  x&#41;
+
+&#40;defn calls
+  &#91;&#93;
+  &#40;inspector &quot;called&quot;&#41;&#41;
+
+&#40;defn calls&gt;
+  &#91;&#93;
+  &#40;-&gt; {:value 1}
+      &#40;update :value inc&#41;
+      inspector
+      &#40;assoc :after true&#41;&#41;&#41;
+
+&#40;defn calls&gt;&gt;
+  &#91;&#93;
+  &#40;-&gt;&gt; &#40;range 10&#41;
+       &#40;map inc&#41;
+       inspector
+       &#40;partition 2&#41;&#41;&#41;
+
+&#40;comment
+  &#40;calls&#41;
+  ;; &quot;called&quot;
+  &#40;calls&gt;&#41;
+  ;; {:value 2}
+  &#40;calls&gt;&gt;&#41;
+  ;; &#40;1 2 3 4 5 6 7 8 9 10&#41;
+  &#41;
+</code></pre></p><h3>2. Using tap></h3><p><code>tap&gt;</code> is always good enough but a little bit hard to label.<pre><code class="lang-clojure">&#40;def debug-atom &#40;atom &#91;&#93;&#41;&#41;
+&#40;add-tap &#40;fn &#91;value&#93; &#40;swap! debug-atom #&#40;conj % value&#41;&#41;&#41;&#41;
+
+&#40;comment
+  &#40;tap&gt; 1&#41;
+  @debug-atom
+  ;; &#91;1&#93;
+
+  &#40;tap&gt; {:age  31
+         :name &quot;jungwoo&quot;}&#41;
+  @debug-atom&#41;
+  ;; &#91;1 {:age  31
+         :name &quot;jungwoo&quot;}&#93;
+</code></pre></p><h3>3. Using trace</h3><p>This sample code is from <a href='https://github.com/hlship/trace/blob/main/test/net/lewisship/trace_test.clj'>here</a>. I've forked this repo and changed just few line to make it easy threading macro.<pre><code class="lang-clojure">&#40;defn calls-trace
+  &#91;&#93;
+  &#40;trace :msg &quot;called&quot;&#41;&#41;
+
+&#40;defn calls-trace&gt;
+  &#91;&#93;
+  &#40;-&gt; {:value 1}
+      &#40;update :value inc&#41;
+      &#40;trace&gt; :label :post-inc&#41;
+      &#40;assoc :after true&#41;&#41;&#41;
+
+&#40;defn calls-trace&gt;&gt;
+  &#91;&#93;
+  &#40;-&gt;&gt; &#40;range 10&#41;
+       &#40;map inc&#41;
+       &#40;trace&gt;&gt; :label :post-inc&#41;
+       &#40;partition 2&#41;&#41;&#41;
+
+
+&#40;comment
+  &#40;calls-trace&#41;
+;; no output
+  &#40;trace/setup-default&#41;
+;; Reload this NS to test the remainder:
+  &#40;calls-trace&#41;
+;;   {:in     my-only-trace/calls-trace
+;;    :line   7
+;;    :thread &quot;nREPL-session-90a76836-b2ce-4d07-86db-23db11474218&quot;
+;;    :msg    &quot;called&quot;}
+  &#40;calls-trace&gt;&#41;
+;;   {:in      my-only-trace/calls-trace&gt;
+;;    :line    13
+;;    :thread  &quot;nREPL-session-90a76836-b2ce-4d07-86db-23db11474218&quot;
+;;    :%value% {:value 2}
+;;    :label   :post-inc}
+  &#40;calls-trace&gt;&gt;&#41;
+;;   {:in      my-only-trace/calls-trace&gt;&gt;
+;;    :line    20
+;;    :thread  &quot;nREPL-session-90a76836-b2ce-4d07-86db-23db11474218&quot;
+;;    :%value% &#40;1 2 3 4 5 6 7 8 9 10&#41;
+;;    :label   :post-inc}
+  &#41;
+</code></pre></p><h3>4. Using trace + portal</h3><p>As I mentioned, portal is the UI tool with <code>add-tap</code> so example code is basically same but we need to launch portal like below.<pre><code class="lang-clojure">&#40;comment
+  &#40;calls-trace&#41;
+  &#40;trace/setup-default&#41;
+;; Reload this NS to test the remainder:
+  &#40;do &#40;ns dev&#41;
+      &#40;def portal &#40;&#40;requiring-resolve 'portal.api/open&#41;
+                   {:launcher                     :vs-code
+                    :portal.launcher/window-Title &#40;System/getProperty &quot;user.dir&quot;&#41;}&#41;&#41;
+      &#40;add-tap &#40;requiring-resolve 'portal.api/submit&#41;&#41;&#41;
+  &#40;calls-trace&#41;
+  &#40;calls-trace&gt;&#41;
+  &#40;calls-trace&gt;&gt;&#41;&#41;
+</code></pre></p><p>I was on VS code so the new window is shown up! <img src="../img/portal.png" alt="portal-img" /></p><h2>What should I use?</h2><p>It really depends on cases. I use all of those. This is <a href='https://github.com/jungwookim/debugging-clojure-example'>an whole example code</a>.</p>
+<p>Discuss this post <a href="">here</a>.</p>
+<p><i>Published: 2022-10-11</i></p>
+
+<p>
+  <i>
+  Tagged:
+  
+  <span class="tag">
+    <a href="tags/Clojure.html">Clojure</a>
+  </span>
+  
+  </i>
+</p>
+
+
+
+      
+      <div style="margin-bottom: 20px; float: right;">
+        <a class="page-link" href="archive.html">Archive</a>
+      </div>
+      
+    </div>
+  </body>
+</html>

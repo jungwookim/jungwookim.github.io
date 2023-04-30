@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Clojure Polymorphism</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="application/atom+xml" rel="alternate" href="atom.xml" title="Clojure Polymorphism">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-clojure.min.js"></script>
+    <script type="text/javascript" src="https://livejs.com/live.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css">
+
+
+
+    <!-- Social sharing (Facebook, Twitter, LinkedIn, etc.) -->
+    <meta name="title" content="Clojure Polymorphism">
+    <meta name="twitter:title" content="Clojure Polymorphism">
+    <meta property="og:title" content="Clojure Polymorphism">
+    <meta property="og:type" content="website">
+
+
+    <meta name="twitter:url" content="https://github.com/borkdude/quickblog/2021-11-26-clojure-polymorphism.html">
+    <meta property="og:url" content="https://github.com/borkdude/quickblog/2021-11-26-clojure-polymorphism.html">
+
+
+    <meta name="twitter:card" content="summary">
+
+
+
+  </head>
+  <body>
+
+    <div class="site-header">
+      <div class="wrapper">
+        <div class="site-nav">
+          <a class="page-link" href="archive.html">Archive</a>
+          <a class="page-link" href="tags/index.html">Tags</a>
+          <a class="page-link" href="">Discuss</a>
+	  <a class="page-link" href="atom.xml">
+            Feed
+          </a>
+	  
+	  
+        </div>
+        <div>
+          <h1 class="site-title">
+            <a class="page-link" href="index.html">Jungwoo Kim</a>
+          </h1>
+	  <p>A blog about blogging quickly</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrapper">
+
+      <h1>
+  
+  Clojure Polymorphism
+  
+</h1>
+<p>clojure의 다형성에 대해서 알아보자</p><p>다형성이라고 불러도 될 지 모르겠는데 약간 디자인 패턴 중 하나인 팩토리 패턴과 유사하다고도 볼 수 있겠다.</p><pre><code class="lang-clojure">&#40;defmulti 이름 docString? attr-map? 디스패치함수 &amp; 옵션&#41;
+
+&#40;defmethod 멀티펑션 디스패치값 &amp; fn-tail&#41; ; fn-tail이라고 하면 파라미터와 함수 내용을 말하는 것으로 확인
+</code></pre><p>예제들을 여러개 봤는데 처음엔 이해하기 힘들었는데 천천히 이해해보도록 하자.</p><pre><code class="lang-clojure">&#40;ns were-creatures&#41;
+➊ &#40;defmulti full-moon-behavior &#40;fn &#91;were-creature&#93; &#40;:were-type were-creature&#41;&#41;&#41; ; multifn 함수 이름과 함수 내용을 정의했다
+➋ &#40;defmethod full-moon-behavior :wolf
+  &#91;were-creature&#93;
+  &#40;str &#40;:name were-creature&#41; &quot; will howl and murder&quot;&#41;&#41; ; multifn이름을 그대로 쓰고 두번째 인자는 파라미터로 받은 후 디스패치 함수의 실행 결과값이 :wolf와 대응되는지 확인하는 인자, 그리고 그게 대응된다면 마지막에 fn-tail이 호출된다
+➌ &#40;defmethod full-moon-behavior :simmons
+  &#91;were-creature&#93;
+  &#40;str &#40;:name were-creature&#41; &quot; will encourage people and sweat to the oldies&quot;&#41;&#41;
+
+&#40;full-moon-behavior {:were-type :wolf
+➍                      :name &quot;Rachel from next door&quot;}&#41;
+; =&gt; &quot;Rachel from next door will howl and murder&quot;
+
+&#40;full-moon-behavior {:name &quot;Andy the baker&quot;
+➎                      :were-type :simmons}&#41;
+; =&gt; &quot;Andy the baker will encourage people and sweat to the oldies&quot;
+</code></pre><h1>Reference</h1><ul><li><a href='https://www.braveclojure.com/multimethods-records-protocols/'>brave clojure multimethods</a></li><li><a href='https://clojuredocs.org/clojure.core/defmulti'>defmulti</a></li><li><a href='https://clojuredocs.org/clojure.core/defmethod'>defmethod</a></li></ul>
+<p>Discuss this post <a href="">here</a>.</p>
+<p><i>Published: 2021-11-26</i></p>
+
+<p>
+  <i>
+  Tagged:
+  
+  <span class="tag">
+    <a href="tags/Clojure.html">Clojure</a>
+  </span>
+  
+  </i>
+</p>
+
+
+
+      
+      <div style="margin-bottom: 20px; float: right;">
+        <a class="page-link" href="archive.html">Archive</a>
+      </div>
+      
+    </div>
+  </body>
+</html>

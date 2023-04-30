@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Jungwoo Kim</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="application/atom+xml" rel="alternate" href="atom.xml" title="Jungwoo Kim">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-clojure.min.js"></script>
+    <script type="text/javascript" src="https://livejs.com/live.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css">
+
+
+
+    <!-- Social sharing (Facebook, Twitter, LinkedIn, etc.) -->
+    <meta name="title" content="Jungwoo Kim">
+    <meta name="twitter:title" content="Jungwoo Kim">
+    <meta property="og:title" content="Jungwoo Kim">
+    <meta property="og:type" content="website">
+
+    <meta name="description" content="A blog about blogging quickly">
+    <meta name="twitter:description" content="A blog about blogging quickly">
+    <meta property="og:description" content="A blog about blogging quickly">
+
+
+    <meta name="twitter:url" content="https://github.com/borkdude/quickblog/index.html">
+    <meta property="og:url" content="https://github.com/borkdude/quickblog/index.html">
+
+
+    <meta name="twitter:card" content="summary">
+
+
+
+  </head>
+  <body>
+
+    <div class="site-header">
+      <div class="wrapper">
+        <div class="site-nav">
+          <a class="page-link" href="archive.html">Archive</a>
+          <a class="page-link" href="tags/index.html">Tags</a>
+          <a class="page-link" href="">Discuss</a>
+	  <a class="page-link" href="atom.xml">
+            Feed
+          </a>
+	  
+	  
+        </div>
+        <div>
+          <h1 class="site-title">
+            <a class="page-link" href="index.html">Jungwoo Kim</a>
+          </h1>
+	  <p>A blog about blogging quickly</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrapper">
+
+      
+    <div>
+        <h1><a href="2023-04-16-gerrit-102.html">Github 사용자를 위한 Gerrit (2)</a></h1>
+        <p>제목이 이제 적절치 않을 수 있겠다. 비교보다는 이제 새로운 관점에 대한 내용이 많은 것 같다. 1편에서 다루지 못했던 내용들에 대해서 몇가지 알아보자. <a href='https://trunkbaseddevelopment.com/'>Trunk Based Development</a>라는 개념이 Google에서 개발 방법론으로 많이 택하는 것인데, 이것이 Gerrit의 철학과도 맞지 않나 생각이 든다. Github은 버전 관리를 Git을 통해서 할 수 있게 해주는 어플리케이션일 뿐이라 사용법이 아주 다양한데, Gerrit은 그 사용법을 TBD에 더 적합하게 만들어주는 것이 아닌가라는 생각이 든다.</p><h2>Goal</h2><ul><li>Trunk based development를 지향한다.</li><li>짧은 생명 주기를 가진 CL이 항상 main branch에 머지된다.</li><li>리니어한 커밋 히스토리를 가지면 좋다.</li></ul><p>위 3개를 다 만족하기 위한 방식으로 Gerrit이 주는 장점이 여럿 있다.</p><h2>Topic</h2><p>(설정하기 따라 다르겠지만) 로컬에서 feature 브랜치를 따서 작업을 하더라도 원격 저장소에서는 그것이 브랜치가 되어 main 브랜치에 Pull Request가 되는 개념이 아니다. 로컬에서 feature 브랜치를 <code>git review</code>하게 된다면 해당 feature라는 <code>Topic</code>이 CL에 붙어서 1편에서 설명한 그대로 Commit 자체가 CL이 되어 리뷰 대상이 된다. 즉, 항상 main branch로 commit되는 CL만 있는 것이다. 참 재밌는 것 같다.</p><h2>중요한 점</h2><p>반복되는 점이지만 그만큼 중요한 점인데 CL의 단위는 커밋 단위이고 크기는 작고 생명 주기는 짧다. 그리고 항상 배포 가능한 master에 병합이 된다. 이점은 전체 코드의 안정성과 개발의 생산성을 높여준다.</p><h2>Tip</h2><p>그렇다면 우리는 Commit을 조금 더 신중하게 해야하고 (Commit과 Save는 다르고 Save 개념으로 사용하고 싶다면 Stash를 사용할 것을 권장), 그렇다면 잘 commit하는 것도 중요하다. 그리고 rebase를 잘 활용해서 main branch의 커밋을 땡겨오도록 한다.</p><h3>git add -p</h3><p><code>p tag</code>를 사용한다면 hunk 단위로 commit을 조절할 수 있다. 가끔 vscode에서 한 파일 내의 변경사항을 부분적으로 commit하고 싶을 때 종종 사용했는데 Gerrit을 사용하는 환경에서는 이것들이 더 중요하게 느껴진다.</p><h3>git rebase</h3><p>git rebase가 더 중요해졌다. 사실 Rebase하지 않고 Merge Commit을 만들고, Squash Merge를 하게 된다면 위의 시나리오와 아주 큰 차이점은 없기도 하다. 그렇지만 이는 약간 CL을 바라보는 관점이 Github과 Gerrit이 다르다보니 다르게 문제를 해결한 것 같다. 그래서 rebase를 적절히 잘 해주는게 중요하고, 이 때 여러 commit에 대해서 다루어야하는 일도 있다보니 <code>git rebase -i</code>를 이용하는 경우가 종종 있다.</p><h2>Attention Set</h2><p>리뷰를 하다보면 리뷰어와 리뷰이 중에 해당 CL에 대해서 주의를 기울이고 있는 차례인지 헷갈리는 때가 있지 않은가? 그런 혼란을 피할 수 있는 개념이 Attention Set이다. 마치 Turn제 게임 같은 것이다. 이 CL을 봐야하는 추구의 차례인지 지정되는 룰이 있고 룰을 만들 수도, 그리고 그냥 명시할 수도 있다. 그렇게 되면 불필요하게 리뷰하러 들어가서 이거 반영이 되었나?라고 확인하는 시간을 소모하거나 할 필요가 없다.</p><h2>마무리</h2><p>Github과 Gerrit을 다 아는 것은 아니지만 그래도 초심자의 경험은 중요하니 이정도로 기록하는 것도 의미가 있지 않을까 생각이 든다. 조금씩 알게 되면 더 기록해나가도록 하겠다.</p><h2>Reference</h2><ul><li><a href='https://www.gerritcodereview.com/'>Official Site</a></li><li><a href='https://gerrit-review.googlesource.com/Documentation/'>Documentation</a></li><li><a href='https://google.github.io/eng-practices/'>Google Code Review</a></li><li><a href='https://docs.opendev.org/opendev/git-review/latest/'>git review</a></li></ul>
+        
+        
+        <p><i>Published: 2023-04-16</i></p>
+        
+            <p><i>
+                Tagged:
+                
+                    <span class="tag">
+                        <a href="tags/Gerrit.html">Gerrit</a>
+                    </span>
+                
+                    <span class="tag">
+                        <a href="tags/Github.html">Github</a>
+                    </span>
+                
+                    <span class="tag">
+                        <a href="tags/Git.html">Git</a>
+                    </span>
+                
+            </i></p>
+        
+    </div>
+
+    <div>
+        <h1><a href="2023-04-08-gerrit-101.html">Github 사용자를 위한 Gerrit (1)</a></h1>
+        <h2>Introduction</h2><p><a href='https://www.gerritcodereview.com/'>Gerrit</a>을 이해하는데 필요한 내용을 Github 사용자들에게 알기 쉽게 설명해보자.</p><h2>Disclaimer</h2><p>Git 전략 - Flow, Branch, Commit 관리 - 는 다 다를 수 있음을 유의할 것.</p><h2>Github Workflow</h2><p><code>Github</code>을 이용하는 흔한 Workflow를 생각해보자. Local Machine에서 새로운 작업 브랜치를 만들고 해당 브랜치에서 작업을 한다. 그리고 의미 단위로 보통 commit을 한다. 그리고나서 push하고 Pull Request를 생성해서 <strong>리뷰를 받고</strong> master branch에 Merge가 된다. 제일 많은 상황에서의 워크플로우이다. 즉, Github에서는 Branch의 변경사항 전체를 ChangeList라고 고려해서 Review를 한다.</p><h3>Github Workflow Examples</h3><p>Branch 생성 및 Checkout<pre><code class="lang-zsh">git branch &lt;branch-name&gt;
+git checkout &lt;branch-name&gt;
+</code></pre></p><p>Unstage -> Stage Files<pre><code class="lang-zsh">git add .
+</code></pre></p><p>Commit<pre><code class="lang-zsh">git commit -m &quot;commit message&quot;
+</code></pre></p><p>Remote 저장소로 Push<pre><code class="lang-zsh">git push
+</code></pre></p><p>위처럼 작업하면 대부분의 상황에서는 물 흐르듯이 흘러갈 것이다. Conflicts나 rebase/pull 하는 것도 종종 발생하니 이것은 뒷부분에 부록으로 다루어보자.</p><h2>Gerrit Workflow</h2><p><code>Gerrit</code>과 Github에서의 Workflow의 가장 큰 차이는 ChangeList, 즉 Review의 Unit(단위)가 Pull Request가 아니라 Commit이라는 점이다. 즉, Commit 단위로 리뷰를 한다는 것이다! 이렇게 되면 commit 메시지나 commit 단위를 잘 쪼개는게 중요하다. 그러다보니 <a href='https://www.atlassian.com/git/tutorials/rewriting-history#git-commit--amend'><code>git commit --amend</code></a>를 자주 사용하게 된다.</p><p>하나의 브랜치에 리뷰 단위가 Commit 단위로 쪼개지면서 리뷰를 받을 수 있는 것이다. 이는 ChangeList가 작아지게 되고 그에 따른 이득은 <a href='https://google.github.io/eng-practices/'>구글 코드 리뷰</a>에서 많이 나오니 생략한다.</p><h3>Gerrit Workflow Examples</h3><p>Commit 전까지의 플로우는 거의 같다.</p><p><code>amend</code> tag를 더 자주 사용하게 된다.<pre><code class="lang-zsh">git commit --amend
+</code></pre></p><p>Review 요청<pre><code class="lang-zsh">git rewiew
+</code></pre></p><h2>Outro</h2><p><a href='https://google.github.io/eng-practices/'>구글 코드 리뷰</a> 문서를 보면서 ChangeList에 대한 내용이 아주 상세히 다루어질 때마다 Pull Request를 매번 작게 만드는게 중요하지만 번거로운 일이라고 생각을 했었는데, 더 작은 단위로 할 수 있는 도구들을 구글에서는 사용하고 있다보니 이번에 더 잘 이해하게 된 것 같다.</p><h2>Reference</h2><ul><li><a href='https://www.gerritcodereview.com/'>Official Site</a></li><li><a href='https://gerrit-review.googlesource.com/Documentation/'>Documentation</a></li><li><a href='https://google.github.io/eng-practices/'>Google Code Review</a></li><li><a href='https://docs.opendev.org/opendev/git-review/latest/'>git review</a></li></ul>
+        
+        
+        <p><i>Published: 2023-04-08</i></p>
+        
+            <p><i>
+                Tagged:
+                
+                    <span class="tag">
+                        <a href="tags/Gerrit.html">Gerrit</a>
+                    </span>
+                
+                    <span class="tag">
+                        <a href="tags/Github.html">Github</a>
+                    </span>
+                
+                    <span class="tag">
+                        <a href="tags/Git.html">Git</a>
+                    </span>
+                
+            </i></p>
+        
+    </div>
+
+    <div>
+        <h1><a href="2023-03-25-stackoverflow_2022_survey.html">2022 stackoverflow survey</a></h1>
+        <p>2022년 스택오버플로우 설문 조사 결과</p><p>개발자 프로필부터, 프로그래밍 기술(Language, Database, Tool 등), 커뮤니티 등등 아주 많은 범위에서 나온 결과.</p><p><a href='https://survey.stackoverflow.co/2022/#top-paying-technologies'>Top paying tech</a> Clojure 개발자가 무려 1등! 상위 언어들은 함수형 언어(F#, Scala, Elixir, OCaml)도 보이고 Rust, Go 같은 동시성이나 안정성, 퍼포먼스와 관련되어 강조된 언어도 보인다. 언어는 표현수단일 뿐이지만, 그래도 개발자들한테 흥미로운 자극을 주는 것은 사실.</p><p><a href='https://survey.stackoverflow.co/2022/#programming-scripting-and-markup-languages'>Loved vs Dreaded Programming</a> Rust, Elixir, Clojure. 올해엔 Elixir를 꼭 사용해봐야겠다.</p><p><a href='https://survey.stackoverflow.co/2022/#web-frameworks-and-technologies'>Loved Dreaded Web Frameworks</a> 앞의 내용과 비슷하게 올해엔 Elixir와 함께 Pheonix를 사용해볼 일이 있으면 좋겠다. 그리고 재밌는 건, Clojure는 프레임워크라는게 없기(?) 때문에 데이터가 없는데 뭔가 당연하기도 하고 다행이다 싶다. Frameworks은 Frame에 맞게 Works를 하는 것이기 때문에...</p><p>재미로 읽는 설문조사이긴 하지만, 여기 나온 조사의 결과들과 한국에서의 인기는 상관관계가 없는 것 같다. 한편으로 아쉽기도 하고 이게 현실인 것을 뭐 어쩌하리.</p><p>개인 프로젝트에 사용하거나, 회사에서 스터디를 통해 장점을 알아가는 방법을 찾아야할 듯하다.</p>
+        
+        
+        <p><i>Published: 2023-03-25</i></p>
+        
+            <p><i>
+                Tagged:
+                
+                    <span class="tag">
+                        <a href="tags/Clojure.html">Clojure</a>
+                    </span>
+                
+                    <span class="tag">
+                        <a href="tags/Diary.html">Diary</a>
+                    </span>
+                
+            </i></p>
+        
+    </div>
+
+
+
+      
+      <div style="margin-bottom: 20px; float: right;">
+        <a class="page-link" href="archive.html">Archive</a>
+      </div>
+      
+    </div>
+  </body>
+</html>
