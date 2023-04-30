@@ -36,12 +36,12 @@
         <div class="site-nav">
           <a class="page-link" href="archive.html">Archive</a>
           <a class="page-link" href="tags/index.html">Tags</a>
-          <a class="page-link" href="">Discuss</a>
+          <a class="page-link" href="https://github.com/jungwookim/jungwookim.github.io/discussions">Discuss</a>
 	  <a class="page-link" href="atom.xml">
             Feed
           </a>
 	  
-	  
+	  <a class="page-link" href="about.html">About</a>
         </div>
         <div>
           <h1 class="site-title">
@@ -67,7 +67,7 @@ git checkout &lt;branch-name&gt;
 </code></pre></p><p>위처럼 작업하면 대부분의 상황에서는 물 흐르듯이 흘러갈 것이다. Conflicts나 rebase/pull 하는 것도 종종 발생하니 이것은 뒷부분에 부록으로 다루어보자.</p><h2>Gerrit Workflow</h2><p><code>Gerrit</code>과 Github에서의 Workflow의 가장 큰 차이는 ChangeList, 즉 Review의 Unit(단위)가 Pull Request가 아니라 Commit이라는 점이다. 즉, Commit 단위로 리뷰를 한다는 것이다! 이렇게 되면 commit 메시지나 commit 단위를 잘 쪼개는게 중요하다. 그러다보니 <a href='https://www.atlassian.com/git/tutorials/rewriting-history#git-commit--amend'><code>git commit --amend</code></a>를 자주 사용하게 된다.</p><p>하나의 브랜치에 리뷰 단위가 Commit 단위로 쪼개지면서 리뷰를 받을 수 있는 것이다. 이는 ChangeList가 작아지게 되고 그에 따른 이득은 <a href='https://google.github.io/eng-practices/'>구글 코드 리뷰</a>에서 많이 나오니 생략한다.</p><h3>Gerrit Workflow Examples</h3><p>Commit 전까지의 플로우는 거의 같다.</p><p><code>amend</code> tag를 더 자주 사용하게 된다.<pre><code class="lang-zsh">git commit --amend
 </code></pre></p><p>Review 요청<pre><code class="lang-zsh">git rewiew
 </code></pre></p><h2>Outro</h2><p><a href='https://google.github.io/eng-practices/'>구글 코드 리뷰</a> 문서를 보면서 ChangeList에 대한 내용이 아주 상세히 다루어질 때마다 Pull Request를 매번 작게 만드는게 중요하지만 번거로운 일이라고 생각을 했었는데, 더 작은 단위로 할 수 있는 도구들을 구글에서는 사용하고 있다보니 이번에 더 잘 이해하게 된 것 같다.</p><h2>Reference</h2><ul><li><a href='https://www.gerritcodereview.com/'>Official Site</a></li><li><a href='https://gerrit-review.googlesource.com/Documentation/'>Documentation</a></li><li><a href='https://google.github.io/eng-practices/'>Google Code Review</a></li><li><a href='https://docs.opendev.org/opendev/git-review/latest/'>git review</a></li></ul>
-<p>Discuss this post <a href="">here</a>.</p>
+<p>Discuss this post <a href="https://github.com/jungwookim/jungwookim.github.io/discussions">here</a>.</p>
 <p><i>Published: 2023-04-08</i></p>
 
 <p>

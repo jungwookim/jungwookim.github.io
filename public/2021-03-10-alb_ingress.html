@@ -36,12 +36,12 @@
         <div class="site-nav">
           <a class="page-link" href="archive.html">Archive</a>
           <a class="page-link" href="tags/index.html">Tags</a>
-          <a class="page-link" href="">Discuss</a>
+          <a class="page-link" href="https://github.com/jungwookim/jungwookim.github.io/discussions">Discuss</a>
 	  <a class="page-link" href="atom.xml">
             Feed
           </a>
 	  
-	  
+	  <a class="page-link" href="about.html">About</a>
         </div>
         <div>
           <h1 class="site-title">
@@ -70,7 +70,7 @@
       &quot;alb.ingress.kubernetes.io/ssl-policy&quot;       = &quot;ELBSecurityPolicy-TLS-1-1-2017-01&quot;                                                                   // SSL policy. there is default policy though.
     }
 </code></pre></li></ol><p><a href='aws-load-balancer-controller'>이 문서</a>를 보고 대략 위와 같이 작성했다. <code>ingress.class</code>는 필요에 맞게 작성해주고, 대부분 <code>nginx</code>와 관련된 문서가 많았던 것 같다. <code>target&#95;type</code>의 경우에 <code>fargate</code>만 사용하는 경우라면 <code>ip</code>로 설정해야하고, <code>scheme</code>은 <code>default</code>값이 <code>internal</code>인데 우리는 <code>public subnets</code>에 로드밸런서를 위치 시키고 싶어서 <code>internet-facing</code>으로 설정. 다른 <code>healthcheck</code>나 <code>listen-ports</code>들은 서버 설정에 맞게 변경해주면 된다. 문서를 처음에 대충 읽었을 때는 <code>backend-protocol</code>이 <code>ingress</code>에서 <code>https</code>요청 처리하는 그런 건 줄 알았는데 알고 보니 <code>proxy</code>할 때 <code>pod</code>으로 보내는 요청에 관한 것이었다. 그래서 그냥 <code>HTTP</code>로 뒀다. 위처럼 하니까 잘 됐다.</p><h2>미심쩍은 것</h2><p>사실 <code>NLB</code>에서도 <a href='https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-target-groups.html#client-ip-preservation'>방법</a>이 없는 것은 아니다. 근데 왜 해당 설정을 다 했어도 안되는지는 파악하지 못했다. 다음 과제로 남겨두거나... 다른 <code>proxy</code> 설정이 있나 찾아봐야할 것 같다.</p><h2>Reference</h2><ul><li><a href='https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html'>application_load_balancer</a></li><li><a href='https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.1/guide/ingress/annotations/'>aws-load-balancer-controller</a></li><li><a href='https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-target-groups.html#client-ip-preservation'>client-ip-preservation</a></li><li><a href='https://www.stacksimplify.com/aws-eks/aws-alb-ingress/learn-aws-alb-ingress-on-aws-eks/'>Outline</a></li></ul>
-<p>Discuss this post <a href="">here</a>.</p>
+<p>Discuss this post <a href="https://github.com/jungwookim/jungwookim.github.io/discussions">here</a>.</p>
 <p><i>Published: 2021-03-10</i></p>
 
 <p>

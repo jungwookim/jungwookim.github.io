@@ -36,12 +36,12 @@
         <div class="site-nav">
           <a class="page-link" href="archive.html">Archive</a>
           <a class="page-link" href="tags/index.html">Tags</a>
-          <a class="page-link" href="">Discuss</a>
+          <a class="page-link" href="https://github.com/jungwookim/jungwookim.github.io/discussions">Discuss</a>
 	  <a class="page-link" href="atom.xml">
             Feed
           </a>
 	  
-	  
+	  <a class="page-link" href="about.html">About</a>
         </div>
         <div>
           <h1 class="site-title">
@@ -72,7 +72,7 @@ Shrinking phase: locks are released and no locks are acquired.
 threadA: a = a + 2
 threadB: a = a &#42; 3
 </code></pre><p><code>thread A -&gt; threadB</code>로 순서로 실행될 때랑 <code>threadB -&gt; threadA</code>로 실행될 때의 결과는 다르다. 심지어 두 thread가 <code>a=2</code>의 값으로 실행될 수도 있다. <strong>Race condition</strong>이란 시스템의 행동이 시간이나 다른 사건들에 의해 연속성에 의존하는 시스템의 상태를 의미하게 된다. 이것들은 몇몇의 개발자들도 익숙하지 않은 개념이긴 하다. 또한 이거는 랜덤하게, 예측할 수 없는 행동을 하는 경향도 있다. 디버깅하기도 힘들고. <strong>이러한 이유들 때문에 파이썬이 GIL을 사용한다.</strong></p><p>나중에 이어서 경험했던 Lock들에 대해서 살펴보도록 하자. (golang and MySQL)<h2>Reference</h2></p><ul><li><a href='ttps://en.wikipedia.org/wiki/Lock_(computer_science)'>Lock</a></li><li><a href='ttps://en.wikipedia.org/wiki/Record_locking'>Recording Lock</a></li><li><a href='ttps://en.wikipedia.org/wiki/Two-phase_locking'>2PL</a></li><li><a href='ttps://en.wikipedia.org/wiki/Deadlock'>Deadlock</a></li><li><a href='ttps://wiki.python.org/moin/GlobalInterpreterLock'>python GIL</a></li><li><a href='ttps://python.land/python-concurrency/the-python-gil'>python GIL2</a></li><li><a href='ttps://python.land/python-concurrency/python-multiprocessing'>python Multiprocessing</a></li></ul>
-<p>Discuss this post <a href="">here</a>.</p>
+<p>Discuss this post <a href="https://github.com/jungwookim/jungwookim.github.io/discussions">here</a>.</p>
 <p><i>Published: 2021-09-13</i></p>
 
 <p>
