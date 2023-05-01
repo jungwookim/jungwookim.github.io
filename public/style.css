@@ -3,7 +3,7 @@ body {
   font: 400 16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
   margin: 0;
   padding: 0;
-  color: rgb(51, 65, 85)
+  color: #073642
 }
 
 h1, h2, h3 {
@@ -11,7 +11,7 @@ h1, h2, h3 {
 }
 
 a {
-  color: rgb(51, 65, 85)
+  color: #073642
 }
 
 .wrapper {
@@ -70,4 +70,8 @@ ul.index {
 code {
   white-space: pre;
   background-color: #cbf8e2
+}
+
+html {
+  background-color: #fdf6e3
 }
