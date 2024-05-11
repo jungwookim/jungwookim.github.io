@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Phoenix로 게임 서버 개발하기 (1)</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="application/atom+xml" rel="alternate" href="atom.xml" title="Phoenix로 게임 서버 개발하기 (1)">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-clojure.min.js"></script>
+    <script type="text/javascript" src="https://livejs.com/live.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css">
+
+
+
+    <!-- Social sharing (Facebook, Twitter, LinkedIn, etc.) -->
+    <meta name="title" content="Phoenix로 게임 서버 개발하기 (1)">
+    <meta name="twitter:title" content="Phoenix로 게임 서버 개발하기 (1)">
+    <meta property="og:title" content="Phoenix로 게임 서버 개발하기 (1)">
+    <meta property="og:type" content="website">
+
+
+    <meta name="twitter:url" content="https://github.com/borkdude/quickblog/2023-11-19-phoenix.html">
+    <meta property="og:url" content="https://github.com/borkdude/quickblog/2023-11-19-phoenix.html">
+
+
+    <meta name="twitter:card" content="summary">
+
+
+
+  </head>
+  <body>
+
+    <div class="site-header">
+      <div class="wrapper">
+        <div class="site-nav">
+          <a class="page-link" href="archive.html">Archive</a>
+          <a class="page-link" href="tags/index.html">Tags</a>
+          <a class="page-link" href="https://github.com/jungwookim/jungwookim.github.io/discussions">Discuss</a>
+	  <a class="page-link" href="atom.xml">
+            Feed
+          </a>
+	  
+	  <a class="page-link" href="about.html">About</a>
+        </div>
+        <div>
+          <h1 class="site-title">
+            <a class="page-link" href="index.html">Jungwoo Kim</a>
+          </h1>
+	  <p>Define the problem first</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrapper">
+
+      <h1>
+  
+  Phoenix로 게임 서버 개발하기 (1)
+  
+</h1>
+<p>간단한 1:1 대전 온라인 게임을 피닉스로 만들어보자. 피닉스는 풀 스택 프레임워크인데, 백엔드 API 서버로만 사용해도 충분히 좋다. 실시간성이 필요한 게임 개발에 필요한 기술적 지원을 충분히 하고 있다.</p><p><a href='https://hexdocs.pm/phoenix'>https://hexdocs.pm/phoenix</a> 여기를 참고하면서 진행했다.</p><p>기본적으로 postgresdb를 사용하는 것을 생각하고 진행했다. 나는 MacOS를 사용하고 있어서 postgres의 설치는 공식 홈페이지와 다르게 brew를 사용했다.</p><p>노트</p><ul><li>mix 로 만든 Ecto schema에서 reference를 걸었을 때, 타입이 :id로 정의되는데 이게 실제로 로직처리할 때 문제가 되는 것 같다. schema validation시 말이다. 그래서 mix phx.gen.schema|json 으로 만든 후에 id를 integer로 바꿔줘야 한다.</li><li>elixir를 공부 안하고 phoenix로 부딪히면서 elixir에 대한 직관으로 이해하는 중. 장점은 아무래도 언어를 익히기 빠르지만, 단점은 패턴 매칭의 종류나 타이핑에 대해서 아직 서툰 점이 있음.</li><li>phoenix 프레임워크로서 강력하긴 하다. Ecto 구성도 잘해놓은 것 같다.</li></ul>
+<p>Discuss this post <a href="https://github.com/jungwookim/jungwookim.github.io/discussions">here</a>.</p>
+<p><i>Published: 2023-11-19</i></p>
+
+<p>
+  <i>
+  Tagged:
+  
+  <span class="tag">
+    <a href="tags/Elixir.html">Elixir</a>
+  </span>
+  
+  <span class="tag">
+    <a href="tags/Phoenix.html">Phoenix</a>
+  </span>
+  
+  </i>
+</p>
+<p>
+  <script
+    src="https://utteranc.es/client.js"
+    repo="jungwookim/jungwookim.github.io"
+    issue-term="pathname"
+    theme="github-light"
+    crossorigin="anonymous"
+    async>
+  </script>
+</p>
+
+
+
+      
+      <div style="margin-bottom: 20px; float: right;">
+        <a class="page-link" href="archive.html">Archive</a>
+      </div>
+      
+    </div>
+  </body>
+</html>
