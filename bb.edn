@@ -1,5 +1,5 @@
 {:deps {io.github.borkdude/quickblog
-        {:git/sha "2f0043af0cd34c7ebe359a6c57dad48930740de4"}}
+        {:git/sha "caffe692c8d715b30c8851ab8210dbabb19a1785"}}
  :tasks
  {:requires ([quickblog.cli :as cli])
   :init (def opts {:blog-title "Jungwoo Kim"
