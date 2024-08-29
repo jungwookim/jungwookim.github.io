@@ -10,7 +10,7 @@
     <svg id="radar"></svg>
 
     <script>
-        fetch('config.json').then(function(response) {
+        fetch('config/config.json').then(function(response) {
           return response.json();
         }).then(function(data) {
           radar_visualization({
