@@ -12,6 +12,7 @@
         "quadrant": 0,
         "ring": 0,
         "label": "GraphQL",
+        "link": "tags/GraphQL.html",
         "active": true,
         "moved": 0
       },
@@ -19,6 +20,7 @@
         "quadrant": 0,
         "ring": 0,
         "label": "Python",
+        "link": "tags/Python.html",
         "active": true,
         "moved": 0
       },
@@ -47,6 +49,7 @@
         "quadrant": 0,
         "ring": 0,
         "label": "Clojure",
+        "link": "tags/Clojure.html",
         "active": true,
         "moved": 0
       },
@@ -82,6 +85,7 @@
         "quadrant": 0,
         "ring": 2,
         "label": "Elixir",
+        "link": "tags/Elixir.html",
         "active": true,
         "moved": 1
       },
@@ -110,6 +114,7 @@
         "quadrant": 0,
         "ring": 3,
         "label": "Scala",
+        "link": "tags/Scala.html",
         "active": true,
         "moved": -1
       },
@@ -138,6 +143,7 @@
         "quadrant": 1,
         "ring": 0,
         "label": "Kubernetes",
+        "link": "tags/k8s.html",
         "active": true,
         "moved": 0
       },
@@ -166,6 +172,7 @@
         "quadrant": 1,
         "ring": 3,
         "label": "Jenkins",
+        "link": "tags/Jenkins.html",
         "active": true,
         "moved": 0
       },
@@ -201,6 +208,7 @@
         "quadrant": 2,
         "ring": 1,
         "label": "DynamoDB",
+        "link": "tags/DynamoDB.html",
         "active": true,
         "moved": 0
       },
@@ -241,8 +249,17 @@
       },
       {
         "quadrant": 3,
+        "ring": 1,
+        "label": "Bazel",
+        "link": "tags/Bazel.html",
+        "active": true,
+        "moved": 1
+      },
+      {
+        "quadrant": 3,
         "ring": 0,
         "label": "Git",
+        "link": "tags/Git.html",
         "active": true,
         "moved": 0
       },
@@ -250,6 +267,7 @@
         "quadrant": 3,
         "ring": 0,
         "label": "Github",
+        "link": "tags/Github.html",
         "active": true,
         "moved": 0
       },
@@ -257,6 +275,7 @@
         "quadrant": 3,
         "ring": 0,
         "label": "Gerrit",
+        "link": "tags/Gerrit.html",
         "active": true,
         "moved": 0
       },
