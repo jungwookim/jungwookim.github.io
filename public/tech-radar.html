@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="http://zalando.github.io/tech-radar/release/radar-0.8.js"></script>
+  </head>
+    
+  <body>
+
+    <svg id="radar"></svg>
+
+    <script>
+        fetch('./config.json').then(function(response) {
+          return response.json();
+        }).then(function(data) {
+          radar_visualization({
+            repo_url: "https://github.com/jungwookim",
+            title: "Jungwoo Tech Radar",
+            svg_id: "radar",
+            width: 1450,
+            height: 1000,
+            scale: 1.0,
+            colors: {
+              background: "#fff",
+              grid: "#bbb",
+              inactive: "#ddd"
+            },
+            quadrants: [
+              { name: "Languages & Frameworks" },
+              { name: "Cloud & DevOps" },
+              { name: "Data & Datastores" },
+              { name: "Tooling & Practices" },
+            ],
+            rings: [
+            { name: "PROFICIENT", color: "#5ba300" },
+            { name: "DEVELOPING", color: "#009eb0" },
+            { name: "EXPLORING", color: "#c7ba00" },
+            { name: "ARCHIEVED", color: "#e09b96" }
+            ],
+            print_layout: true,
+            links_in_new_tabs: true,
+            entries: data.entries
+          });
+        }).catch(function(err) {
+          console.log('Error loading config.json', err);
+        });
+        
+        </script>
+
+<table>
+    <tr>
+    <td>
+    
+    <h3>What is the Tech Radar?</h3>
+    
+    <p>
+    The Personal Tech Radar is a list of technologies, complemented by an assessment result, called <em>ring assignment</em>. It uses four rings with the following semantics:
+    </p>
+    
+    <ul>
+    <li><strong>PROFICIENT</strong> &mdash; Technologies that I have high confidence in and use regularly in my work. These are well-understood, low-risk technologies that I recommend for widespread use in my personal or professional work.</li>
+    <li><strong>DEVELOPING</strong> &mdash;Technologies that I have experienced a bit and am deepening my knowledge of. I have used these in some projects with positive results, and I am continuing to refine my skills with them. These technologies are slightly more risky as I'm still developing their full potential and limitations.</li>
+    <li><strong>EXPLORING</strong> &mdash; Technologies that I have less experienced and are promising and have potential value for my future work. I am investing time in research and prototyping to understand if these technologies could have a significant impact. These are often new or less familiar technologies that I'm experimenting with to assess their benefits and risks.</li>
+    <li><strong>ARCHIEVED</strong> &mdash; Technologies that I have basic understanding of but do not currently use extensively. These are technologies I might have used in the past or learned at a foundational level, but they are not central to my current projects or focus areas.</li>
+    </ul>
+    
+    </td><td>
+    
+    </td></tr>
+    </table>
+
+  </body>
+
+</html>
