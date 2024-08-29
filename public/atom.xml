@@ -3,7 +3,7 @@
   <title>Jungwoo Kim</title>
   <link href="https://github.com/borkdude/quickblog/atom.xml" rel="self"/>
   <link href="https://github.com/borkdude/quickblog"/>
-  <updated>2024-08-29T07:12:15+00:00</updated>
+  <updated>2024-08-29T07:17:13+00:00</updated>
   <id>https://github.com/borkdude/quickblog</id>
   <author>
     <name>Quick Blogger</name>
@@ -1253,8 +1253,8 @@ mutations
 </code></pre><h3 id="8.1_the_mutators_context_object">8.1 The mutators context object</h3><p>A mutation can contain multiple fields, resulting in the server executing multiple database WRITE/READ operations. However, unlike query fields, which are executed in parallel, mutation fields run in a series, one after the other. If an API consumer sends two mutation fields, the first is guaranteed to finish before the second begins. This is to ensure that a race condition does not happen, but it also complicates the task of something like DataLoader.</p><ul><li>퀴즈1) datatime return값은 datestring보다 timestamp를 권장한다. (책에서)</li><li>퀴즈2) Dataloader의 핵심은 cxxxx와 bxxxx를 사용하는 것이다.</li><li>퀴즈3) user-friendly error messages는 mutation response에 포함될 수 없다.<h1 id="reference">Reference</h1></li><li><a href='ttps://graphql.org/'>GraphQL</a></li><li><a href='ttps://spec.graphql.org/June2018/'>GraphQL Spec</a></li><li><a href='ttps://www.manning.com/books/graphql-in-action'>GraphQL in Action</a></li><li><a href='ttps://graphql.org/swapi-graphql/'>swapi-graphql</a></li><li><a href='ttps://docs.github.com/en/graphql/overview/explorer'>Github-GraphQL</a></li></ul>]]></content>
   </entry>
   <entry>
-    <id>https://github.com/borkdude/quickblog/2022-01-20-graphql_1+N.html</id>
-    <link href="https://github.com/borkdude/quickblog/2022-01-20-graphql_1+N.html"/>
+    <id>https://github.com/borkdude/quickblog/2022-01-20-graphql_1_plus_N.html</id>
+    <link href="https://github.com/borkdude/quickblog/2022-01-20-graphql_1_plus_N.html"/>
     <title>GraphQL 기초와 1+N 문제</title>
     <updated>2022-01-20T23:59:59+00:00</updated>
     <content type="html"><![CDATA[<h1 id="graphql_%EA%B8%B0%EC%B4%88">GraphQL 기초</h1><ul><li>기존의 Rest API의 요청은 하나의 endpoint를 통해 얻을 수 있는 스키마는 한정되어있음</li><li><code>GraphQL</code>의 경우에는 <code>over-fetching</code>을 방지하고, <code>under-fetching</code>에 이점이 있음</li><li><code>api</code>를 요청하는 쪽에서 필요한 데이터를 정의하고 조회할 수 있음</li><li><code>DB</code> 뿐만 아니라 저장 환경을 가리지 않고 사용할 수 있음</li><li><code>query</code> - 데이터 조회(read)</li><li><code>mutation</code> - 데이터 조작(create, update, delete)</li><li><code>subscription</code> - websocket 등 소켓 연결해서 변경사항 구독</li><li>필요한 데이터를 위해 쿼리를 여러개 보낼 수도 있음</li><li>alias도 할 수 있음</li><li>필터링 하려면 인자를 넘기면 됨</li><li>필드는 <code>scalar</code>(like primitive type)과 <code>object</code>가 있음</li><li>중복되는 셀렉션 세트가 있을 때 <code>fragment</code> 사용 -> <code>relay</code> 구현에 중요한 개념</li><li><code>union</code> type - 리스트에 여러 타입을 받을 수 있게 함.</li><li><code>fragment</code>를 사용하거나 in-line fragment 로 사용할 수도 있음.</li><li><code>interface</code> - 여러개의 타입을 반환하게 함.</li><li><code>introspection</code> - api 세부사항에 대한 쿼리 작성 가능하게 해줌.</li></ul><p>간단한 GraphQL syntax<pre class="language-graphql"><code class="lang-graphql language-graphql">query 쿼리명 {

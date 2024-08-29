@@ -1,6 +1,6 @@
 Title: GraphQL in Action Notes
 Date: 2022-02-09
-Tags: Graphql, Book
+Tags: GraphQL, Book
 
 # Part 1. Exploring GraphQL
 
