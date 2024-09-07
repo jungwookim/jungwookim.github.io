@@ -37,7 +37,8 @@ fragment 이름 on 필드 {
 
 # 1+N 문제
 `GraphQL`은 사실 문서 처음에 `1+N` 문제를 언급해줘야한다고 생각함. 1+N 문제가 뭔지 생각해보자.
-```
+
+```graphql
 query 사업자조회 {
     id,
     name,
@@ -47,6 +48,7 @@ query 사업자조회 {
     }
 }
 ```
+
 같은 쿼리를 날린다고 하자. 그럼 보통의 `Graphql resolver`에서는 어떻게 동작하냐고 하면,
 ```sql
 select * from 사업자
