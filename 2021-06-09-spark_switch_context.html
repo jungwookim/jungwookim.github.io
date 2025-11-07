@@ -5,11 +5,11 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link type="application/atom+xml" rel="alternate" href="atom.xml" title="Switch spark context">
-    <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-clojure.min.js"></script>
     <script type="text/javascript" src="https://livejs.com/live.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css">
+    <link rel="stylesheet" href="style.css">
 
 
 
@@ -59,6 +59,19 @@
   Switch spark context
   
 </h1>
+<div class="post-meta">
+  <span class="post-date">2021-06-09</span>
+  
+  <span class="meta-separator">•</span>
+  <span class="post-tags">
+    
+    <a href="tags/Spark.html" class="tag-link">Spark</a>
+    
+    <a href="tags/Pyspark.html" class="tag-link">Pyspark</a>
+    
+  </span>
+  
+</div>
 <h1 id="intro">Intro</h1><p><code>Azure Databricks</code> 원격에서 바로 작업하던 환경에서 아래와 같은 몇가지 이유로 로컬 환경에서도 작업할 수 있도록 해야했다.</p><ul><li>버전 관리가 되었으면 한다</li><li>코드 재사용이 더 활발했으면 한다</li><li>인터페이스 사용이 더 빨랐으면 한다</li><li>로컬 컴퓨터에서 원격으로 <code>Job sumit</code>을 할 수 있으면 좋겠다</li><li><code>local spark</code> 환경에서 <code>Unit test</code> 할 수 있으면 좋겠다</li></ul><p>작업자가 혼자일 때는 저런 것들이 필요 없을 수 있었다면 2명이 된 지금, 앞으로를 생각했을 때 필요한 일이었다.</p><h1 id="%EB%B2%84%EC%A0%84_%EA%B4%80%EB%A6%AC%EA%B3%BC_%EC%BD%94%EB%93%9C_%EC%9E%AC%EC%82%AC%EC%9A%A9">버전 관리과 코드 재사용</h1><p><code>.ipynb</code>과 <code>.py</code>을 관리 해야했는데 크게 어려운 건 없었다. policy만 일단 잘 정하고 빨리 시작하는게 중요했다. 모듈화 할만한 건 <code>.py</code>으로 다 관리하고 <code>notebook</code>에서는 <code>data manipulation</code>만 하기로 하자. 그럼 코드 재사용도 가능해지게 되었고 추후에 <code>serving api</code> 만들 때도 도움이 될 것 같다.</p><h1 id="%EB%A1%9C%EC%BB%AC_ide_%EC%82%AC%EC%9A%A9%EA%B3%BC_%EC%9B%90%EA%B2%A9_%EC%97%B0%EA%B2%B0">로컬 IDE 사용과 원격 연결</h1><p>원격에서 작업하면, 특히 나처럼 spark 입문자에게 <code>api reference</code>를 매번 찾아보면서 하기엔 속도가 안나는 경우가 종종 있다. 실수도 잦고. 그래서 <code>pycharm</code>에서 조금만 설정하면 연결할 수 있게 된다. 그럼 <code>azure databricks notebook</code>에서 작업하는 것과 거의 똑같다. 다만 azure databricks에서 제공하는 몇가지 서비스들(display해서 plotting하거나 등등)을 못쓰는데 그건 <code>pandas</code>로 몇몇 모듈만 만들어놓으면 되니까 문제는 아니다.</p><h1 id="spark_context_%EB%B3%80%EA%B2%BD_%EB%B0%8F_%EB%8B%A8%EC%9C%84_%ED%85%8C%EC%8A%A4%ED%8A%B8">Spark Context 변경 및 단위 테스트</h1><p>로컬에서 원격에 <code>job sumit</code>을 하면서 작업을 주로 하겠지만, 때론 이게 번거로울 때도 많다. 예를 들어, 쉬고 있던 클러스터를 <code>run</code> 해야하거나 <code>unit test</code>를 해야하는데 비싼 원격 클러스터를 쓰기엔 돈이 아까웠다. 그래서 로컬 클러스터랑 원격 클러스터랑 쉽게 context switching을 하고 싶었다. <code>master</code> 연결만 잘 하면 되겠거니 했는데 아무리 해도 <code>session</code>이 원격에 붙길래, 그게 보니까 databricks-connect 패키지에 pyspark 설정을 건드려줘야할 것 같은데 뭔가 영 이상하다. pyspark sub-dep로 관리하는게 아니라 지들 pyspark를 wrapping한 것처럼 사용해서 context switching이 잘 안됐다.</p><p>결론만 말하면, 가상환경을 새로 만들어서 <code>pyspark</code>를 pypi로 새로 깔고 그 환경을 interpreter에 연결해서 실행하니 로컬에서 잘 실행되었다. 후... 로컬 테스트할 때는 환경도 바꾸고 interpreter도 바꾸고 해야해서 약간 번거롭지만 일단 목표한 바는 이루었으니 쓰도록 하자.</p><pre class="language-python"><code class="lang-python language-python">from pyspark.sql import SparkSession
 
 # 기본 원격 클러스터 연결 방식 &#40;databricks-connect configure 에 세팅된대로 연결&#41;
@@ -68,22 +81,7 @@ spark = SparkSession.builder.getOrCreate&#40;&#41;
 spark = SparkSession.builder.master&#40;'local'&#41;.getOrCreate&#40;&#41;
 </code></pre><h1 id="spark_home_%EC%B6%A9%EB%8F%8C_%EB%AC%B8%EC%A0%9C">SPARK_HOME 충돌 문제</h1><p>원격에서 로컬로 잘 연결을 바꿨었다. 문제는 다시 원격에 붙어서 작업하고 싶어서 python interpreter를 바꾸고 작업하는데 여전히 로컬에 붙고 있었다. 이상해서 계속 삽질하다가 <code>databricks-connect test</code>의 결과를 보고 단서를 찾았다. 내용은 <code>SPARK&#95;HOME</code> 환경 변수가 local이랑 가상환경에서 사용하는 거랑 충돌이 나고 있었던 것. 그래서 환경 변수를 잘 수정해서 해결했다. 근데 이거 환경 바꿀 때마다 일일이 신경써주기 귀찮은데 좀 더 편하게 하는 방향을 잡긴 해야겠다.<h2 id="reference">Reference</h2></p><ul><li><a href='https://docs.microsoft.com/en-us/azure/databricks/dev-tools/databricks-connect'>databricks-connect</a></li><li><a href='https://docs.microsoft.com/en-us/azure/databricks/notebooks/github-version-control'>github-version-control</a></li></ul>
 <p>Discuss this post <a href="https://github.com/jungwookim/jungwookim.github.io/discussions">here</a>.</p>
-<p><i>Published: 2021-06-09</i></p>
 
-<p>
-  <i>
-  Tagged:
-  
-  <span class="tag">
-    <a href="tags/Spark.html">Spark</a>
-  </span>
-  
-  <span class="tag">
-    <a href="tags/Pyspark.html">Pyspark</a>
-  </span>
-  
-  </i>
-</p>
 <p>
   <script
     src="https://utteranc.es/client.js"

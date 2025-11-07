@@ -5,11 +5,11 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link type="application/atom+xml" rel="alternate" href="atom.xml" title="Debugging Clojure with trace and portal">
-    <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-clojure.min.js"></script>
     <script type="text/javascript" src="https://livejs.com/live.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css">
+    <link rel="stylesheet" href="style.css">
 
 
 
@@ -59,6 +59,17 @@
   Debugging Clojure with trace and portal
   
 </h1>
+<div class="post-meta">
+  <span class="post-date">2022-10-11</span>
+  
+  <span class="meta-separator">•</span>
+  <span class="post-tags">
+    
+    <a href="tags/Clojure.html" class="tag-link">Clojure</a>
+    
+  </span>
+  
+</div>
 <p>Since I started with Debugging clojure, I have used to use <code>prn</code> to see results. I also used <code>#dbg</code> in calva, which looks like a traditional debug mode and good as well. However, I'd like to improve my debugging with REPL driven development and be more productive. I have searched for things and end up with finding nice combinations, <a href='trace'>trace</a> + <a href='portal'>portal</a>.</p><h2 id="prerequisite">Prerequisite</h2><p>Understanding <a href='tap'>tap></a></p><h2 id="trace">Trace</h2><p><a href='trace'>trace</a> is written by <a href='https://github.com/hlship'>hlship</a> and a README contains motivations. I find it strong to leave trace codes in production because the debug is traced when the set-up is on. The other point is it let us know where it is traced. If you experienced with <code>tap&gt;</code>, it's hard to trace a bunch of values in a tap.</p><h2 id="portal">Portal</h2><p>[portal] is written by <a href='https://github.com/djblue'>djblue</a>. It connects to REPL and can navitate data. Obviously, it's related with UI stuff and navigation tool.</p><h3 id="1._using_prn">1. Using prn</h3><p>Easy approach to debug.<pre class="language-clojure"><code class="lang-clojure language-clojure">&#40;defn inspector
   &#91;x&#93;
   &#40;prn x&#41;
@@ -159,18 +170,7 @@
   &#40;calls-trace&gt;&gt;&#41;&#41;
 </code></pre></p><p>I was on VS code so the new window is shown up! <img src="../img/portal.png" alt="portal-img" /></p><h2 id="what_should_i_use%3F">What should I use?</h2><p>It really depends on cases. I use all of those. This is <a href='https://github.com/jungwookim/debugging-clojure-example'>an whole example code</a>.</p>
 <p>Discuss this post <a href="https://github.com/jungwookim/jungwookim.github.io/discussions">here</a>.</p>
-<p><i>Published: 2022-10-11</i></p>
 
-<p>
-  <i>
-  Tagged:
-  
-  <span class="tag">
-    <a href="tags/Clojure.html">Clojure</a>
-  </span>
-  
-  </i>
-</p>
 <p>
   <script
     src="https://utteranc.es/client.js"

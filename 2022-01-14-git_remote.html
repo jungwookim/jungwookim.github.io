@@ -5,11 +5,11 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link type="application/atom+xml" rel="alternate" href="atom.xml" title="git remote auth 실패시">
-    <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-clojure.min.js"></script>
     <script type="text/javascript" src="https://livejs.com/live.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css">
+    <link rel="stylesheet" href="style.css">
 
 
 
@@ -59,6 +59,17 @@
   git remote auth 실패시
   
 </h1>
+<div class="post-meta">
+  <span class="post-date">2022-01-14</span>
+  
+  <span class="meta-separator">•</span>
+  <span class="post-tags">
+    
+    <a href="tags/Git.html" class="tag-link">Git</a>
+    
+  </span>
+  
+</div>
 <p>git remote 접근이 token 만료되고 업데이트하고 안되었다. 나는 분명히 auth 설정을 다 했는데도. 문제는 ssh로 기본 통신을 하도록 설정해놨는데 왜인지 remote 설정이 https로 되어있던 것. 그래서 간단하게 origin remote를 삭제하고 다시 만들었다.</p><pre class="language-bash"><code class="lang-bash language-bash">❯ git remote -v
 origin  https://github.com/jungwookim/jungwookim.github.io.git &#40;fetch&#41; # ssh로 설정해뒀기 때문에 https를 삭제하고 재설정 필요
 origin  https://github.com/jungwookim/jungwookim.github.io.git &#40;push&#41;
@@ -71,18 +82,7 @@ From github.com:jungwookim/jungwookim.github.io
  &#42; &#91;new branch&#93;      main       -&gt; origin/main
 </code></pre><p>git 초보일지</p>
 <p>Discuss this post <a href="https://github.com/jungwookim/jungwookim.github.io/discussions">here</a>.</p>
-<p><i>Published: 2022-01-14</i></p>
 
-<p>
-  <i>
-  Tagged:
-  
-  <span class="tag">
-    <a href="tags/Git.html">Git</a>
-  </span>
-  
-  </i>
-</p>
 <p>
   <script
     src="https://utteranc.es/client.js"

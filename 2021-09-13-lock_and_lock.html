@@ -5,11 +5,11 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link type="application/atom+xml" rel="alternate" href="atom.xml" title="lock &amp; lock">
-    <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-clojure.min.js"></script>
     <script type="text/javascript" src="https://livejs.com/live.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css">
+    <link rel="stylesheet" href="style.css">
 
 
 
@@ -59,6 +59,17 @@
   lock &amp; lock
   
 </h1>
+<div class="post-meta">
+  <span class="post-date">2021-09-13</span>
+  
+  <span class="meta-separator">•</span>
+  <span class="post-tags">
+    
+    <a href="tags/Database.html" class="tag-link">Database</a>
+    
+  </span>
+  
+</div>
 <p>개발을 하다보면 Lock에 대해서 생각해볼 일이 많다. 일단 Lock이 뭔지 기본 개념부터 알아보자. 추후에 어디에서 발생하는지 알아보고 각 경우에 대해서 어떻게 처리하고 대응하는지 알아보자.</p><h1 id="lock">Lock</h1><p>컴퓨터과학에서 <strong>Lock(or mutex - 상호 배제)</strong>이라고 하면 synchronization primitive(동기화의 기본요소)이다. 여러 쓰레드의 실행이 있을 때 자원(resource)에 대한 접근을 제한하는 메커니즘이다. 락은 동시성 제어 정책을 시행하도록 만들어진 디자인이고, 가능한 다양한 방법을 통해 서로 다른 애플리케이션에 대해 여러 고유한 구현이 존재한다.</p><h2 id="granularity">Granularity</h2><p>lock의 단위를 소개 하기 전에 lock에 대한 3가지 컨셉을 먼저 이해하는게 좋다.</p><ul><li>lock overhead: 잠금을 위해 할당된 메모리 공간, 잠금을 초기화하고 파괴하는 시간, 잠금 획득, 해제 시간과 같은 잠금 사용을 위한 추가 리소스를 말한다. 즉, 잠금을 하면서 생기는 overhead를 말한다. 프로그램이 잠금을 많이 사용할 수록 오버헤드가 발생한다.</li><li>lock contention: 한 프로세스나 스레드가 다른 프로세스나 스레드가 이미 획득한 lock을 획득하려고 시도할 때마다 발생. 사용 가능한 잠금이 세분화될수록 잠금 요청할 가능성이 줄어든다. 예를 들어 테이블 전체를 잠그는 것보다는 row를 잠그는게 낫다.</li><li>deadlock: 최소 2개의 태스크가 다른 태스크가 사용하고 있는 잠금을 기다리고 있는 상태. 서로 물고 물리는 교착상태를 의미한다. 데드락은 아래에서 더 자세히 알아보자.</li></ul><h1 id="database_locks">Database locks</h1><p>먼저 데이터베이스에서의 트랜잭션에 대해서 먼저 알아보자. </p><p>데이터베이스에서의 락은 <code>Transactions</code>의 동기성을 보장한다. 즉, tx 프로세싱이 동시에 만들어질 때, <a href='ttps://en.wikipedia.org/wiki/Two-phase_locking'>two-phase locking</a>을 이용해 동시적 실행이 순차적 실행처럼 실행되게 도와준다. </p><pre><code>two-phase locking
 
 동시성 제어와 관련된 내용이다. 데이터베이스와 트랜잭션 프로세싱에서, two-phase locking&#40;2PL&#41;은 연속성을 보장하는 동시성 제어 방식이다. 이건 다른 이름으로는 데이터베이스 트랜잭션 스케줄이라고도 불립니다. Locks에 관련된 프로토콜은 locks을 이용하여, 한 트랜잭션의 라이프 사이클동안 다른 트랜잭션이 같은 데이터를 접근 하는 것을 막습니다. 2PL 프로토콜에 의해 락은 2가지 단계로 적용 및 제거됩니다.
@@ -73,18 +84,7 @@ threadA: a = a + 2
 threadB: a = a &#42; 3
 </code></pre><p><code>thread A -&gt; threadB</code>로 순서로 실행될 때랑 <code>threadB -&gt; threadA</code>로 실행될 때의 결과는 다르다. 심지어 두 thread가 <code>a=2</code>의 값으로 실행될 수도 있다. <strong>Race condition</strong>이란 시스템의 행동이 시간이나 다른 사건들에 의해 연속성에 의존하는 시스템의 상태를 의미하게 된다. 이것들은 몇몇의 개발자들도 익숙하지 않은 개념이긴 하다. 또한 이거는 랜덤하게, 예측할 수 없는 행동을 하는 경향도 있다. 디버깅하기도 힘들고. <strong>이러한 이유들 때문에 파이썬이 GIL을 사용한다.</strong></p><p>나중에 이어서 경험했던 Lock들에 대해서 살펴보도록 하자. (golang and MySQL)<h2 id="reference">Reference</h2></p><ul><li><a href='ttps://en.wikipedia.org/wiki/Lock_(computer_science)'>Lock</a></li><li><a href='ttps://en.wikipedia.org/wiki/Record_locking'>Recording Lock</a></li><li><a href='ttps://en.wikipedia.org/wiki/Two-phase_locking'>2PL</a></li><li><a href='ttps://en.wikipedia.org/wiki/Deadlock'>Deadlock</a></li><li><a href='ttps://wiki.python.org/moin/GlobalInterpreterLock'>python GIL</a></li><li><a href='ttps://python.land/python-concurrency/the-python-gil'>python GIL2</a></li><li><a href='ttps://python.land/python-concurrency/python-multiprocessing'>python Multiprocessing</a></li></ul>
 <p>Discuss this post <a href="https://github.com/jungwookim/jungwookim.github.io/discussions">here</a>.</p>
-<p><i>Published: 2021-09-13</i></p>
 
-<p>
-  <i>
-  Tagged:
-  
-  <span class="tag">
-    <a href="tags/Database.html">Database</a>
-  </span>
-  
-  </i>
-</p>
 <p>
   <script
     src="https://utteranc.es/client.js"

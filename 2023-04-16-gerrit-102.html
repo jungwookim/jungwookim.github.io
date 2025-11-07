@@ -5,11 +5,11 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link type="application/atom+xml" rel="alternate" href="atom.xml" title="Github 사용자를 위한 Gerrit (2)">
-    <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-clojure.min.js"></script>
     <script type="text/javascript" src="https://livejs.com/live.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css">
+    <link rel="stylesheet" href="style.css">
 
 
 
@@ -59,28 +59,24 @@
   Github 사용자를 위한 Gerrit (2)
   
 </h1>
+<div class="post-meta">
+  <span class="post-date">2023-04-16</span>
+  
+  <span class="meta-separator">•</span>
+  <span class="post-tags">
+    
+    <a href="tags/Gerrit.html" class="tag-link">Gerrit</a>
+    
+    <a href="tags/Github.html" class="tag-link">Github</a>
+    
+    <a href="tags/Git.html" class="tag-link">Git</a>
+    
+  </span>
+  
+</div>
 <p>제목이 이제 적절치 않을 수 있겠다. 비교보다는 이제 새로운 관점에 대한 내용이 많은 것 같다. 1편에서 다루지 못했던 내용들에 대해서 몇가지 알아보자. <a href='https://trunkbaseddevelopment.com/'>Trunk Based Development</a>라는 개념이 Google에서 개발 방법론으로 많이 택하는 것인데, 이것이 Gerrit의 철학과도 맞지 않나 생각이 든다. Github은 버전 관리를 Git을 통해서 할 수 있게 해주는 어플리케이션일 뿐이라 사용법이 아주 다양한데, Gerrit은 그 사용법을 TBD에 더 적합하게 만들어주는 것이 아닌가라는 생각이 든다.</p><h2 id="goal">Goal</h2><ul><li>Trunk based development를 지향한다.</li><li>짧은 생명 주기를 가진 CL이 항상 main branch에 머지된다.</li><li>리니어한 커밋 히스토리를 가지면 좋다.</li></ul><p>위 3개를 다 만족하기 위한 방식으로 Gerrit이 주는 장점이 여럿 있다.</p><h2 id="topic">Topic</h2><p>(설정하기 따라 다르겠지만) 로컬에서 feature 브랜치를 따서 작업을 하더라도 원격 저장소에서는 그것이 브랜치가 되어 main 브랜치에 Pull Request가 되는 개념이 아니다. 로컬에서 feature 브랜치를 <code>git review</code>하게 된다면 해당 feature라는 <code>Topic</code>이 CL에 붙어서 1편에서 설명한 그대로 Commit 자체가 CL이 되어 리뷰 대상이 된다. 즉, 항상 main branch로 commit되는 CL만 있는 것이다. 참 재밌는 것 같다.</p><h2 id="%EC%A4%91%EC%9A%94%ED%95%9C_%EC%A0%90">중요한 점</h2><p>반복되는 점이지만 그만큼 중요한 점인데 CL의 단위는 커밋 단위이고 크기는 작고 생명 주기는 짧다. 그리고 항상 배포 가능한 master에 병합이 된다. 이점은 전체 코드의 안정성과 개발의 생산성을 높여준다.</p><h2 id="tip">Tip</h2><p>그렇다면 우리는 Commit을 조금 더 신중하게 해야하고 (Commit과 Save는 다르고 Save 개념으로 사용하고 싶다면 Stash를 사용할 것을 권장), 그렇다면 잘 commit하는 것도 중요하다. 그리고 rebase를 잘 활용해서 main branch의 커밋을 땡겨오도록 한다.</p><h3 id="git_add_-p">git add -p</h3><p><code>p tag</code>를 사용한다면 hunk 단위로 commit을 조절할 수 있다. 가끔 vscode에서 한 파일 내의 변경사항을 부분적으로 commit하고 싶을 때 종종 사용했는데 Gerrit을 사용하는 환경에서는 이것들이 더 중요하게 느껴진다.</p><h3 id="git_rebase">git rebase</h3><p>git rebase가 더 중요해졌다. 사실 Rebase하지 않고 Merge Commit을 만들고, Squash Merge를 하게 된다면 위의 시나리오와 아주 큰 차이점은 없기도 하다. 그렇지만 이는 약간 CL을 바라보는 관점이 Github과 Gerrit이 다르다보니 다르게 문제를 해결한 것 같다. 그래서 rebase를 적절히 잘 해주는게 중요하고, 이 때 여러 commit에 대해서 다루어야하는 일도 있다보니 <code>git rebase -i</code>를 이용하는 경우가 종종 있다.</p><h2 id="attention_set">Attention Set</h2><p>리뷰를 하다보면 리뷰어와 리뷰이 중에 해당 CL에 대해서 주의를 기울이고 있는 차례인지 헷갈리는 때가 있지 않은가? 그런 혼란을 피할 수 있는 개념이 Attention Set이다. 마치 Turn제 게임 같은 것이다. 이 CL을 봐야하는 추구의 차례인지 지정되는 룰이 있고 룰을 만들 수도, 그리고 그냥 명시할 수도 있다. 그렇게 되면 불필요하게 리뷰하러 들어가서 이거 반영이 되었나?라고 확인하는 시간을 소모하거나 할 필요가 없다.</p><h2 id="%EB%A7%88%EB%AC%B4%EB%A6%AC">마무리</h2><p>Github과 Gerrit을 다 아는 것은 아니지만 그래도 초심자의 경험은 중요하니 이정도로 기록하는 것도 의미가 있지 않을까 생각이 든다. 조금씩 알게 되면 더 기록해나가도록 하겠다.</p><h2 id="reference">Reference</h2><ul><li><a href='https://www.gerritcodereview.com/'>Official Site</a></li><li><a href='https://gerrit-review.googlesource.com/Documentation/'>Documentation</a></li><li><a href='https://google.github.io/eng-practices/'>Google Code Review</a></li><li><a href='https://docs.opendev.org/opendev/git-review/latest/'>git review</a></li></ul>
 <p>Discuss this post <a href="https://github.com/jungwookim/jungwookim.github.io/discussions">here</a>.</p>
-<p><i>Published: 2023-04-16</i></p>
 
-<p>
-  <i>
-  Tagged:
-  
-  <span class="tag">
-    <a href="tags/Gerrit.html">Gerrit</a>
-  </span>
-  
-  <span class="tag">
-    <a href="tags/Github.html">Github</a>
-  </span>
-  
-  <span class="tag">
-    <a href="tags/Git.html">Git</a>
-  </span>
-  
-  </i>
-</p>
 <p>
   <script
     src="https://utteranc.es/client.js"

@@ -5,11 +5,11 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link type="application/atom+xml" rel="alternate" href="atom.xml" title="Clojure Malli">
-    <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-clojure.min.js"></script>
     <script type="text/javascript" src="https://livejs.com/live.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css">
+    <link rel="stylesheet" href="style.css">
 
 
 
@@ -59,6 +59,17 @@
   Clojure Malli
   
 </h1>
+<div class="post-meta">
+  <span class="post-date">2022-01-12</span>
+  
+  <span class="meta-separator">•</span>
+  <span class="post-tags">
+    
+    <a href="tags/Clojure.html" class="tag-link">Clojure</a>
+    
+  </span>
+  
+</div>
 <h1 id="%EB%8F%99%EA%B8%B0">동기</h1><p>처음에는 type system을 일부 빌려오고 싶었다. 클로저가 동적 타입의 언어이다 보니 개발하는 사람은 데이터 스키마를 어느정도 머릿 속에 가지고 있고 디버깅도 하다보니 오히려 속도를 낼 수 있는 장점이 있지만 해당 코드를 개발하지 않은 사람이 봤을 때에는 추가 개발이 힘든 점이 있다고 느꼈다.</p><p>그래서 리서치를 하다가 Data-driven development를 알게 되었고 찾다보니 Malli를 썼을 때 장점이 있어 보였다.</p><h1 id="%EC%86%8C%EA%B0%9C">소개</h1><p>Malli는 Data-driven 개발을 위해 만들어진 clojure library이다. 새로운 validation과 specification을 제시한다. schema definition, validation, error, value and schema transformation, generation and registries 같은 것들을 포함하고 있다.</p><p>간단하게 어떻게 동작하는지 한번 살펴보자.</p><h1 id="syntax%EC%99%80_simple_validation">Syntax와 simple validation</h1><p>Vector 방식으로 정의<pre class="language-clojure"><code class="lang-clojure language-clojure">&#40;require '&#91;malli.core :as m&#93;&#41;
 
 &#40;def non-empty-string
@@ -333,18 +344,7 @@
   &#40;prn subsidy&#41;&#41;
 </code></pre><h1 id="spec%2C_schema_and_malli">Spec, Schema and Malli</h1><p><code>Schema</code>라는게 있는데 다 좋은데, serializing이랑 de-serializing할 때 non-trivial하다. <code>Spec</code>도 개쩌는데, <code>runtime transformation</code>을 지원하지 않는게 가장 큰 흠이다. <code>malli</code>라는 건 다이나믹 시스템 개발에서 모든 것을 다 지원하기 위해 등장했다. Spec은 runtime transformation이 없다. 그리고 Spec은 global registry 하나를 통해서 다 spec을 관리하는데 Malli는 그럴 필요는 없다. schema와 registry를 값처럼 프로그래밍을 할 수 있다. null이나 optional한 것들도 더 쉽게 처리할 수 있다. 또한 Spec은 schema를 표현하기 위해 macro를 사용한다. 하지만 malli는 vector와 map을 사용한 pure data 그 자체이다. Data가 곧 system이라고 했을 때 더 쉽게 받아들일 수 있다. Spec, Schema 그리고 Malli는 하나만 써야하는 것은 아니고 같이 사용될 수 있다는 것이 중요하다.</p><h1 id="reference">Reference</h1><ul><li><a href='https://github.com/metosin/malli'>malli github</a></li><li><a href='https://www.metosin.fi/blog/malli/'>malli blog 1</a></li><li><a href='https://www.karimarttila.fi/clojure/2020/12/07/malli-clojure-library.html'>malli blog 2</a></li></ul>
 <p>Discuss this post <a href="https://github.com/jungwookim/jungwookim.github.io/discussions">here</a>.</p>
-<p><i>Published: 2022-01-12</i></p>
 
-<p>
-  <i>
-  Tagged:
-  
-  <span class="tag">
-    <a href="tags/Clojure.html">Clojure</a>
-  </span>
-  
-  </i>
-</p>
 <p>
   <script
     src="https://utteranc.es/client.js"

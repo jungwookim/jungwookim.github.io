@@ -5,11 +5,11 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link type="application/atom+xml" rel="alternate" href="atom.xml" title="Clojure Polymorphism">
-    <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-clojure.min.js"></script>
     <script type="text/javascript" src="https://livejs.com/live.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css">
+    <link rel="stylesheet" href="style.css">
 
 
 
@@ -59,6 +59,17 @@
   Clojure Polymorphism
   
 </h1>
+<div class="post-meta">
+  <span class="post-date">2021-11-26</span>
+  
+  <span class="meta-separator">•</span>
+  <span class="post-tags">
+    
+    <a href="tags/Clojure.html" class="tag-link">Clojure</a>
+    
+  </span>
+  
+</div>
 <p>clojure의 다형성에 대해서 알아보자</p><p>다형성이라고 불러도 될 지 모르겠는데 약간 디자인 패턴 중 하나인 팩토리 패턴과 유사하다고도 볼 수 있겠다.</p><pre class="language-clojure"><code class="lang-clojure language-clojure">&#40;defmulti 이름 docString? attr-map? 디스패치함수 &amp; 옵션&#41;
 
 &#40;defmethod 멀티펑션 디스패치값 &amp; fn-tail&#41; ; fn-tail이라고 하면 파라미터와 함수 내용을 말하는 것으로 확인
@@ -80,18 +91,7 @@
 ; =&gt; &quot;Andy the baker will encourage people and sweat to the oldies&quot;
 </code></pre><h1 id="reference">Reference</h1><ul><li><a href='https://www.braveclojure.com/multimethods-records-protocols/'>brave clojure multimethods</a></li><li><a href='https://clojuredocs.org/clojure.core/defmulti'>defmulti</a></li><li><a href='https://clojuredocs.org/clojure.core/defmethod'>defmethod</a></li></ul>
 <p>Discuss this post <a href="https://github.com/jungwookim/jungwookim.github.io/discussions">here</a>.</p>
-<p><i>Published: 2021-11-26</i></p>
 
-<p>
-  <i>
-  Tagged:
-  
-  <span class="tag">
-    <a href="tags/Clojure.html">Clojure</a>
-  </span>
-  
-  </i>
-</p>
 <p>
   <script
     src="https://utteranc.es/client.js"

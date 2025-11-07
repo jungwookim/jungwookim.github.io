@@ -5,11 +5,11 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link type="application/atom+xml" rel="alternate" href="atom.xml" title="Clojure 사용 6개월 후기">
-    <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-clojure.min.js"></script>
     <script type="text/javascript" src="https://livejs.com/live.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css">
+    <link rel="stylesheet" href="style.css">
 
 
 
@@ -59,24 +59,22 @@
   Clojure 사용 6개월 후기
   
 </h1>
+<div class="post-meta">
+  <span class="post-date">2022-05-22</span>
+  
+  <span class="meta-separator">•</span>
+  <span class="post-tags">
+    
+    <a href="tags/Retrospectives.html" class="tag-link">Retrospectives</a>
+    
+    <a href="tags/Clojure.html" class="tag-link">Clojure</a>
+    
+  </span>
+  
+</div>
 <p>지금 회사로 11월 15일에 옮겼으니 만으로 딱 6개월이 지났다. 시간이 꽤 빨리 흘렀다. 그 사이에 여러가지 많이 배운 것 같다.</p><p>우리 회사는 지금 다이나믹 타입을 가진 Lisp계열의 함수형언어인 <code>Clojure</code>를 사용 중인데 이를 6개월가량 써보면서 드는 생각들을 조금 정리해보도록 하자. 덤으로 사용하고 있는 스택들도 조금 정리해보도록 하자.</p><h1 id="%EC%9D%B8%EC%83%81">인상</h1><p>부족하거나 막힘이 없는 언어라고 느꼈다. 비즈니스 로직에 필요한 구현을 해야할 때 코드가 장황해지지 않았다. 간결했고 가독성이 높았다. 적은 코드량으로 깨끗한 코드를 짤 수 있었고 입/출력만 있고 side effects가 없는 함수들로 파이프라인만 잘 구성하면 되었다. 또한 매크로를 사용해서 함수를 만드는 함수나 새로운 함수를 쉽게 정의할 수도 있었다. 없으면 만들면 되었다. 메타프로그래밍이 쉽고 재밌었다.</p><p>처음 약 3개월동안은 타입이 없다는 불편함이 발목을 잡지 않을까 했는데 딱히 없었다. 언어의 설계가 <code>hashmap</code>을 중심으로 하고, nil에 대한 처리를 잘 하고 있어서 보통의 개발자라면 의심하지 않으면 잘 사용할 것 같다.</p><p>클래스에 얽매이지 않다보니 코드 읽기도 수월하고 이만저만 좋은게 많다.</p><h1 id="server_tech_stack">Server Tech Stack</h1><p>대충 정리하니 아래와 같다. 다른 3rd 이용 API나 사소한 것들은 제외시켰다.</p><ul><li>RESTful API: <a href='https://github.com/metosin/reitit'>Reitit</a>. Data-driven router일 뿐이다. (파이썬의 장고나 자바의 스프링 같은게 아니다)</li><li>Data-driven schemas: <a href='https://github.com/metosin/malli'>malli</a></li><li>GraphQL API: <a href='https://lacinia.readthedocs.io/en/latest/'>Lacinia</a></li><li>Dataloader: <a href='https://github.com/oliyh/superlifter'>superlifter</a></li><li>Date and Time: <a href='https://github.com/dm3/clojure.java-time'>java-time</a></li><li>HTTP<ul><li><a href='https://github.com/ring-clojure/ring'>ring</a>: HTTP server abstraction</li><li><a href='https://github.com/dakrone/clj-http'>clj-http</a>: Apache HttpComponents client wrapper</li></ul></li><li>Database: <a href='https://github.com/seancorfield/next-jdbc'>next.jdbc</a></li><li>Connection pools: <a href='https://github.com/tomekw/hikari-cp'>hikari-cp</a></li><li>Structural Migrations: <a href='https://github.com/yogthos/migratus'>Migratus</a></li><li>DSL for SQL generation: <a href='https://github.com/jkk/honeysql'>honeysql</a></li><li>Security: <a href='https://github.com/funcool/buddy'>Buddy</a></li><li>Pattern Matching: <a href='https://github.com/clojure/core.match'>core.match</a></li><li>Testing: <a href='https://github.com/lambdaisland/kaocha'>kaocha</a></li><li>Code Analysis and Linter: <a href='https://github.com/borkdude/clj-kondo'>clj-kondo</a></li><li>Error utility: <a href='https://github.com/adambard/failjure'>failjure</a></li><li>Dependency injection(<em>Managed lifecycle of stateful objects</em>): <a href='https://github.com/weavejester/integrant'>integrant</a></li></ul><h1 id="%EB%8D%94_%EC%95%8C%EC%95%84%EB%82%98%EA%B0%80%EC%95%BC%ED%95%A0_%EA%B2%83%EB%93%A4">더 알아나가야할 것들</h1><p>더 알아나가야할 것들을 안다는 것 자체가 이미 잘 알고 있다는 건데... 실제 코드에서는 core.async를 잘 사용하지 않게 되는데 지금과 같은 규모와 서비스 특성상 비동기적 처리를 할 일이 자주 있을까 싶다. 그리고 protocol 관련해서도 코드 작성을 꺼려하게 되는데 (의견이 분분) 이것도 조금 더 살펴보도록 해야겠다.</p><h1 id="%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%A1%9C%EC%84%9C_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D_%ED%95%9C%EB%8B%A4%EB%8A%94_%EA%B2%83%28dsl%EA%B4%80%EB%A0%A8%29">데이터로서 프로그래밍 한다는 것(DSL관련)</h1><p>Terraform을 비롯하여 데이터로서 행동을 정의하고 규약한다는 것은 이미 프로그래밍 세계에서 많이 이루어졌다. Graphql Schema도 이 중 하나일테고. 회사 내부에서 지금 GraphQL을 적극 사용 중인데 DSL로 만들어서 사용할 수 있을 각을 보고 있다. 조금 더 디벨롭할 수 있는 시간을 쓰도록 해야겠다.</p>
 <p>Discuss this post <a href="https://github.com/jungwookim/jungwookim.github.io/discussions">here</a>.</p>
-<p><i>Published: 2022-05-22</i></p>
 
-<p>
-  <i>
-  Tagged:
-  
-  <span class="tag">
-    <a href="tags/Retrospectives.html">Retrospectives</a>
-  </span>
-  
-  <span class="tag">
-    <a href="tags/Clojure.html">Clojure</a>
-  </span>
-  
-  </i>
-</p>
 <p>
   <script
     src="https://utteranc.es/client.js"

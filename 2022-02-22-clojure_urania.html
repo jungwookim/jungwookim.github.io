@@ -5,11 +5,11 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link type="application/atom+xml" rel="alternate" href="atom.xml" title="Urania Notes">
-    <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-clojure.min.js"></script>
     <script type="text/javascript" src="https://livejs.com/live.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css">
+    <link rel="stylesheet" href="style.css">
 
 
 
@@ -59,6 +59,17 @@
   Urania Notes
   
 </h1>
+<div class="post-meta">
+  <span class="post-date">2022-02-22</span>
+  
+  <span class="meta-separator">•</span>
+  <span class="post-tags">
+    
+    <a href="tags/Clojure.html" class="tag-link">Clojure</a>
+    
+  </span>
+  
+</div>
 <h1 id="%EC%86%8C%EA%B0%9C">소개</h1><p>종종 비즈니스 로직이 DB, Cache, web services 등 여러 소스로부터 받아보고 싶은 원격 데이터에 의존한다. 이를 다루는게 보통 쉬운 일이 아니다. Urania는 비즈니스 로직을 쉽게 관리하게 해주는데 아래 3가지를 효율적으로 다룬다.</p><ul><li>batch multiple requests to the same data source</li><li>request data from multiple data sources concurrently</li><li>cache previous requests</li></ul><h1 id="%EC%9C%A0%EC%A0%80_%EA%B0%80%EC%9D%B4%EB%93%9C">유저 가이드</h1><h2 id="%EC%9B%90%EB%A6%AC">원리</h2><p>모든 프로그램은 성능과 표현력에 대해서 항상 고민이다. 쉽게 표현하면 성능이 떨어지는 경우가 있기 때문. 아래의 예시를 보자.</p><pre class="language-clojure"><code class="lang-clojure language-clojure">&#40;require '&#91;clojure.set :refer &#91;intersection&#93;&#93;&#41;
 
 &#40;defn friends-of
@@ -168,18 +179,7 @@
 ;; &#91;1 2 5 4 3&#93;
 </code></pre></p><h1 id="%EC%9D%91%EC%9A%A9">응용</h1><p>Cache, Executor, Environment 관련된 건데 공식 문서보고 확인하자.</p><h1 id="reference">Reference</h1><ul><li><a href='ttp://funcool.github.io/urania/latest/'>Document</a></li><li><a href='ttps://github.com/funcool/urania'>Github</a></li><li><a href='ttps://github.com/funcool/promesa'>Promesa</a></li></ul>
 <p>Discuss this post <a href="https://github.com/jungwookim/jungwookim.github.io/discussions">here</a>.</p>
-<p><i>Published: 2022-02-22</i></p>
 
-<p>
-  <i>
-  Tagged:
-  
-  <span class="tag">
-    <a href="tags/Clojure.html">Clojure</a>
-  </span>
-  
-  </i>
-</p>
 <p>
   <script
     src="https://utteranc.es/client.js"
