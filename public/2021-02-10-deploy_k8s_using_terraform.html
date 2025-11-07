@@ -5,11 +5,11 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link type="application/atom+xml" rel="alternate" href="atom.xml" title="Terraform으로 k8s 배포하기">
-    <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-clojure.min.js"></script>
     <script type="text/javascript" src="https://livejs.com/live.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css">
+    <link rel="stylesheet" href="style.css">
 
 
 
@@ -59,6 +59,21 @@
   Terraform으로 k8s 배포하기
   
 </h1>
+<div class="post-meta">
+  <span class="post-date">2021-02-10</span>
+  
+  <span class="meta-separator">•</span>
+  <span class="post-tags">
+    
+    <a href="tags/k8s.html" class="tag-link">k8s</a>
+    
+    <a href="tags/Jenkins.html" class="tag-link">Jenkins</a>
+    
+    <a href="tags/Terraform.html" class="tag-link">Terraform</a>
+    
+  </span>
+  
+</div>
 <h2 id="terraform_k8s_%ED%8C%8C%EC%9D%BC_%EA%B5%AC%EC%84%B1">Terraform k8s 파일 구성</h2><p><code>kubernetes yaml</code>파일을 환경별로, 서비스별로 관리하다보니 비슷하게 생긴 <code>yaml</code>이 아주아주 많았다. <code>helm</code>을 쓸까도 했지만 테라폼으로도 원하는 걸 할 수 있어서 <code>yaml</code> 파일들을 <code>terraform</code>으로 관리하는게 어떨까 하는 생각에서 시작했다. <a href='https://registry.terraform.io/providers/gavinbunney/kubectl/latest/docs/resources/kubectl_manifest'>해당 provider</a>를 사용했다. 이유는 <code>yaml</code>을 그대로 쓸 수 있었기 때문이다. 그리고 <code>for&#95;each</code>를 적절히 사용해서 필요한 리소스별로 하나씩만 정의하고 환경별로 둘 필요는 없었다. 가장 좋은 예시인 servcie를 어떻게 만들었는지 보자.</p><pre class="language-terraform"><code class="lang-terraform language-terraform">resource &quot;kubectl&#95;manifest&quot; &quot;service&quot; {
   for&#95;each  = var.service&#95;infos
   yaml&#95;body = &lt;&lt;YAML
@@ -115,26 +130,7 @@ terraform init --backend-config='profile=${profile}'
 }
 </code></pre><p>이런 식으로 해야하더라.</p><h2 id="reference">Reference</h2><ul><li><a href='https://www.terraform.io/docs/language/settings/backends/configuration.html'>backend_configuration</a></li><li><a href='https://www.terraform.io/docs/cli/commands/apply.html'>terraform_apply</a></li><li><a href='https://registry.terraform.io/providers/gavinbunney/kubectl/latest/docs/resources/kubectl_manifest'>kubectl_provider</a></li></ul>
 <p>Discuss this post <a href="https://github.com/jungwookim/jungwookim.github.io/discussions">here</a>.</p>
-<p><i>Published: 2021-02-10</i></p>
 
-<p>
-  <i>
-  Tagged:
-  
-  <span class="tag">
-    <a href="tags/k8s.html">k8s</a>
-  </span>
-  
-  <span class="tag">
-    <a href="tags/Jenkins.html">Jenkins</a>
-  </span>
-  
-  <span class="tag">
-    <a href="tags/Terraform.html">Terraform</a>
-  </span>
-  
-  </i>
-</p>
 <p>
   <script
     src="https://utteranc.es/client.js"

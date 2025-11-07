@@ -5,11 +5,11 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link type="application/atom+xml" rel="alternate" href="atom.xml" title="Terraform으로 kops에서 eks fargate로 갈아타기">
-    <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-clojure.min.js"></script>
     <script type="text/javascript" src="https://livejs.com/live.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css">
+    <link rel="stylesheet" href="style.css">
 
 
 
@@ -59,6 +59,21 @@
   Terraform으로 kops에서 eks fargate로 갈아타기
   
 </h1>
+<div class="post-meta">
+  <span class="post-date">2021-01-31</span>
+  
+  <span class="meta-separator">•</span>
+  <span class="post-tags">
+    
+    <a href="tags/Terraform.html" class="tag-link">Terraform</a>
+    
+    <a href="tags/Kops.html" class="tag-link">Kops</a>
+    
+    <a href="tags/EKS.html" class="tag-link">EKS</a>
+    
+  </span>
+  
+</div>
 <p>제목이 참 길다. 그만큼 글도 길어질 것 같다. 2021년에 개발하고 있는 서비스에서 몇가지 큰 줄기 및 목표가 있는데 그 중의 하나가 <code>kops</code>에서 <code>fargate on EKS</code>로 <code>migration</code>하는 것이다. 마침 새해 초반에 밀린 피처 개발이 많이 없고 간단한거라서 빨리 해버리고 남는 시간에 하기로 마음 먹었다. 그 전에 시간 날 때마다 조금씩 찾아 본 <code>eks</code> 관련 지식들과 <code>Terraform</code>을 꼭 사용해서 성공적으로 서버를 옮기고자 한다.</p><p>현재 우리 서비스의 인프라 상태를 알아보자.</p><ul><li>약 2년 전에 설치된 <code>k8s</code> <code>1.11</code> 버전, <code>kops</code> 사용 중. <code>nodes</code>들은 <code>ec2 on AWS</code> 있음</li><li>글을 쓰는 시점에 <code>k8s</code>는 <code>1.19</code>까지 릴리즈. 버전을 7번이나 올려야하는 귀찮음</li><li><code>k8s</code> <code>1.11</code> → <code>1.12</code> 올릴 때 노드 하나가 이상해져서 서버 장애를 일으킨 경험이 본인이 있음</li><li>심지어 이 인프라를 셋업한 개발자는 옆에 팀 개발자</li><li>현재 인프라 구조를 설명하는 문서가 없고 다 아는 사람은 잘 없음</li></ul><p>인프라 관리를 우리 팀에서는 아무도 안하다보니 인프라 버전이 너무 노후되어 있었고 어떻게 구성되어있는지 관리도 되고 있지 않았다. 그래서 뭔가를 만지려고 해도 리스크도 컸고 솔직히 물어볼 사람도 거의 없었다. (옆에 팀에 맨날 물어보기도 미안하니...) 그래서 현재 구조를 상세히 파악하고 번거로운 서버관리를 하느니 <code>farget on EKS</code>라는 걸 주워들은 기억도 있고 하니 클러스터, 노드 관리는 <code>AWS</code>에 넘기고 도커 이미지만 관리하고 싶었다.</p><p>그럼 서버 다운타임 없이 이전하는게 가장 큰 목표이므로, 이에 대해서 대충 계획을 세웠다.</p><ul><li><code>Terraform</code>을 <code>꼭</code> 사용해서 <code>migration</code>을 한다 → 그러지 않으면 나중의 누군가는 우리가 겪은 것과 같이 인프라 구성에 대해서 이해하고 유지/보수하기 힘들다</li><li><code>EKS</code>와 <code>Kops</code> 클러스터에 모든 서비스를 안정적으로 띄운 후에 <code>blue/green</code> 배포 방식과 유사하게 <code>weighted routing policy</code>를 사용해서 점진적으로 이전한다</li><li><code>dev</code>, <code>staging</code> 환경에서 안정적으로 테스트를 마친 후에 <code>production</code>에 적용한다</li></ul><p>간단한게 최고이기 때문에 큰 그림은 저렇게 잡았다.</p><blockquote><p> <strong><i>(쉬어가기) kops vs. eks?</i></strong> 검색만 해도 많이 나오지만 우리가 <code>kops</code>를 사용하지 않기로한 이유는 다음 몇가지 이유 때문이다. 1. 어차피 <code>ec2</code>위에 올리기 때문에 딱히 <code>kops</code>를 왜 써야하는지 모르겠다 (처음 <code>kops</code> 쓸 때는 <code>eks</code>가 없었음) 2. 클러스터 관리를 하기 싫었다 3. 더 작은 단위로 오토스케일링을 할 수 있어서 비용 절감을 기대했다 4. 조금 더 트렌디하다 (심지어 <code>fargate</code>를 쓰기 때문...) </p></blockquote><p>그래도 시작에 앞서서 선수 지식이나 허들이 좀 있었는데(<code>Terraform</code>, <code>AWS 관련 지식</code>, <code>k8s</code>) 부딪혀가면서 더 많이 배워갔다.</p><p>테라폼 공식 홈페이지 기본 튜토리얼을 따라가면서 입문하기 시작했고 구글링을 통해서 많은 예시들을 찾아보면서 삽질을 했는데 처음 <code>module</code>을 찾았을 때 엄청나게 신났던 기억이 갑자기 난다. 여하튼, 대충 그럼 어떻게! 실제로! 진행했는지 코드와 함께 살펴보자.</p><p>일단 우리는 시간이 촉박했으므로, <code>eks policy</code> 관련된 <code>iam user</code>를 그냥 콘솔을 이용해서 만들고 연결해서 사용했다. 이 부분은 현재 메뉴얼하게 사용하고 있다.</p><h2 id="code">Code</h2><h3 id="terraform_block">Terraform block</h3><pre class="language-terraform"><code class="lang-terraform language-terraform">terraform {
   backend &quot;s3&quot; {
     bucket         = &quot;my-tfstate&quot;
@@ -363,26 +378,7 @@ resource &quot;aws&#95;iam&#95;role&#95;policy&#95;attachment&quot; &quot;lb&#95
 }
 </code></pre><h2 id="%EC%8B%A4%EC%A0%9C_migration">실제 Migration</h2><p>위처럼 설정하면 이제 거의 기존에 있던 각종 <code>kubernetes yaml</code> 파일들을 <code>cluster</code>에 다 올려주기만 하면 된다. <code>Weighted routing</code> 비율은 테스트 단계에서는 5:5 정도로 시작해서 점진적으로 새로운 클러스터에 비율을 늘려준다. 아참, <code>ec2 auto scaling</code> 같은 경우에는 따로 할 필요가 없고 <code>hpa</code>를 사용하기만 하면 되는데 이는 간단하다.</p><h2 id="%EC%A0%95%EB%A6%AC%ED%95%98%EB%A9%B0">정리하며</h2><p><code>migration</code>이 새로 만드는 것보다 훨씬 귀찮고 어려운 것 같다. 그래서 더 많이 배운 것 같기도 하고. 그리고 모든 버전은 되도록 최신 버전으로 사용했다. 버전 올리는 일도 굉장히 귀찮고 관리 포인트이기 때문에 <code>Terraform</code>도 <code>0.14</code>를 썼고 <code>EKS</code>도 지원하는 최신 쿠버네티스 버전인 <code>1.18</code>을 사용했다. 다른 것들도 비슷하다. 그리고 어느정도 <code>manual</code>하게 사용하는 부분도 많이 있는데 이를 나중에는 다 <code>code</code>로 옮기면 좋을 것 같다. 더 공유할만한 내용이 있으면 추가로 꼭 적는 것을 스스로에게 약속한다.</p><h2 id="reference">Reference</h2><ul><li><a href='https://www.terraform.io/'>테라폼 공식 사이트</a></li><li><a href='https://blog.outsider.ne.kr/1290'>tfstate 관리</a></li><li>[개괄적 이해에 도움된 글][개괄]</li><li><a href='https://registry.terraform.io/modules/terraform-aws-modules/iam/aws/latest'>iam 모듈</a></li><li><a href='https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest'>vpc 모듈</a></li><li><a href='https://registry.terraform.io/modules/terraform-aws-modules/eks/aws/latest'>eks 모듈</a>  </li></ul>[개괄]: https://www.44bits.io/ko/post/terraform<i>introduction</i>infrastrucute<i>as</i>code
 <p>Discuss this post <a href="https://github.com/jungwookim/jungwookim.github.io/discussions">here</a>.</p>
-<p><i>Published: 2021-01-31</i></p>
 
-<p>
-  <i>
-  Tagged:
-  
-  <span class="tag">
-    <a href="tags/Terraform.html">Terraform</a>
-  </span>
-  
-  <span class="tag">
-    <a href="tags/Kops.html">Kops</a>
-  </span>
-  
-  <span class="tag">
-    <a href="tags/EKS.html">EKS</a>
-  </span>
-  
-  </i>
-</p>
 <p>
   <script
     src="https://utteranc.es/client.js"

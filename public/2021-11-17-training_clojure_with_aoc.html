@@ -5,11 +5,11 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link type="application/atom+xml" rel="alternate" href="atom.xml" title="Clojure와 친해지기">
-    <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-clojure.min.js"></script>
     <script type="text/javascript" src="https://livejs.com/live.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css">
+    <link rel="stylesheet" href="style.css">
 
 
 
@@ -59,6 +59,19 @@
   Clojure와 친해지기
   
 </h1>
+<div class="post-meta">
+  <span class="post-date">2021-11-17</span>
+  
+  <span class="meta-separator">•</span>
+  <span class="post-tags">
+    
+    <a href="tags/Clojure.html" class="tag-link">Clojure</a>
+    
+    <a href="tags/Adventofcode.html" class="tag-link">Adventofcode</a>
+    
+  </span>
+  
+</div>
 <p><code>clojure</code>와 친해져보도록 하자. <code>clojure</code>가 <code>JVM</code> 위에서 동작한다는 성질이나 함수형 언어로서의 특성을 글로 배우기 보다는 기본기를 <a href='ttps://adventofcode.com/2018/day/3'><code>advent of code</code></a>에서 닦아보도록 하자. 전체 코드는 <a href='ttps://github.com/jungwookim/aoc-exercise/tree/master/src'>Github</a>에 다 올려놓았다.</p><h1 id="day_1">Day 1</h1><p>AOC 2018년 Day1으로 시작. 아주 간단한 로직을 다루고 숫자 관련한 조작을 연습해보는 섹션이 아닌가 싶다.</p><h2 id="%ED%8C%8C%EC%9D%BC_%EC%9D%BD%EA%B3%A0_%ED%8C%8C%EC%8B%B1%ED%95%98%EA%B8%B0">파일 읽고 파싱하기</h2><p>text file을 읽어서 문제를 풀다보니 파일 입출력을 해야했다. line by line으로 읽고 싶었지만 문제의 의도와 거리가 있어서 <code>clojure.core/slurp</code>를 사용했다.</p><pre class="language-clojure"><code class="lang-clojure language-clojure">&#40;slurp &quot;resources/input.txt&quot;&#41; ; 간단하다
 </code></pre><p>아주 간단하다. 읽은 결과는 string이므로 splitting을 잘 해준다.</p><pre class="language-clojure"><code class="lang-clojure language-clojure">&#40;clojure.string/split #&quot;\n&quot;&#41; ; delimiter는 줄바꿈으로 했다
 </code></pre><p>아래와 같은 방식으로 string을 Integer로 파싱할 수 있다. java 라이브러리를 사용하는 것을 확인하면 된다.<pre class="language-clojure"><code class="lang-clojure language-clojure">&#40;Integer/parseInt &quot;+3&quot;&#41;
@@ -221,22 +234,7 @@ when &#40;isValid2&#41; &#40;...&#41;&#41; ; 난감했다
        &#40;logic-part2 path&#41;&#41;&#41;
 </code></pre><h2 id="%ED%9A%8C%EA%B3%A0">회고</h2><p>언제나 그렇듯 2차 배열을 다루는 문제들은 약간 까다로운 면은 있다. 자주 풀어야 좀 익숙해지는 느낌. 그리고 immutable하게 짠다는게 문제 풀이에서 꽤 까다롭다고 느껴졌다.</p><h2 id="%EB%A6%AC%EB%B7%B0">리뷰</h2><ul><li>전반적으로 naming을 더 신경쓰면 좋을 것 같다는 의견</li><li>naming을 할 때 함수 이름만 보고 뭐하는 건지 알 수 있도록, 함수 이름이 짓기 어렵다고 느꼈다면? 함수로 꼭 만들지 않아도 되는게 아닐까? 라는 생각도 해보자</li><li>matrix 만들 때 2중 map도 좋지만 2중 for를 쓰면 좀 더 나을 수도</li><li>복잡한 parsing을 할 때는 정규식을 쓰는 것도 방법 (항상 좋은 것은 아니지만 경우에 따라)</li><li><code>vector</code>는 random access가 필요할 때 쓰긴 하지만 <code>list</code>보다는 <code>vector</code>를 주로 사용해도 좋음</li><li>그리고 <code>vector</code>나 <code>list</code>를 사용하더라도 순서에 따른 context가 있는 경우에는 <code>hash-map</code>을 쓰는게 훨씬 좋음</li><li>matrix 초기활 때 사용한 -1, 0 같은 값들은 keyword로 관리하는 것이 좋음</li><li><code>==</code>와 <code>=</code> 차이: <code>==</code>는 타입은 신경 쓰지 않고 값만 비교, <code>=</code>는 타입과 값 모두 비교</li><li>ex. <code>&#40;= 0.2 1/5&#41; ; false &#40;== 0.2 1/5&#41; ; true</code></li><li>관용적으로... <code>-&gt;</code>의 경우 hash-map이나 string에 쓰고 <code>-&gt;&gt;</code> seq를 다룰 때 많이 씀 (생각해보기)</li><li><code>first + first</code> 는 <code>ffirst</code>로</li></ul><h2 id="%EB%A6%AC%EB%B7%B0_%EB%B0%98%EC%98%81_%ED%9B%84_%EC%A0%84%EC%B2%B4%EC%A0%81%EC%9D%B8_%EC%BD%94%EB%93%9C">리뷰 반영 후 전체적인 코드</h2><p>길이가 길어서 링크로 대체한다. 2중 for 문이 2d 다루는데 꽤나 편리한 것 같아서 유용했고 javascript의 object처럼 hash-map을 주요하게 사용하니 편했다. 이게 ps에서는 혼자 빨리 푸는게 중요해서 신경 안썼는데 부트캠프이니만큼 가독성도 신경 써야겠다.<h2></h2><h1 id="%EC%89%AC%EC%96%B4%EA%B0%80%EA%B8%B0">쉬어가기</h1>3일정도 리뷰해보니 코드를 대충 어떻게 작성해야하는지 약간 감은 왔다. 물론 뒤에도 더 많은 리뷰가 있겠지만 뒷 부분에는 코드는 <a href='ttps://github.com/jungwookim/aoc-exercise/tree/master/src'>github 링크</a>로 대체하고 내용 위주로 살펴보자.<h2></h2><h1 id="day_4">Day 4</h1>AOC 2018 Day 4. datetime을 parsing해서 사용하고 싶지만 그렇게 풀지 않아도 되는 문제. 문제의 요구사항을 잘 읽어보면 <code>00:00&#126;00:59</code> 사이의 데이터만 있는 것을 알 수 있음. input이 까다로워서 데이터 전처리하는데 드는 시간이 더 많았던 것 같다. 앞선 리뷰들을 잘 반영해서 <code>hash-map</code> 적절히 잘 사용했음.</p><ul><li><a href='https://github.com/jungwookim/aoc-exercise/blob/master/src/p2018_day4.clj'>내가 푼 코드</a></li><li><a href='https://github.com/jungwookim/aoc-exercise/blob/master/src/p2018_day4_reviewed.clj'>리뷰 받은 코드</a></li></ul><h2 id="%EC%A3%BC%EC%9A%94_%EB%82%B4%EC%9A%A9">주요 내용</h2><ul><li><code>map + flatten</code> 같은 건 <code>mapcat</code>을 사용해도 좋다.</li><li><code>assoc-in + get-in</code> 대신 <code>update-in</code>이라는 걸 쓰자</li><li><code>map</code>을 부분적으로 바꿀 때는 <code>update</code> 혹은 <code>update-in</code>을 쓰자</li><li><code>hash-map desctructing</code>은 같은 이름을 사용할거라면 <code>{:keys &#91;…&#93;}</code>를 사용해도 좋다.</li><li><code>max-key</code>라는 좋은게 있더라</li></ul><h1 id="day_5">Day 5</h1><p>AOC 2018 Day 5. 대소문자 잘 구분하는 문제. 어렵진 않았음.</p><ul><li><a href='https://github.com/jungwookim/aoc-exercise/blob/master/src/p2018_day5.clj'>내가 푼 코드</a></li><li><a href='https://github.com/jungwookim/aoc-exercise/blob/master/src/p2018_day5_reviewed.clj'>리뷰 받은 코드</a></li></ul><p>특별한 내용은 없었던 것 같다.</p><h1 id="day_6">Day 6</h1><p>AOC 2018 Day 6. 문제 접근법 자체가 약간 어려웠던 문제. 실제 코드로 구현하는데도 시간이 많이 걸렸음.</p><ul><li><a href='https://github.com/jungwookim/aoc-exercise/blob/master/src/p2018_day6.clj'>내가 푼 코드</a></li><li><a href='https://github.com/jungwookim/aoc-exercise/blob/master/src/p2018_day6_reviewed.clj'>리뷰 받은 코드</a></li></ul><h2 id="%EC%A3%BC%EC%9A%94_%EB%82%B4%EC%9A%A9">주요 내용</h2><ul><li>return type의 일관성을 가지면 좋다.</li><li><code>group-by</code>라는 것이 있다.</li><li>aggregation할 때 <code>frequencies</code>를 잘 사용해도 좋다.</li></ul><h1 id="day_7">Day 7</h1><p>AOC 2018 Day 7. workers들의 일을 잘 할당하는 문제.</p><ul><li><a href='https://github.com/jungwookim/aoc-exercise/blob/master/src/p2018_day7.clj'>내가 푼 코드</a></li><li><a href='https://github.com/jungwookim/aoc-exercise/blob/master/src/p2018_day7_reviewed.clj'>리뷰 받은 코드</a></li></ul><h2 id="%EC%A3%BC%EC%9A%94_%EB%82%B4%EC%9A%A9">주요 내용</h2><ul><li><code>iterate</code> + <code>drop-while</code>을 잘 쓰면 좋다</li><li>^ 이거 쓸 때 주의해야하는 점들이 몇가지 있는데 일단 <code>LazySeq</code>를 반환하기 때문에 이게 가능한 것을 꼭 인지하고 써야한다. 그렇기 때문에 <code>take</code>, <code>first</code> 등 을 하지 않으면 drop-while의 결과가 무한하기 때문에 <code>first</code>, <code>take</code> 등을 같이 꼭 사용하도록 하자.</li><li>사용법이라기 보다는 이 개념을 인지하고 있자.</li><li>상태라는 걸 잘 관리한다는 측면에서 생각하자</li><li>이 문제는 클로저랑 상관 없이 ps적으로 봐도 좋은 문제인 것 같다</li><li><code>threading-macro</code>는 함수의 조합으로 절차지향적으로 생각할 수 있게 하는 좋은 도구인 것 같다</li><li>그럼에도 불구하고 디버깅에 많은 시간을 썼는데 반성하도록 하자</li></ul><h1 id="day_8">Day 8</h1><p>AOC 2020 Day 1, 4. 간단한 두 문제였다. 생각해보면 첫 날에 풀었다면 조금 헤맸을 수도 있지만 부트캠프 8일차에 풀기엔 쉬웠던 문제.</p><ul><li><a href='https://github.com/jungwookim/aoc-exercise/blob/master/src/p2018_day8.clj'>내가 푼 코드</a></li></ul><h2 id="%EC%A3%BC%EC%9A%94_%EB%82%B4%EC%9A%A9">주요 내용</h2><ul><li>Day 7에서 얻은 지식들 덕분에 쉽게 푼 것 같다.</li><li><code>map-indexed</code>는 처음 써봤다.</li><li><code>drop-while</code> 멈추는 조건이 할 때마다 약간 헷갈린다.</li></ul><h2 id="%EC%BD%94%EB%93%9C">코드</h2><ul><li><a href='https://github.com/jungwookim/aoc-exercise/blob/master/src/p2020_day1.clj'>2020-day1</a></li><li><a href='https://github.com/jungwookim/aoc-exercise/blob/master/src/p2020_day4.clj'>2020-day4</a></li></ul><h2 id="%ED%9A%8C%EA%B3%A0">회고</h2><ul><li><code>for</code>를 사용하면 combination처럼 2중 루프를 돌게 되는데 이 때 break-point로 <code>:when</code> 같은 걸 사용할 수 있더라.</li><li>두번째 문제는 파싱만 잘하면 되는 문제였다. 다만 정규식에 익숙하지 않아 항상 불편한 점은 있다.</li><li><code>clojure.spec</code> 이라는 걸 활용해보자</li></ul><h1 id="reference">Reference</h1><ul><li><a href='ttps://github.com/jungwookim/aoc-exercise/tree/master/src'>my github repo</a></li><li><a href='ttps://clojuredocs.org/clojure.core'>clojure library documents</a></li><li><a href='ttps://adventofcode.com/2018/day/3'>advent of code</a></li></ul>
 <p>Discuss this post <a href="https://github.com/jungwookim/jungwookim.github.io/discussions">here</a>.</p>
-<p><i>Published: 2021-11-17</i></p>
 
-<p>
-  <i>
-  Tagged:
-  
-  <span class="tag">
-    <a href="tags/Clojure.html">Clojure</a>
-  </span>
-  
-  <span class="tag">
-    <a href="tags/Adventofcode.html">Adventofcode</a>
-  </span>
-  
-  </i>
-</p>
 <p>
   <script
     src="https://utteranc.es/client.js"

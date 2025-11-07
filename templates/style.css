@@ -10,6 +10,10 @@ h1, h2, h3 {
   font-weight: 800;
 }
 
+h1 {
+  margin-bottom: 0.5em;
+}
+
 a {
   color: #073642
 }
@@ -69,9 +73,84 @@ ul.index {
 
 code {
   white-space: pre;
-  background-color: #cb4b16	
 }
 
 html {
   background-color: #fdf6e3
+}
+
+/* Code block styling - minimal background with good readability */
+/* Force override Prism.js default background */
+pre[class*="language-"] {
+  background-color: rgba(7, 54, 66, 0.03) !important;
+  background: rgba(7, 54, 66, 0.03) !important;
+  border: none;
+  border-radius: 4px;
+  padding: 1em;
+  overflow-x: auto;
+  margin: 1em 0;
+}
+
+pre code[class*="language-"],
+pre[class*="language-"] code {
+  background-color: transparent !important;
+  background: transparent !important;
+  color: #073642;
+  text-shadow: none;
+  white-space: pre;
+  font-size: 0.95em;
+  line-height: 1.5;
+  padding: 0;
+}
+
+
+/* Inline code styling - very minimal */
+code:not([class*="language-"]) {
+  background-color: rgba(7, 54, 66, 0.06); /* Very subtle dark tint */
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-size: 0.9em;
+  white-space: pre-wrap;
+}
+
+/* Ensure proper spacing around code blocks */
+p + pre[class*="language-"],
+h2 + pre[class*="language-"],
+h3 + pre[class*="language-"] {
+  margin-top: 0.5em;
+}
+
+/* Post metadata styling - date and tags below title */
+.post-meta {
+  font-size: 0.9em;
+  color: #666;
+  margin-bottom: 1.5em;
+  margin-top: -0.3em;
+}
+
+.post-date {
+  color: #666;
+}
+
+.meta-separator {
+  margin: 0 0.5em;
+  color: #666;
+}
+
+.post-tags {
+  color: #073642;
+}
+
+.post-tags .tag-link {
+  color: #073642;
+  text-decoration: none;
+}
+
+.post-tags .tag-link:hover {
+  text-decoration: underline;
+}
+
+.post-tags .tag-link:not(:last-child)::after {
+  content: ", ";
+  color: #073642;
 }

@@ -5,11 +5,11 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link type="application/atom+xml" rel="alternate" href="atom.xml" title="ALB ingress on EKS">
-    <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-clojure.min.js"></script>
     <script type="text/javascript" src="https://livejs.com/live.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css">
+    <link rel="stylesheet" href="style.css">
 
 
 
@@ -59,6 +59,23 @@
   ALB ingress on EKS
   
 </h1>
+<div class="post-meta">
+  <span class="post-date">2021-03-10</span>
+  
+  <span class="meta-separator">•</span>
+  <span class="post-tags">
+    
+    <a href="tags/k8s.html" class="tag-link">k8s</a>
+    
+    <a href="tags/Terraform.html" class="tag-link">Terraform</a>
+    
+    <a href="tags/ALB.html" class="tag-link">ALB</a>
+    
+    <a href="tags/Ingress.html" class="tag-link">Ingress</a>
+    
+  </span>
+  
+</div>
 <p>운영하고 있는 서비스에서 <code>Network Load Balncer</code>를 사용하고 있었다. 이 전의 글들을 다 읽었다면 알겠지만 우리는 <code>Kops</code>에서 <code>EKS</code>로 옮기는 중이었다. Migration을 잘 했다고 생각했을 시점에 마지막 하나의 문제가 남아있었다는 것을 발견했다. 정확히는 데이터팀에서 확인 요청이 들어왔다. <code>maxmind</code>에서 제공하는 <code>geoip</code>를 사용하고 있는데 이 때 <code>NLB</code>를 사용하면 client ip를 잃어버리게 된다. <code>Classic LB</code>와 <code>Application LB</code>에서는 생기지 않는 상황. 그래서 <a href='application_load_balancer'>Application Load Balancer with Ingress</a>로 자연스레 넘어가게 되었다.</p><p>위에 링크된 곳에 잘 설명되어있는데, 대략적으로 몇가지만 기록해둔다.</p><ol><li>일단 <code>Service</code>는 <code>NodePort</code> 타입으로 열어둬야한다.</li><li><code>Ingress Rule</code> 관련해서는 요구사항에 맞게 작성하면 되는데, 나의 경우에는 <code>annotations</code>가 몇가지 까다로웠다.<pre class="language-json"><code class="lang-json language-json">annotations = {
       &quot;kubernetes.io/ingress.class&quot;                = &quot;alb&quot;                                                                                                 // alb
       &quot;alb.ingress.kubernetes.io/target-type&quot;      = &quot;ip&quot;                                                                                                  // fargate
@@ -71,30 +88,7 @@
     }
 </code></pre></li></ol><p><a href='aws-load-balancer-controller'>이 문서</a>를 보고 대략 위와 같이 작성했다. <code>ingress.class</code>는 필요에 맞게 작성해주고, 대부분 <code>nginx</code>와 관련된 문서가 많았던 것 같다. <code>target&#95;type</code>의 경우에 <code>fargate</code>만 사용하는 경우라면 <code>ip</code>로 설정해야하고, <code>scheme</code>은 <code>default</code>값이 <code>internal</code>인데 우리는 <code>public subnets</code>에 로드밸런서를 위치 시키고 싶어서 <code>internet-facing</code>으로 설정. 다른 <code>healthcheck</code>나 <code>listen-ports</code>들은 서버 설정에 맞게 변경해주면 된다. 문서를 처음에 대충 읽었을 때는 <code>backend-protocol</code>이 <code>ingress</code>에서 <code>https</code>요청 처리하는 그런 건 줄 알았는데 알고 보니 <code>proxy</code>할 때 <code>pod</code>으로 보내는 요청에 관한 것이었다. 그래서 그냥 <code>HTTP</code>로 뒀다. 위처럼 하니까 잘 됐다.</p><h2 id="%EB%AF%B8%EC%8B%AC%EC%A9%8D%EC%9D%80_%EA%B2%83">미심쩍은 것</h2><p>사실 <code>NLB</code>에서도 <a href='https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-target-groups.html#client-ip-preservation'>방법</a>이 없는 것은 아니다. 근데 왜 해당 설정을 다 했어도 안되는지는 파악하지 못했다. 다음 과제로 남겨두거나... 다른 <code>proxy</code> 설정이 있나 찾아봐야할 것 같다.</p><h2 id="reference">Reference</h2><ul><li><a href='https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html'>application_load_balancer</a></li><li><a href='https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.1/guide/ingress/annotations/'>aws-load-balancer-controller</a></li><li><a href='https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-target-groups.html#client-ip-preservation'>client-ip-preservation</a></li><li><a href='https://www.stacksimplify.com/aws-eks/aws-alb-ingress/learn-aws-alb-ingress-on-aws-eks/'>Outline</a></li></ul>
 <p>Discuss this post <a href="https://github.com/jungwookim/jungwookim.github.io/discussions">here</a>.</p>
-<p><i>Published: 2021-03-10</i></p>
 
-<p>
-  <i>
-  Tagged:
-  
-  <span class="tag">
-    <a href="tags/k8s.html">k8s</a>
-  </span>
-  
-  <span class="tag">
-    <a href="tags/Terraform.html">Terraform</a>
-  </span>
-  
-  <span class="tag">
-    <a href="tags/ALB.html">ALB</a>
-  </span>
-  
-  <span class="tag">
-    <a href="tags/Ingress.html">Ingress</a>
-  </span>
-  
-  </i>
-</p>
 <p>
   <script
     src="https://utteranc.es/client.js"

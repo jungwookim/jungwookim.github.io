@@ -5,11 +5,11 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link type="application/atom+xml" rel="alternate" href="atom.xml" title="Jungwoo Kim">
-    <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-clojure.min.js"></script>
     <script type="text/javascript" src="https://livejs.com/live.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css">
+    <link rel="stylesheet" href="style.css">
 
 
 
@@ -60,60 +60,85 @@
 
       
     <div>
+        <h1><a href="2025-07-26-how-online-ads-work.html">Online ads</a></h1>
+        <div class="post-meta">
+            <span class="post-date">2025-05-04</span>
+            
+            <span class="meta-separator">•</span>
+            <span class="post-tags">
+                
+                <a href="tags/Advertisement.html" class="tag-link">Advertisement</a>
+                
+                <a href="tags/Marketing.html" class="tag-link">Marketing</a>
+                
+                <a href="tags/Ads.html" class="tag-link">Ads</a>
+                
+            </span>
+            
+        </div>
+        <h1 id="how_online_ads_really_work">How Online Ads Really Work</h1><p>I'm a Senior Software Engineer at Unity, working on Tapjoy Offerwall, a ad solution for mobile games and apps. In this post, I want to demysify how online ads work, especially in the context of mobile games and app. It won't cover every detail but will give you a solid understanding of the ecosystem, the players involved, and how it all comes together. Plus, I won't explain Offerwall itself, but rather focus on the broader ad tech landscape that makes it possible.</p><h2 id="introduction%3A_ads_are_everywhere_%E2%80%94_but_how_do_they_work%3F">Introduction: Ads Are Everywhere — But How Do They Work?</h2><p>When you play games or browse the web, you see ads everywhere. I knew that ads are everywhere but I didn't know how they really work even though I have been working on the Ads team. This article is for those who want to understand the ad tech ecosystem. I will explain key actors, how they interact, and the techonology behind it with top-down approach. I wish you will get a better understanding of how online ads works after reading this post.<h2></h2></p><h2 id="the_big_picture%3A_online_advertising_ecosystem">The Big Picture: Online Advertising Ecosystem</h2><p>There are key players in the online advertising ecosystem that work together to deliver ads to users. Here's a high-level overview:</p><ul><li>Advertisers: Companies that want to promote their products or services.</li><li>Publishers: Websites or apps that display ads to their users.</li><li>Ad Networks: Middlemen that connect advertisers with publishers.</li><li>DSPs (Demand Side Platforms): Tools that help advertisers buy ad space programmatically.</li><li>SSPs (Supply Side Platforms): Tools that help publishers sell ad space programmatically.</li><li>Ad Exchanges: Marketplaces where DSPs and SSPs transact.</li><li>MMPs (Mobile Measurement Partners): Companies that track ad performance and user acquisition.</li></ul><p>That's a lot of jargon, but don't worry. I'll break it down in the following sections. Before that, here's a high-level diagram of the ecosystem:</p><pre class="language-mermaid"><code class="lang-mermaid language-mermaid">flowchart TD
+  Advertisers --&gt;|Create Ads| AdNetworks
+  AdNetworks --&gt;|Distribute Ads| Publishers
+  Publishers --&gt;|Show Ads| Users
+  Advertisers --&gt;|Buy Ad Space| DSPs
+  DSPs --&gt;|Bid on Inventory| AdExchanges
+  AdExchanges --&gt;|Sell Inventory| SSPs
+  SSPs --&gt;|Provide Ad Space| Publishers
+  MMPs --&gt;|Track Performance| Advertisers
+</code></pre><pre class="language-mermaid"><code class="lang-mermaid language-mermaid">sequenceDiagram
+  participant Advertiser
+  participant DSP
+  participant AdExchange
+  participant SSP
+  participant Publisher
+  Advertiser-&gt;&gt;DSP: Submit Ad Campaign
+  DSP-&gt;&gt;AdExchange: Bid on Ad Space
+  AdExchange-&gt;&gt;SSP: Auction Ad Inventory
+  SSP-&gt;&gt;Publisher: Provide Ad Space
+  Publisher-&gt;&gt;User: Display Ad
+  User-&gt;&gt;Publisher: Interaction &#40;e.g., click&#41;
+  Publisher-&gt;&gt;SSP: Report Interaction
+  SSP-&gt;&gt;AdExchange: Update Metrics
+  AdExchange-&gt;&gt;DSP: Notify Results
+  DSP-&gt;&gt;Advertiser: Campaign Performance
+</code></pre><ul><li>Useful references:<ul><li><a href='https://support.google.com/admanager/answer/7128453'>Google: How programmatic advertising works</a></li><li><a href='https://www.iab.com/insights/digital-video-advertising-overview/'>IAB: Digital Advertising Ecosystem</a><h2></h2></li></ul></li></ul><h2 id="3._ad_networks%3A_the_og_middlemen">3. Ad Networks: The OG Middlemen</h2><ul><li>What they are and how they work</li><li>Example companies: AdMob, Unity Ads, IronSource, Tapjoy</li><li>Pros and cons</li><li>Sample flow: Unity Ads in a mobile game</li><li>Links:<ul><li><a href='https://unity.com/products/unity-ads'>Unity Ads Overview</a></li><li><a href='https://admob.google.com/home/'>AdMob Intro</a><h2></h2></li></ul></li></ul><h2 id="4._ad_mediation%3A_optimizing_multiple_ad_networks">4. Ad Mediation: Optimizing Multiple Ad Networks</h2><ul><li>Why developers use mediation</li><li>Waterfall vs bidding</li><li>Tools: AppLovin MAX, Google AdMob Mediation, ironSource Mediation</li><li>Sample architecture diagram</li><li>Resources:<ul><li><a href='https://support.google.com/admob/answer/3245073'>AdMob Mediation</a></li><li><a href='https://www.applovin.com/max/'>AppLovin MAX</a><h2></h2></li></ul></li></ul><h2 id="5._programmatic_advertising%3A_real-time_auctions">5. Programmatic Advertising: Real-Time Auctions</h2><ul><li>How RTB (Real-Time Bidding) works</li><li>DSP (Demand Side Platform): What it does<ul><li>Examples: The Trade Desk, Google DV360, Liftoff</li></ul></li><li>SSP (Supply Side Platform): What it does<ul><li>Examples: Pubmatic, Google Ad Manager</li></ul></li><li>Exchanges: The ad marketplace</li><li>Diagram: DSP ↔ Exchange ↔ SSP</li><li>Resources:<ul><li><a href='https://www.thetradedesk.com/'>The Trade Desk</a></li><li><a href='https://pubmatic.com/'>Pubmatic</a><h2></h2></li></ul></li></ul><h2 id="6._user_acquisition%3A_how_advertisers_buy_installs">6. User Acquisition: How Advertisers Buy Installs</h2><ul><li>Performance marketing (CPI, CPA, ROAS)</li><li>What MMPs (Mobile Measurement Partners) do<ul><li>Examples: AppsFlyer, Adjust, Singular</li></ul></li><li>iOS privacy changes (SKAdNetwork)</li><li>Real-world example: How install tracking works</li><li>Resources:<ul><li><a href='https://www.appsflyer.com/blog/'>AppsFlyer Blog</a></li><li><a href='https://developer.apple.com/documentation/storekit/skadnetwork'>SKAdNetwork Docs</a><h2></h2></li></ul></li></ul><h2 id="7._offerwalls%3A_alternative_monetization_and_ua">7. Offerwalls: Alternative Monetization and UA</h2><ul><li>What offerwalls are</li><li>Why advertisers and publishers use them</li><li>Tapjoy model: your insights</li><li>Offerwall example flow</li><li>Resources:<ul><li><a href='https://unity.com/products/unity-mediation/offerwall'>Tapjoy Offerwall</a></li><li><a href='https://www.adjoe.io/solutions/offerwall/'>Adjoe Offerwall</a><h2></h2></li></ul></li></ul><h2 id="8._monetization_stack_for_publishers">8. Monetization Stack for Publishers</h2><ul><li>Typical components: SDKs, mediation, offerwalls</li><li>Example stack: Unity Ads + Tapjoy + MAX</li><li>Practical setup tips<h2></h2></li></ul><h2 id="9._ua_stack_for_advertisers">9. UA Stack for Advertisers</h2><ul><li>Components: DSP, MMP, creatives, optimization</li><li>Campaign types: CPI, CPA, ROAS</li><li>What a successful UA pipeline looks like<h2></h2></li></ul><h2 id="10._the_business_of_attention%3A_where_the_money_goes">10. The Business of Attention: Where the Money Goes</h2><ul><li>Who takes what share of the ad dollar</li><li>Economic incentives & opacity</li><li>Market consolidation</li><li>Reference:<ul><li><a href='https://www.fsgoriginals.com/books/the-subprime-attention-crisis/'>The Subprime Attention Crisis</a><h2></h2></li></ul></li></ul><h2 id="11._closing_thoughts%3A_what_surprised_me_most">11. Closing Thoughts: What Surprised Me Most</h2><ul><li>Insights from working at Unity Tapjoy</li><li>What people misunderstand about ads</li><li>What the future might look like (AI, privacy, on-device)<h2></h2></li></ul><h2 id="12._further_reading_and_resources">12. Further Reading and Resources</h2><ul><li>Glossary of ad tech terms</li><li>Useful guides and SDKs</li><li>Visual aids and diagrams</li></ul>
+        
+        
+    </div>
+
+    <div>
+        <h1><a href="2025-05-04-anyway.html">세상엔 안좋은 일만 있는 것은 아니다.</a></h1>
+        <div class="post-meta">
+            <span class="post-date">2025-05-04</span>
+            
+            <span class="meta-separator">•</span>
+            <span class="post-tags">
+                
+                <a href="tags/Diary.html" class="tag-link">Diary</a>
+                
+            </span>
+            
+        </div>
+        <p>Well, I just come up with some interviews that I failed. When I look back, I had interviews a lot of times when I switched jobs at the early stage of my career. As I get experienced, interviews were getting less and easier but I still remember that I failed some interviews.</p><p>The thing is, as a result, the failure was not a bad thing. Thanks to those failures, I could get a better job and choose a better company than I could get at that time. I might get used to the company wherever I get hired, but I am sure that the companied that I experienced were the right ones for me. They tought me different things, respectively.</p><p>First company tought me how to work for a company, and I got to know the general knowledge of the industry, coding, machine learning, software engineering, and project management. As I look back, it wasn't perfect and it was just immature and unprofessional but I learned a lot from the people there. Anyway, that was my first company which is a symbolic place for me.</p><p>Nevertheless, </p>
+        
+        
+    </div>
+
+    <div>
         <h1><a href="2025-04-26-six-months-retrospectives.html">6 months Retrospective at Unity</a></h1>
+        <div class="post-meta">
+            <span class="post-date">2025-04-26</span>
+            
+            <span class="meta-separator">•</span>
+            <span class="post-tags">
+                
+                <a href="tags/Diary.html" class="tag-link">Diary</a>
+                
+            </span>
+            
+        </div>
         <p>I have been working at Unity for 6 months now. One sentence summary: I am happy to be here. Nice people, great work, and a good environment. Nothing prevents me from doing my best work. The product that I am working on is running well, so we have to changing the wheels on a moving train. As a result, I need to be careful not to break anything while improving it. I am learning a lot and satisfied with the work I am doing. I wish I could keep this mindset for a long time. Cheers!</p>
         
-        
-        <p><i>Published: 2025-04-26</i></p>
-        
-            <p><i>
-                Tagged:
-                
-                    <span class="tag">
-                        <a href="tags/Diary.html">Diary</a>
-                    </span>
-                
-            </i></p>
-        
-    </div>
-
-    <div>
-        <h1><a href="2025-02-06-swimming.html">Swimming</a></h1>
-        <p><a href='https://jungwookim.github.io/2022-01-11-swimming_is_fun.html'>지난 수영과 관련된 글</a>을 쓰고 3년 정도 지나고 수영 업데이트를 한다.</p><p><strong>아직까지 잘 수영하고 있다!</strong></p><p>나는 2022년 1월에 수영을 등록했다. 그리고 3년 전이 지난 지금까지 수영을 꾸준히 하고 있다. 2022년에는 코로나가 많았던 시기이고 개인적인 사정 등으로 인해 꾸준히 하지는 못했지만 최근 1년 반정도는 쉬지 않고 계속 했다. 여기에도 <a href='https://jungwookim.github.io/2022-01-11-swimming_is_fun.html'>글</a>을 적었었는데 과연 포기하지 않고 꾸준히 할 수 있을지 궁금했었는데 아직까지 잘 하고 있다! 지금은 수영을 관두면 삶의 낙이 없어질 것 같아서 멈출 수 없을 것 같다.</p><p>수영엔 흔히 4가지 유형의 영법이 있는데 자유형, 배영, 평영, 접영 4개가 있다. 자유형은 자유롭게 수영하면 되긴 하지만 일반적으로는 크롤 영법을 자유형처럼 배운다. 크롤 영법이 가장 효율적이고 빠르기 때문이다.</p><p>내 주종목은 따지고 보면 개인혼영(Individual Medley)이다. 개인혼영은 4가지 영법을 모두 사용하는 종목이고 접영 -> 배영 -> 평영 -> 자유형 순으로 수영한다. 개인혼영의 장점은 4가지 영법을 모두 다 연습해야하기 때문에 다양한 자세와 연습을 해야해서 지루하지 않고 근육을 다양하게 쓸테니 몸의 밸런스에도 좋다. 그리고 뭔가 4가지 영법을 다 잘한다는 것은 멋진 일이 아닌가! 그리고 턴의 종류도 접접, 접배, 배배, 배평, 평평, 평자, 자자 턴을 해야하는데 모든 턴은 하는 방법이 다 달라서 뭔가 재미도 있고 실제로 아주 멋있다.</p><p>수영 실력은 쓸만하지만 이건 다 상대적인 것 같다. 대회에 나가면 메달권에서 한참 멀지만, 그래도 동네에서는 그럴싸 하게 수영을 할 수 있다. 아직 부족한 것도 많고, 특히 발목 유연성이 떨어져서 킥이 안좋지만 앞으로 더 성장할 요소가 많은 것이라 생각하기로 했다. 선수도 아닌 내가 기록에 연연할 필요가 없기 때문에 즐기면서 다치지 않고 꾸준히 할 수 있는 건강한 취미가 있는 것만으로 충분하고 기쁘게 생각한다.</p><p>앞으로도 계속 한달에 보통 15회 이상은 수영하고 있는데 이 페이스를 유지해서 몸도 마음도 건강하게 유지했으면 한다. 그럼 일과 일 외적인 삶 모두 더 잘할 수 있을 것 같다.</p>
-        
-        
-        <p><i>Published: 2025-02-06</i></p>
-        
-            <p><i>
-                Tagged:
-                
-                    <span class="tag">
-                        <a href="tags/Diary.html">Diary</a>
-                    </span>
-                
-            </i></p>
-        
-    </div>
-
-    <div>
-        <h1><a href="2025-01-11-advent-of-code-2024.html">Advent of Code 2024 - Clojure</a></h1>
-        <p>2024년을 마무리하는 12월이 왔을 때, 왠지 올해는 advent of code를 다시 풀고 싶어졌다. 2024년에는 ruby나 elixir 등을 새롭게 사용하게 되면서 새로운 언어를 또 익히고 싶다는 생각은 없었고, 내가 좋아하는 언어지만 사용한지 오래된 언어인 Clojure로 문제를 풀기로 했다. 같은 언어로 푸는 주변 동료들은 없지만, Clojurians Slack과 Reddit, 그리고 회사 내에 aoc를 푸는 다른 동료들이 있어서 재밌지 않을까 하고 기대하고 시작했다.</p><p>결과적으로는 총 50 stars 중에 32 stars를 받았고, 총 18일의 문제를 풀었고 그 중 14개는 별 2개, 4개는 별 1개를 받았다. 초기 일주일은 금방 풀 수 있는 문제들이어서 빠르게 풀었지만, 2주차부터는 시간이 조금씩 더 소요되기 시작했다. 하지만 느낌적으로 마지막까지 난이도가 계속 높아지는 것까지는 아니었던 것 같다.</p><p>내 코드의 리뷰를 받을 수 있는 상황이 아니었기 때문에 Clojurians에서 공유한 다른 사람의 코드를 보았는데 같은 문제를 이렇게 다양하게 풀 수 있구나 라는 것을 또 새삼 느꼈다. 특히, Clojure로 아름답게 푼 풀이들을 볼 때 아주 신기했다. 코드란게 명확하게 더 좋은 코드나 나쁜 코드가 있는 것은 아니지만, 그래도 다른 사람들이 짠 코드를 보는 것은 흥미로운 일이다.</p><p>그리고 사내에서는 C++, Ruby, Typescript 등 다양한 언어로 동료들이 각기 다른 소감을 공유해서 더 동기부여가 많이 되었다. 중간에 2주정도 하고 포기하고 싶긴 했는데 어쨌든 마지막 12월 25일까지 참가했고 정말로 잘 했던 선택인 것 같다.</p><p>이번에 뭔가 학습이나 성장을 목표로 시작했던 것은 아니었지만 transduce나 memoize도 사용해보고, graph 문제도 풀면서 결과적으로 많이 배운 것 같다.</p><p>올해 푼 코드들은 <a href='https://github.com/jungwookim/aoc-exercise/tree/master/src/aoc/2024'>Github</a>에 올려뒀다. 2025년에도 최소 2주 정도는 참여하는 것을 목표로 하고, 그 때는 어떤 언어로 풀어볼지 고민해봐야겠다. 2024년도 끝!</p>
-        
-        
-        <p><i>Published: 2025-01-11</i></p>
-        
-            <p><i>
-                Tagged:
-                
-                    <span class="tag">
-                        <a href="tags/Clojure.html">Clojure</a>
-                    </span>
-                
-                    <span class="tag">
-                        <a href="tags/Adventofcode.html">Adventofcode</a>
-                    </span>
-                
-            </i></p>
         
     </div>
 

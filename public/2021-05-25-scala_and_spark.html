@@ -5,11 +5,11 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link type="application/atom+xml" rel="alternate" href="atom.xml" title="Scala and Spark">
-    <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-clojure.min.js"></script>
     <script type="text/javascript" src="https://livejs.com/live.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css">
+    <link rel="stylesheet" href="style.css">
 
 
 
@@ -59,6 +59,19 @@
   Scala and Spark
   
 </h1>
+<div class="post-meta">
+  <span class="post-date">2021-05-25</span>
+  
+  <span class="meta-separator">•</span>
+  <span class="post-tags">
+    
+    <a href="tags/Spark.html" class="tag-link">Spark</a>
+    
+    <a href="tags/Scala.html" class="tag-link">Scala</a>
+    
+  </span>
+  
+</div>
 <h1 id="intro">Intro</h1><p>스칼라는 객체 지향 언어와 함수형 언어의 특징을 합쳐 놓은 거라고 함. 자바처럼 JVM(자바가상머신) 위에서 동작함. </p><h1 id="%EC%8C%A9_%EA%B8%B0%EB%B3%B8">쌩 기본</h1><h2 id="%3Ccode%3Ehello_world%3C%2Fcode%3E%EB%A5%BC_%EB%9D%84%EC%9B%8C%EB%B3%B4%EC%9E%90"><code>Hello world</code>를 띄워보자</h2><pre class="language-scala"><code class="lang-scala language-scala">// way 1 싱글톤 오브젝트의 main 함수 구현
 object HelloWorldObject {
     def main&#40;ars: Array&#91;String&#93;&#41;: Unit = {
@@ -365,22 +378,7 @@ scala&gt; peopleDF.show&#40;&#41;
 +-------+
 </code></pre><h2 id="spark_sql_and_hive">Spark SQL and Hive</h2><ul><li>Spark SQL</li><li>UDF(User Defined Function)</li></ul><h2 id="reference">Reference</h2><ul><li><a href='https://spark.apache.org/docs/2.3.0/api/java/org/apache/spark/sql/DataFrameReader.html'>read_dfreader_api</a></li><li><a href='https://wikidocs.net/book/2350'>book</a></li></ul>
 <p>Discuss this post <a href="https://github.com/jungwookim/jungwookim.github.io/discussions">here</a>.</p>
-<p><i>Published: 2021-05-25</i></p>
 
-<p>
-  <i>
-  Tagged:
-  
-  <span class="tag">
-    <a href="tags/Spark.html">Spark</a>
-  </span>
-  
-  <span class="tag">
-    <a href="tags/Scala.html">Scala</a>
-  </span>
-  
-  </i>
-</p>
 <p>
   <script
     src="https://utteranc.es/client.js"

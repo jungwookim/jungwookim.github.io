@@ -5,11 +5,11 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link type="application/atom+xml" rel="alternate" href="atom.xml" title="Terraform 환경별로 사용하기">
-    <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-clojure.min.js"></script>
     <script type="text/javascript" src="https://livejs.com/live.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css">
+    <link rel="stylesheet" href="style.css">
 
 
 
@@ -59,6 +59,23 @@
   Terraform 환경별로 사용하기
   
 </h1>
+<div class="post-meta">
+  <span class="post-date">2021-02-03</span>
+  
+  <span class="meta-separator">•</span>
+  <span class="post-tags">
+    
+    <a href="tags/Fargate.html" class="tag-link">Fargate</a>
+    
+    <a href="tags/k8s.html" class="tag-link">k8s</a>
+    
+    <a href="tags/Terraform.html" class="tag-link">Terraform</a>
+    
+    <a href="tags/EKS.html" class="tag-link">EKS</a>
+    
+  </span>
+  
+</div>
 <p>어느정도 <code>main.tf</code> 작성을 끝내고, <code>dev</code>에서 테스트가 잘 되었다보니 이제 환경별로 이를 적용하고 관리해야했다. 우리는 <code>migration</code>을 해야했으므로 기존 인프라에 대한 정보도 <code>variable</code>로 좀 관리 되어야 할 필요가 있었다. 기타 네이밍들도 마찬가지고 뭐. 그래서 테라폼 공식 홈페이지에 <a href='https://www.terraform.io/docs/language/values/variables.html'>Input Variables</a>를 꼼꼼히 살피고, <code>tf.vars</code>를 이용해서 <code>apply</code>할 때 <code>option</code>으로 먹이는게 제일 나은 관리처럼 보였다. 해당 전략이 <code>practice</code>가 있는지 찾아보았고, 역시 <a href='https://learn.hashicorp.com/tutorials/terraform/organize-configuration#separate-configuration'>공식 문서</a>에 나와있었다.</p><p>나의 경우에는 <code>root module</code>안에서 다 관리하도록 했다. (참고로 <code>directory</code> 전략은 케바케로 엄청 많다. 상황에 따라서 적당히 골라서 쓰면 된다)</p><pre class="language-tree"><code class="lang-tree language-tree">$ terraform
 .
 ├── main.tf
@@ -97,30 +114,7 @@ internal&#95;vpc&#95;id            = &quot;vpc-adslfkjasdkfl122a&quot;
 internal&#95;security&#95;group&#95;id = &quot;sg-aldksfjalksdfaskl&quot;
 </code></pre><h2 id="reference">Reference</h2><ul><li><a href='https://learn.hashicorp.com/tutorials/terraform/organize-configuration#separate-configuration'>separate_configuration</a></li><li><a href='https://www.terraform.io/docs/language/values/variables.html'>input_variables</a></li></ul>
 <p>Discuss this post <a href="https://github.com/jungwookim/jungwookim.github.io/discussions">here</a>.</p>
-<p><i>Published: 2021-02-03</i></p>
 
-<p>
-  <i>
-  Tagged:
-  
-  <span class="tag">
-    <a href="tags/Fargate.html">Fargate</a>
-  </span>
-  
-  <span class="tag">
-    <a href="tags/k8s.html">k8s</a>
-  </span>
-  
-  <span class="tag">
-    <a href="tags/Terraform.html">Terraform</a>
-  </span>
-  
-  <span class="tag">
-    <a href="tags/EKS.html">EKS</a>
-  </span>
-  
-  </i>
-</p>
 <p>
   <script
     src="https://utteranc.es/client.js"
