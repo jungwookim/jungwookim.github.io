@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Online ads (1)</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="application/atom+xml" rel="alternate" href="atom.xml" title="Online ads (1)">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-clojure.min.js"></script>
+    <script type="text/javascript" src="https://livejs.com/live.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css">
+    <link rel="stylesheet" href="style.css">
+
+
+
+    <!-- Social sharing (Facebook, Twitter, LinkedIn, etc.) -->
+    <meta name="title" content="Online ads (1)">
+    <meta name="twitter:title" content="Online ads (1)">
+    <meta property="og:title" content="Online ads (1)">
+    <meta property="og:type" content="website">
+
+
+    <meta name="twitter:url" content="https://jungwookim.github.io/2025-07-26-how-online-ads-work.html">
+    <meta property="og:url" content="https://jungwookim.github.io/2025-07-26-how-online-ads-work.html">
+
+
+    <meta name="twitter:card" content="summary">
+
+
+
+  </head>
+  <body>
+
+    <div class="site-header">
+      <div class="wrapper">
+        <div class="site-nav">
+          <a class="page-link" href="archive.html">Archive</a>
+          <a class="page-link" href="tags/index.html">Tags</a>
+          <a class="page-link" href="tech-radar.html">Tech Radar</a>
+	  <!-- <a class="page-link" href="atom.xml">
+            Feed
+          </a> -->
+	  
+	  <a class="page-link" href="about.html">About</a>
+        </div>
+        <div>
+          <h1 class="site-title">
+            <a class="page-link" href="index.html">Jungwoo Kim</a>
+          </h1>
+	  <p>Define the problem first</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrapper">
+
+      <h1>
+  
+  Online ads (1)
+  
+</h1>
+<div class="post-meta">
+  <span class="post-date">2025-07-26</span>
+  
+  <span class="meta-separator">•</span>
+  <span class="post-tags">
+    
+    <a href="tags/Advertisement.html" class="tag-link">Advertisement</a>
+    
+    <a href="tags/Marketing.html" class="tag-link">Marketing</a>
+    
+    <a href="tags/Ads.html" class="tag-link">Ads</a>
+    
+  </span>
+  
+</div>
+<h1 id="how_online_ads_really_work">How Online Ads Really Work</h1><p>I'm a Senior Software Engineer at Unity, working on Tapjoy Offerwall, a ad solution for mobile games and apps. In this post, I want to demysify how online ads work, especially in the context of mobile games and app. It won't cover every detail but will give you a solid understanding of the ecosystem, the players involved, and how it all comes together. Plus, I won't explain Offerwall itself, but rather focus on the broader ad tech landscape that makes it possible.</p><h2 id="introduction%3A_ads_are_everywhere_%E2%80%94_but_how_do_they_work%3F">Introduction: Ads Are Everywhere — But How Do They Work?</h2><p>When you play games or browse the web, you see ads everywhere. I knew that ads are everywhere but I didn't know how they really work even though I have been working on the Ads team. This article is for those who want to understand the ad tech ecosystem. I will explain key actors, how they interact, and the techonology behind it with top-down approach. I wish you will get a better understanding of how online ads works after reading this post.<h2></h2></p><h2 id="the_big_picture%3A_online_advertising_ecosystem">The Big Picture: Online Advertising Ecosystem</h2><p>There are key players in the online advertising ecosystem that work together to deliver ads to users. Here's a high-level overview:</p><ul><li>Advertisers: Companies that want to promote their products or services.</li><li>Publishers: Websites or apps that display ads to their users.</li><li>Ad Networks: Middlemen that connect advertisers with publishers.</li><li>DSPs (Demand Side Platforms): Tools that help advertisers buy ad space programmatically.</li><li>SSPs (Supply Side Platforms): Tools that help publishers sell ad space programmatically.</li><li>Ad Exchanges: Marketplaces where DSPs and SSPs transact.</li><li>MMPs (Mobile Measurement Partners): Companies that track ad performance and user acquisition.</li></ul><p>That's a lot of jargon, but don't worry. I'll break it down in the following sections. Before that, here's a high-level diagram of the ecosystem:</p><pre class="language-mermaid"><code class="lang-mermaid language-mermaid">flowchart TD
+  Advertisers --&gt;|Create Ads| AdNetworks
+  AdNetworks --&gt;|Distribute Ads| Publishers
+  Publishers --&gt;|Show Ads| Users
+  Advertisers --&gt;|Buy Ad Space| DSPs
+  DSPs --&gt;|Bid on Inventory| AdExchanges
+  AdExchanges --&gt;|Sell Inventory| SSPs
+  SSPs --&gt;|Provide Ad Space| Publishers
+  MMPs --&gt;|Track Performance| Advertisers
+</code></pre><pre class="language-mermaid"><code class="lang-mermaid language-mermaid">sequenceDiagram
+  participant Advertiser
+  participant DSP
+  participant AdExchange
+  participant SSP
+  participant Publisher
+  Advertiser-&gt;&gt;DSP: Submit Ad Campaign
+  DSP-&gt;&gt;AdExchange: Bid on Ad Space
+  AdExchange-&gt;&gt;SSP: Auction Ad Inventory
+  SSP-&gt;&gt;Publisher: Provide Ad Space
+  Publisher-&gt;&gt;User: Display Ad
+  User-&gt;&gt;Publisher: Interaction &#40;e.g., click&#41;
+  Publisher-&gt;&gt;SSP: Report Interaction
+  SSP-&gt;&gt;AdExchange: Update Metrics
+  AdExchange-&gt;&gt;DSP: Notify Results
+  DSP-&gt;&gt;Advertiser: Campaign Performance
+</code></pre>
+<p>Discuss this post <a href="https://github.com/jungwookim/jungwookim.github.io/discussions">here</a>.</p>
+
+<p>
+  <script
+    src="https://utteranc.es/client.js"
+    repo="jungwookim/jungwookim.github.io"
+    issue-term="pathname"
+    theme="github-light"
+    crossorigin="anonymous"
+    async>
+  </script>
+</p>
+
+
+
+      
+      <div style="margin-bottom: 20px; float: right;">
+        <a class="page-link" href="archive.html">Archive</a>
+      </div>
+      
+    </div>
+  </body>
+</html>
