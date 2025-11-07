@@ -778,7 +778,7 @@ git checkout &lt;branch-name&gt;
     <link href="https://jungwookim.github.io/2022-10-30-feature-flags-release-toggles.html"/>
     <title>Feature Flags - Release toggles</title>
     <updated>2022-10-30T23:59:59+00:00</updated>
-    <content type="html"><![CDATA[<p>Posted on <a href='https://green-labs.github.io/feature-flags-1'>Greenlabs's blog</a>.</p>]]></content>
+    <content type="html"><![CDATA[<p>Posted on <a href='https://tech.greenlabs.co.kr/feature-flags-1'>Greenlabs's blog</a>.</p>]]></content>
   </entry>
   <entry>
     <id>https://jungwookim.github.io/2022-10-11-Debugging_clojure_with_trace_and_portal.html</id>
