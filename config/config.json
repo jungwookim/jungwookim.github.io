@@ -83,17 +83,25 @@
       },
       {
         "quadrant": 0,
-        "ring": 1,
+        "ring": 0,
         "label": "Ruby",
         "link": "tags/Ruby.html",
         "active": true,
-        "moved": 1
+        "moved": 0
+      },
+      {
+        "quadrant": 0,
+        "ring": 0,
+        "label": "Elixir",
+        "link": "tags/Elixir.html",
+        "active": true,
+        "moved": 0
       },
       {
         "quadrant": 0,
         "ring": 1,
-        "label": "Elixir",
-        "link": "tags/Elixir.html",
+        "label": "Golang",
+        "link": "tags/Golang.html",
         "active": true,
         "moved": 1
       },
@@ -102,7 +110,7 @@
         "ring": 1,
         "label": "Phoenix Liveview",
         "active": true,
-        "moved": 1
+        "moved": 0
       },
       {
         "quadrant": 0,
@@ -116,7 +124,7 @@
         "ring": 3,
         "label": "JAVA",
         "active": true,
-        "moved": 0
+        "moved": 1
       },
       {
         "quadrant": 0,
@@ -154,6 +162,14 @@
         "link": "tags/k8s.html",
         "active": true,
         "moved": 0
+      },
+      {
+        "quadrant": 1,
+        "ring": 2,
+        "label": "KCL",
+        "link": "tags/kcl.html",
+        "active": true,
+        "moved": 1
       },
       {
         "quadrant": 1,
@@ -232,7 +248,7 @@
         "ring": 2,
         "label": "Couchbase",
         "active": true,
-        "moved": 0
+        "moved": 1
       },
       {
         "quadrant": 2,
@@ -243,17 +259,17 @@
       },
       {
         "quadrant": 2,
-        "ring": 3,
+        "ring": 2,
         "label": "BigQuery",
         "active": true,
-        "moved": 0
+        "moved": 1
       },
       {
         "quadrant": 2,
-        "ring": 3,
+        "ring": 2,
         "label": "Kafka",
         "active": true,
-        "moved": 0
+        "moved": 1
       },
       {
         "quadrant": 3,
