@@ -3,11 +3,18 @@
   <title>Jungwoo Kim</title>
   <link href="https://jungwookim.github.io/atom.xml" rel="self"/>
   <link href="https://jungwookim.github.io"/>
-  <updated>2025-11-07T14:02:53+00:00</updated>
+  <updated>2025-12-21T07:24:43+00:00</updated>
   <id>https://jungwookim.github.io</id>
   <author>
     <name>Quick Blogger</name>
   </author>
+  <entry>
+    <id>https://jungwookim.github.io/2025-12-21-advent-of-code-2025.html</id>
+    <link href="https://jungwookim.github.io/2025-12-21-advent-of-code-2025.html"/>
+    <title>Advent of Code 2025 - Golang</title>
+    <updated>2025-12-21T23:59:59+00:00</updated>
+    <content type="html"><![CDATA[<p>It's been an year since I last paricipated in Advent of Code in 2024 using Clojure. This year, I decided to use Golang for solving the problems so that I can get to know Golang's standard library and features better. It is my first time writing Golang code seriously, I was only able to read some Golang code before but never wrote any significant amount of code in Golang.</p><p>I was focusing on learning Golang itself, but at the same time, solving problmes recalled me of problem solving skills and algorithms itself as well. I have tried 10 days out of 12 days, and I have solved 18 stars out of 24 stars.</p><p>My goal wasn't to receive all the stars, but rather to get familiar with Golang and have fun solving problems. So, 18 stars is enough for me this time. Thanks to Advent of Code, I enjoyed time in December again this year.</p><p>I have uploaded my code to <a href='https://github.com/jungwookim/advent-of-code-golang/tree/master/2025'>Github</a>. Looking forward to next year's Advent of Code as well!</p><h3 id="p.s.">P.S.</h3><p>The funny thing is that I mentioned in my previous year's post that I would consider participating about 2 weeks next year. This year, the author decided to release only 12 days instead of full 25 days for some reasons. So, I ended up doing about 2 weeks that I expected!</p>]]></content>
+  </entry>
   <entry>
     <id>https://jungwookim.github.io/2025-07-26-how-online-ads-work.html</id>
     <link href="https://jungwookim.github.io/2025-07-26-how-online-ads-work.html"/>
